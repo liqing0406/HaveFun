@@ -1,5 +1,6 @@
 package com.hebtu.havefun.service;
 
+import com.alibaba.fastjson.JSON;
 import com.hebtu.havefun.Util.CountActivityUtil;
 import com.hebtu.havefun.config.ValueConfig;
 import com.hebtu.havefun.dao.*;
@@ -11,6 +12,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
@@ -49,10 +51,7 @@ public class ActivityService {
 
     public List<Activity> getActivityList(Integer activityKind, Integer pageNum, Integer pageSize) {
         Long num = countActivityUtil.getActivityNum();
-        System.out.println(num);
-        System.out.println(pageNum);
         if ((num - 1) / pageSize + 1 < pageNum) {
-            System.out.println("触发了");
             return null;
         }
         List<Activity> content = new ArrayList<>();
@@ -65,20 +64,12 @@ public class ActivityService {
                 pageable = PageRequest.of(pageNum - 1, pageSize, sort);
                 page = activityDao.findAll(pageable);
                 content = page.getContent();
-                System.out.print("热门活动:");
-                for (Activity activity : content) {
-                    System.out.print(activity.getSignUpNum() + " ");
-                }
                 break;
             case 2://近期活动
                 sort = Sort.by(Sort.Direction.DESC, "activityTime");
                 pageable = PageRequest.of(pageNum - 1, pageSize, sort);
                 page = activityDao.findAll(pageable);
                 content = page.getContent();
-                System.out.println("近期活动:");
-                for (Activity activity : content) {
-                    System.out.println(activity.getActivityTime().toString());
-                }
                 break;
         }
         return content;
@@ -96,7 +87,7 @@ public class ActivityService {
     @Transactional
     @Rollback(value = false)
     public boolean changeCollectActivity(Integer activityId, Integer id, boolean collect) {
-        System.out.println(activityId+","+id+","+collect);
+        System.out.println(activityId + "," + id + "," + collect);
         Activity activity = activityDao.getOne(activityId);
         User user = userDao.getOne(id);
         System.out.println(user.toString());
@@ -116,5 +107,14 @@ public class ActivityService {
             activity.setCollectNum(activity.getCollectNum() - 1);
         }
         return true;
+    }
+
+    public String getCollectedActivities(Integer id, Integer pageNum, Integer pageSize) {
+        User user = userDao.getOne(id);
+        Specification<UserCollectActivity> spec = (Specification<UserCollectActivity>) (root, criteriaQuery, criteriaBuilder) -> criteriaBuilder.equal(root.get("user"), user);
+        Pageable pageable = PageRequest.of(pageNum - 1, pageSize);
+        Page<UserCollectActivity> page = userCollectActivityDao.findAll(spec, pageable);
+        List<UserCollectActivity> content = page.getContent();
+        return content.size() == 0 ? "empty" : JSON.toJSONString(content);
     }
 }

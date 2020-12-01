@@ -54,4 +54,9 @@ public class ActivityController {
         boolean flag = activityService.changeCollectActivity(activityId,id,collect);
         return flag ? "true" : "false";
     }
+
+    @RequestMapping("/getCollectedActivities")
+    public String getCollectedActivities(Integer id,Integer pageNum,Integer pageSize){
+        return activityService.getCollectedActivities(id,pageNum,pageSize);
+    }
 }

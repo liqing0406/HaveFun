@@ -31,7 +31,6 @@ public class UserController {
 
     @RequestMapping("/register")
     public String register(String phoneNum, String password) {
-        System.out.println(phoneNum);
         if (userService.register(phoneNum, password)) {
             return "true";
         } else {
