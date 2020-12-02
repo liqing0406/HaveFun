@@ -3,7 +3,6 @@ package com.hebtu.havefun.controller;
 import com.alibaba.fastjson.JSON;
 import com.hebtu.havefun.entity.Messages;
 import com.hebtu.havefun.entity.User.User;
-import com.hebtu.havefun.entity.User.UserDetail;
 import com.hebtu.havefun.service.UserService;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -239,9 +238,9 @@ public class UserController {
     }
 
     /**
-     * @description 获取用户被多少人关注，即粉丝数量
      * @param id 当前用户的id
      * @return 返回粉丝数量
+     * @description 获取用户被多少人关注，即粉丝数量
      */
     @RequestMapping("/getFollowedCount")
     public String getFollowedCount(Integer id) {
@@ -254,9 +253,9 @@ public class UserController {
     }
 
     /**
-     * @description 获取用户关注了多少人
      * @param id 当前用户的id
      * @return 返回关注人数
+     * @description 获取用户关注了多少人
      */
     @RequestMapping("/getFollowCount")
     public String getFollowCount(Integer id) {
@@ -269,18 +268,54 @@ public class UserController {
     }
 
     /**
-     * @description 根据id获取用户的信息，用于点击某个用户头像进入个人主页
      * @param id 用户的id
      * @return 返回user对象的JSON串
+     * @description 根据id获取用户的信息，用于点击某个用户头像进入个人主页
      */
     @RequestMapping("/getUser")
-    public String getUser(Integer id){
+    public String getUser(Integer id) {
         User user = userService.getUser(id);
-        if(id == null){
+        if (id == null) {
             System.out.println("getUser Error");
             return "ErrorParameter";
         }
         return user != null ? JSON.toJSONString(user) : "false";
     }
 
+    /**
+     * @param id 当前user的id
+     * @return 返回一个Messages类的list集合
+     * @description 获取和用户交流过的消息列表
+     */
+    @RequestMapping("/getMessageList")
+    public String getMessageList(Integer id) {
+        if (id == null) {
+            System.out.println("getMessageList Error");
+            return "ErrorParameter";
+        }
+        List<Messages> messagesList = userService.getMessageList(id);
+        return messagesList.size() != 0 ? JSON.toJSONString(messagesList) : "empty";
+    }
+
+    /**
+     * @param id 当前用户的id
+     * @return 返回一个用户列表的Json串，如果为空则返回empty
+     * @description 获取当前用户的关注列表
+     */
+    @RequestMapping("/getFollowUsers")
+    public String getFollowUsers(Integer id) {
+        List<User> userList = userService.getFollowUsers(id);
+        return userList.size() != 0 ? JSON.toJSONString(userList) : "empty";
+    }
+
+    /**
+     * @param id 当前用户的id
+     * @return 返回一个用户列表的Json串，如果为空则返回empty
+     * @description 获取当前用户的粉丝列表
+     */
+    @RequestMapping("/getFollowedUsers")
+    public String getFollowedUsers(Integer id) {
+        List<User> userList = userService.getFollowedUsers(id);
+        return userList.size() != 0 ? JSON.toJSONString(userList) : "empty";
+    }
 }

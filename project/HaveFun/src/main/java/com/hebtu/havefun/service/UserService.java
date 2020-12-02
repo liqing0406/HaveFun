@@ -17,10 +17,8 @@ import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -221,5 +219,38 @@ public class UserService {
 
     public User getUser(Integer id) {
         return userDao.getOne(id);
+    }
+
+    public List<Messages> getMessageList(Integer id) {
+        User user = userDao.getOne(id);
+        Specification<Messages> specification = (Specification<Messages>) (root, criteriaQuery, criteriaBuilder) -> {
+            Predicate sendPredicate = criteriaBuilder.equal(root.get("sendUser"), user);
+            Predicate receivePredicate = criteriaBuilder.equal(root.get("receiveUser"), user);
+            return criteriaBuilder.or(sendPredicate, receivePredicate);
+        };
+        return messagesDao.findAll(specification);
+    }
+
+    public List<User> getFollowUsers(Integer id) {
+        Specification<UserRelationship> specification = (Specification<UserRelationship>) (root, criteriaQuery, criteriaBuilder) -> criteriaBuilder.equal(root.get("followUserId"), id);
+        return getUsers(specification);
+    }
+
+    public List<User> getFollowedUsers(Integer id) {
+        Specification<UserRelationship> specification = (Specification<UserRelationship>) (root, criteriaQuery, criteriaBuilder) -> criteriaBuilder.equal(root.get("followedUserId"), id);
+        return getUsers(specification);
+    }
+
+    private List<User> getUsers(Specification<UserRelationship> specification) {
+        List<UserRelationship> userRelationships = userRelationshipDao.findAll(specification);
+        if (userRelationships.size() == 0) {
+            return null;
+        } else {
+            List<User> userList = new ArrayList<>();
+            for (UserRelationship userRelationship : userRelationships) {
+                userList.add(userDao.getOne(userRelationship.getFollowedUserId()));
+            }
+            return userList;
+        }
     }
 }
