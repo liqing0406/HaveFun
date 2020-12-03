@@ -542,7 +542,7 @@ public class ActivityController {
      * @param id       用户id,注意不是getUserId,是getId
      * @param pageNum  页码
      * @param pageSize 页大小
-     * @return 返回List<Activity>集合
+     * @return 返回List<UserCollectActivity>集合
      * @description 获取收藏的活动列表
      */
     @RequestMapping("/getCollectedActivities")
@@ -584,7 +584,7 @@ public class ActivityController {
      * @param id       用户id,注意不是getUserId,是getId
      * @param pageNum  页码
      * @param pageSize 页大小
-     * @return 返回List<Activity>集合
+     * @return 返回List<UserCollectActivity>集合
      * @description 获取报名的活动列表
      */
     @RequestMapping("/getEnterActivities")
@@ -604,7 +604,7 @@ public class ActivityController {
      * @param id       用户id,注意不是getUserId,是getId
      * @param pageNum  页码
      * @param pageSize 页大小
-     * @return 返回List<Activity>集合
+     * @return 返回List<UserCollectActivity>集合
      * @description 获取发布的活动列表
      */
     @RequestMapping("/getPublishActivities")
