@@ -13,4 +13,5 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
  * @description TODO
  */
 public interface UserDetailDao extends JpaRepository<UserDetail, Integer>, JpaSpecificationExecutor<UserDetail> {
+    UserDetail findUserDetailByUser(User user);
 }

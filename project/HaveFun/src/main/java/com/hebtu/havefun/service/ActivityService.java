@@ -11,6 +11,7 @@ import com.hebtu.havefun.entity.User.UserPublishActivity;
 import com.hebtu.havefun.entity.activity.Activity;
 import com.hebtu.havefun.entity.activity.ActivityDetail;
 import com.hebtu.havefun.entity.activity.Picture;
+import com.hebtu.havefun.entity.activity.TypeOfKind;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -22,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
+import javax.persistence.criteria.Predicate;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
@@ -49,6 +51,8 @@ public class ActivityService {
     UserEnterActivityDao userEnterActivityDao;
     @Resource
     UserPublishActivityDao userPublishActivityDao;
+    @Resource
+    TypeOfKindDao typeOfKindDao;
 
     public String[] getRotationChartPictures() {
         return new String[]{ValueConfig.SERVER_URL + "localPictures/1.png",
@@ -66,17 +70,18 @@ public class ActivityService {
         Sort sort;
         Pageable pageable;
         Page<Activity> page;
+        Specification<Activity> specification = (Specification<Activity>) (root, criteriaQuery, criteriaBuilder) -> criteriaBuilder.greaterThanOrEqualTo(root.get("activityTime"), new Date());
         switch (activityKind) {
             case 1://热门活动
                 sort = Sort.by(Sort.Direction.DESC, "collectNum");
                 pageable = PageRequest.of(pageNum - 1, pageSize, sort);
-                page = activityDao.findAll(pageable);
+                page = activityDao.findAll(specification, pageable);
                 content = page.getContent();
                 break;
             case 2://近期活动
                 sort = Sort.by(Sort.Direction.DESC, "activityTime");
                 pageable = PageRequest.of(pageNum - 1, pageSize, sort);
-                page = activityDao.findAll(pageable);
+                page = activityDao.findAll(specification, pageable);
                 content = page.getContent();
                 break;
         }
@@ -134,7 +139,7 @@ public class ActivityService {
         for (MultipartFile file : files) {
             count++;
             String fileName = file.getOriginalFilename() + count + Objects.requireNonNull(file.getOriginalFilename()).substring(file.getOriginalFilename().lastIndexOf("."));
-            File dest = new File(ValueConfig.UPLOAD_FOLDER + fileName);
+            File dest = new File(ValueConfig.UPLOAD_FOLDER + "activity_pictures/" + fileName);
             if (!dest.getParentFile().exists()) { //判断文件父目录是否存在
                 flag = dest.getParentFile().mkdir();
             } else {
@@ -174,5 +179,33 @@ public class ActivityService {
         Page<UserPublishActivity> page = userPublishActivityDao.findAll(spec, pageable);
         List<UserPublishActivity> content = page.getContent();
         return content.size() == 0 ? "empty" : JSON.toJSONString(content);
+    }
+
+
+    public List<Activity> screenTimeActivities(Integer howManyDays, Integer pageNum, Integer pageSize) {
+        Specification<Activity> specification = (Specification<Activity>) (root, criteriaQuery, criteriaBuilder) -> {
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(new Date());
+            calendar.add(Calendar.DATE, howManyDays * (-1));
+            return criteriaBuilder.greaterThanOrEqualTo(root.get("activityTime"), calendar.getTime());
+        };
+        return activityDao.findAll(specification, PageRequest.of(pageNum - 1, pageSize, Sort.by(Sort.Direction.DESC, "activityTime"))).getContent();
+    }
+
+
+    public List<Activity> screenTypeActivities(Integer tag, Integer pageNum, Integer pageSize) {
+        TypeOfKind typeOfKind = typeOfKindDao.getOne(tag);
+        Specification<Activity> specification = (Specification<Activity>) (root, criteriaQuery, criteriaBuilder) -> criteriaBuilder.equal(root.get("typeOfKind"), typeOfKind);
+        return activityDao.findAll(specification, PageRequest.of(pageNum - 1, pageSize, Sort.by(Sort.Direction.DESC, "activityTime"))).getContent();
+    }
+
+
+    public List<Activity> screenCostActivities(Integer lowCost, Integer highCost, Integer pageNum, Integer pageSize) {
+        Specification<Activity> specification = (Specification<Activity>) (root, criteriaQuery, criteriaBuilder) -> {
+            Predicate lowPredicate = criteriaBuilder.le(root.get("activityCost").as(Integer.class), highCost);
+            Predicate highPredicate = criteriaBuilder.ge(root.get("activityCost").as(Integer.class), lowCost);
+            return criteriaBuilder.and(highPredicate, lowPredicate);
+        };
+        return activityDao.findAll(specification, PageRequest.of(pageNum - 1, pageSize, Sort.by(Sort.Direction.DESC, "activityTime"))).getContent();
     }
 }

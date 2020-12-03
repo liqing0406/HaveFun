@@ -406,6 +406,52 @@ public class UserController {
         List<User> userList = userService.getFollowedUsers(id);
         return userList.size() != 0 ? JSON.toJSONString(userList) : "empty";
     }
+```
+
+## 更改用户头像
+
+```java
+    /**
+     * @param headPortrait 使用OkHttp3传输图片，类型为MultipartFile，名称为headPortrait
+     * @param id           用户id
+     * @return 返回修改成功还是失败
+     * @description 更改用户头像
+     */
+    @RequestMapping("/modifyUserHeadPortrait")
+    public String modifyUserHeadPortrait(MultipartFile headPortrait, Integer id) {
+        return userService.modifyUserHeadPortrait(headPortrait, id) ? "true" : "false";
+    }
+```
+
+## 更改用户昵称
+
+```java
+    /**
+     * @param userName 用户新昵称，请求参数名称为userName
+     * @param id       用户id
+     * @return 返回修改成功还是失败
+     * @description 更改用户昵称
+     */
+    @RequestMapping("/modifyUserName")
+    public String modifyUserName(String userName, Integer id) {
+        return userService.modifyUserName(userName, id) ? "true" : "false";
+    }
+
+```
+
+## 更改用户性别
+
+```java
+    /**
+     * @param sex 用户性别字段，1或者0
+     * @param id  用户id
+     * @return 返回修改成功还是失败
+     * @description 修改用户性别
+     */
+    @RequestMapping("/modifyUserSex")
+    public String modifyUserSex(Integer sex, Integer id) {
+        return userService.modifyUserSex(sex, id) ? "true" : "false";
+    }
 }
 ```
 
@@ -614,6 +660,52 @@ public class ActivityController {
             return "ErrorParameter";
         }
         return activityService.getPublishActivities(id, pageNum, pageSize);
+    }
+```
+
+## 根据时间筛选活动
+
+```java
+    /**
+     * @param howManyDays 参数为近多少天，用于筛选符合要求的时间内开始的活动
+     * @return 返回一个List<Activity>集合
+     * @description 根据时间筛选活动
+     */
+    @RequestMapping("/screenTimeActivities")
+    public String screenTimeActivities(Integer howManyDays) {
+        List<Activity> activityList = activityService.screenTimeActivities(howManyDays);
+        return activityList.size() != 0 ? JSON.toJSONString(activityList) : "empty";
+    }
+```
+
+## 根据花费筛选活动
+
+```java
+    /**
+     * @param lowCost  价格区间的小值
+     * @param highCost 价格区间的大值
+     * @return 返回一个List<Activity>集合
+     * @description 根据花费筛选活动
+     */
+    @RequestMapping("/screenTypeActivities")
+    public String screenTypeActivities(Integer lowCost, Integer highCost) {
+        List<Activity> activityList = activityService.screenCostActivities(lowCost, highCost);
+        return activityList.size() != 0 ? JSON.toJSONString(activityList) : "empty";
+    }
+```
+
+## 根据活动种类筛选活动
+
+```java
+    /**
+     * @param tag tag为活动种类的最小划分，即小类而不是大类，值为种类的id
+     * @return 返回一个List<Activity>集合
+     * @description 根据活动种类筛选活动
+     */
+    @RequestMapping("/screenCostActivities")
+    public String screenCostActivities(Integer tag) {
+        List<Activity> activityList = activityService.screenTypeActivities(tag);
+        return activityList.size() != 0 ? JSON.toJSONString(activityList) : "empty";
     }
 }
 ```

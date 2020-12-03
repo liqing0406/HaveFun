@@ -111,7 +111,7 @@ public class ActivityController {
      * @param id       用户id,注意不是getUserId,是getId
      * @param pageNum  页码
      * @param pageSize 页大小
-     * @return 返回List<Activity>集合
+     * @return 返回List<UserCollectActivity>集合
      * @description 获取收藏的活动列表
      */
     @RequestMapping("/getCollectedActivities")
@@ -145,7 +145,7 @@ public class ActivityController {
      * @param id       用户id,注意不是getUserId,是getId
      * @param pageNum  页码
      * @param pageSize 页大小
-     * @return 返回List<Activity>集合
+     * @return 返回List<UserCollectActivity>集合
      * @description 获取报名的活动列表
      */
     @RequestMapping("/getEnterActivities")
@@ -161,7 +161,7 @@ public class ActivityController {
      * @param id       用户id,注意不是getUserId,是getId
      * @param pageNum  页码
      * @param pageSize 页大小
-     * @return 返回List<Activity>集合
+     * @return 返回List<UserCollectActivity>集合
      * @description 获取发布的活动列表
      */
     @RequestMapping("/getPublishActivities")
@@ -171,5 +171,39 @@ public class ActivityController {
             return "ErrorParameter";
         }
         return activityService.getPublishActivities(id, pageNum, pageSize);
+    }
+
+    /**
+     * @param howManyDays 参数为近多少天，用于筛选符合要求的时间内开始的活动
+     * @return 返回一个List<Activity>集合
+     * @description 根据时间筛选活动
+     */
+    @RequestMapping("/screenTimeActivities")
+    public String screenTimeActivities(Integer howManyDays, Integer pageNum, Integer pageSize) {
+        List<Activity> activityList = activityService.screenTimeActivities(howManyDays, pageNum, pageSize);
+        return activityList.size() != 0 ? JSON.toJSONString(activityList) : "empty";
+    }
+
+    /**
+     * @param lowCost  价格区间的小值
+     * @param highCost 价格区间的大值
+     * @return 返回一个List<Activity>集合
+     * @description 根据花费筛选活动
+     */
+    @RequestMapping("/screenTypeActivities")
+    public String screenTypeActivities(Integer lowCost, Integer highCost, Integer pageNum, Integer pageSize) {
+        List<Activity> activityList = activityService.screenCostActivities(lowCost, highCost, pageNum, pageSize);
+        return activityList.size() != 0 ? JSON.toJSONString(activityList) : "empty";
+    }
+
+    /**
+     * @param tag tag为活动种类的最小划分，即小类而不是大类，值为种类的id
+     * @return 返回一个List<Activity>集合
+     * @description 根据活动种类筛选活动
+     */
+    @RequestMapping("/screenCostActivities")
+    public String screenCostActivities(Integer tag, Integer pageNum, Integer pageSize) {
+        List<Activity> activityList = activityService.screenTypeActivities(tag, pageNum, pageSize);
+        return activityList.size() != 0 ? JSON.toJSONString(activityList) : "empty";
     }
 }

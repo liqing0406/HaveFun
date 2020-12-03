@@ -3,6 +3,7 @@ D:\Idea\workSpace\HaveFun\src\main\java\com\hebtu\havefun\dao\MessagesDao.java
 D:\Idea\workSpace\HaveFun\src\main\java\com\hebtu\havefun\entity\User\UserPK.java
 D:\Idea\workSpace\HaveFun\src\main\java\com\hebtu\havefun\dao\UserDetailDao.java
 D:\Idea\workSpace\HaveFun\src\main\java\com\hebtu\havefun\entity\User\User.java
+D:\Idea\workSpace\HaveFun\src\main\java\com\hebtu\havefun\dao\TypeOfKindDao.java
 D:\Idea\workSpace\HaveFun\src\main\java\com\hebtu\havefun\config\DruidConfig.java
 D:\Idea\workSpace\HaveFun\src\main\java\com\hebtu\havefun\dao\UserEnterActivityDao.java
 D:\Idea\workSpace\HaveFun\src\main\java\com\hebtu\havefun\entity\Messages.java
@@ -14,7 +15,6 @@ D:\Idea\workSpace\HaveFun\src\main\java\com\hebtu\havefun\entity\User\UserDetail
 D:\Idea\workSpace\HaveFun\src\main\java\com\hebtu\havefun\dao\ActivityDetailDao.java
 D:\Idea\workSpace\HaveFun\src\main\java\com\hebtu\havefun\entity\User\UserCollectActivity.java
 D:\Idea\workSpace\HaveFun\src\main\java\com\hebtu\havefun\entity\User\UserRelationship.java
-D:\Idea\workSpace\HaveFun\src\main\java\com\hebtu\havefun\Util\UploadPicturesUtil.java
 D:\Idea\workSpace\HaveFun\src\main\java\com\hebtu\havefun\entity\User\UserEnterActivity.java
 D:\Idea\workSpace\HaveFun\src\main\java\com\hebtu\havefun\entity\activity\ActivityKind.java
 D:\Idea\workSpace\HaveFun\src\main\java\com\hebtu\havefun\entity\activity\Activity.java

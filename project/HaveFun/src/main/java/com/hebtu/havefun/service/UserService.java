@@ -15,12 +15,13 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import javax.persistence.criteria.Predicate;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.io.File;
+import java.io.IOException;
+import java.util.*;
 
 /**
  * @author PengHuAnZhi
@@ -252,5 +253,50 @@ public class UserService {
             }
             return userList;
         }
+    }
+
+    @Transactional
+    @Rollback(value = false)
+    public Boolean modifyUserHeadPortrait(MultipartFile headPortrait, Integer id) {
+        User user = userDao.getOne(id);
+        boolean flag;
+        String fileName = "head" + (headPortrait.getOriginalFilename()).substring(headPortrait.getOriginalFilename().lastIndexOf("."));
+        File dest = new File(ValueConfig.UPLOAD_FOLDER + "/user/" + user.getUserName() + "/" + fileName);
+        if (!dest.getParentFile().exists()) { //判断文件父目录是否存在
+            flag = dest.getParentFile().mkdir();
+        } else {
+            flag = true;
+        }
+        if (flag) {
+            try {
+                headPortrait.transferTo(dest); //保存文件
+                user.setHeadPortrait(ValueConfig.SERVER_URL + "localPictures/user/" + user.getUserName() + "/" + fileName);
+            } catch (IllegalStateException | IOException e) {
+                e.printStackTrace();
+                return false;
+            }
+            return true;
+        }
+        return true;
+    }
+
+
+    @Transactional
+    @Rollback(value = false)
+    public boolean modifyUserName(String userName, Integer id) {
+        User user = userDao.getOne(id);
+        user.setUserName(userName);
+        userDao.save(user);
+        return true;
+    }
+
+    @Transactional
+    @Rollback(value = false)
+    public boolean modifyUserSex(Integer sex, Integer id) {
+        User user = userDao.getOne(id);
+        UserDetail userDetail = userDetailDao.findUserDetailByUser(user);
+        userDetail.setSex(sex);
+        userDetailDao.save(userDetail);
+        return true;
     }
 }

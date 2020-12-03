@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import javax.annotation.Resource;
+import java.util.Date;
 
 @SpringBootTest
 class HavefunApplicationTests {
@@ -27,7 +28,7 @@ class HavefunApplicationTests {
     ActivityService activityService;
 
     @Test
-    void contextLoads() {
+    void contextLoads() throws InterruptedException {
 //        for (int i = 0; i < 10; i++) {
 //            Activity activity = new Activity();
 //            activity.setSignUpNum(i);
@@ -50,5 +51,7 @@ class HavefunApplicationTests {
 //            System.out.println(str);
 //        }
 //        System.out.println(activityService.judgeCollected("1", "2"));
+
+        System.out.println(new Date());
     }
 }

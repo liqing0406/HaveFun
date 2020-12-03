@@ -6,6 +6,7 @@ import com.hebtu.havefun.entity.User.User;
 import com.hebtu.havefun.service.UserService;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -317,5 +318,38 @@ public class UserController {
     public String getFollowedUsers(Integer id) {
         List<User> userList = userService.getFollowedUsers(id);
         return userList.size() != 0 ? JSON.toJSONString(userList) : "empty";
+    }
+
+    /**
+     * @param headPortrait 使用OkHttp3传输图片，类型为MultipartFile，名称为headPortrait
+     * @param id           用户id
+     * @return 返回修改成功还是失败
+     * @description 更改用户头像
+     */
+    @RequestMapping("/modifyUserHeadPortrait")
+    public String modifyUserHeadPortrait(MultipartFile headPortrait, Integer id) {
+        return userService.modifyUserHeadPortrait(headPortrait, id) ? "true" : "false";
+    }
+
+    /**
+     * @param userName 用户新昵称，请求参数名称为userName
+     * @param id       用户id
+     * @return 返回修改成功还是失败
+     * @description 更改用户昵称
+     */
+    @RequestMapping("/modifyUserName")
+    public String modifyUserName(String userName, Integer id) {
+        return userService.modifyUserName(userName, id) ? "true" : "false";
+    }
+
+    /**
+     * @param sex 用户性别字段，1或者0
+     * @param id  用户id
+     * @return 返回修改成功还是失败
+     * @description 修改用户性别
+     */
+    @RequestMapping("/modifyUserSex")
+    public String modifyUserSex(Integer sex, Integer id) {
+        return userService.modifyUserSex(sex, id) ? "true" : "false";
     }
 }
