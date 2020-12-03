@@ -10,6 +10,7 @@ import com.hebtu.havefun.entity.User.UserEnterActivity;
 import com.hebtu.havefun.entity.User.UserPublishActivity;
 import com.hebtu.havefun.entity.activity.Activity;
 import com.hebtu.havefun.entity.activity.ActivityDetail;
+import com.hebtu.havefun.entity.activity.Picture;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -18,11 +19,12 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.io.File;
+import java.io.IOException;
+import java.util.*;
 
 /**
  * @author PengHuAnZhi
@@ -124,9 +126,35 @@ public class ActivityService {
 
     @Transactional
     @Rollback(value = false)
-    public boolean addActivity(Activity activity) {
-        System.out.println(activity.toString());
-        activityDao.save(activity);
+    public boolean addActivity(List<MultipartFile> files, String activityDetailJson) {
+        ActivityDetail activityDetail = JSON.parseObject(activityDetailJson, ActivityDetail.class);
+        Set<Picture> pictures = new HashSet<>();
+        int count = 0;
+        boolean flag;
+        for (MultipartFile file : files) {
+            count++;
+            String fileName = file.getOriginalFilename() + count + Objects.requireNonNull(file.getOriginalFilename()).substring(file.getOriginalFilename().lastIndexOf("."));
+            File dest = new File(ValueConfig.UPLOAD_FOLDER + fileName);
+            if (!dest.getParentFile().exists()) { //判断文件父目录是否存在
+                flag = dest.getParentFile().mkdir();
+            } else {
+                flag = true;
+            }
+            if (flag) {
+                try {
+                    file.transferTo(dest); //保存文件
+                    Picture picture = new Picture();
+                    picture.setActivityDetail(activityDetail);
+                    picture.setActivity(activityDetail.getActivity());
+                    picture.setPictureName(ValueConfig.SERVER_URL + "localPictures/activity_pictures/" + activityDetail.getActivity().getActivityId() + "/" + fileName);
+                    pictures.add(picture);
+                } catch (IllegalStateException | IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        activityDetail.setActivityPictures(pictures);
+        activityDetailDao.save(activityDetail);
         return true;
     }
 

@@ -2,14 +2,21 @@ package com.hebtu.havefun.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.google.gson.Gson;
+import com.hebtu.havefun.config.ValueConfig;
 import com.hebtu.havefun.entity.activity.Activity;
 import com.hebtu.havefun.entity.activity.ActivityDetail;
 import com.hebtu.havefun.service.ActivityService;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author PengHuAnZhi
@@ -117,6 +124,8 @@ public class ActivityController {
     }
 
     /**
+     * @param files              客户端传递若干MultipartFile文件，要求请求的参数名字都
+     *                           是file（就是要重复），这边接收就是自动加入List<MultipartFile>中
      * @param activityDetailJson 客户端将封装好的ActivityDetail类转换为Json串发送过来，
      *                           注意ActivityDetail里面的Activity类也得把数据都封装好，
      *                           添加操作，不需要设置id值，因为数据库id是自增的
@@ -124,13 +133,12 @@ public class ActivityController {
      * @description 添加活动，接受一个ActivityDetail类的Json串数据，且参数名称为activityJson
      */
     @RequestMapping("/addActivity")
-    public String addActivity(String activityDetailJson) {
+    public String addActivity(@RequestParam("file") List<MultipartFile> files, String activityDetailJson) {
         if (activityDetailJson == null) {
             System.out.println("addActivity Error");
             return "ErrorParameter";
         }
-        Activity activity = JSON.parseObject(activityDetailJson, Activity.class);
-        return activityService.addActivity(activity) ? "true" : "false";
+        return activityService.addActivity(files, activityDetailJson) ? "true" : "false";
     }
 
     /**

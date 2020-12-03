@@ -33,7 +33,11 @@ spring:
   config:
     activate:
       on-profile: pro
+
 ---
+upload:
+  path:
+    D:\HaveFunResources\pictures\activity_pictures
 spring:
   datasource:
     url: jdbc:mysql:///fun?serverTimezone=Asia/Shanghai&useSSL=false&useUnicode=true&characterEncoding=utf8

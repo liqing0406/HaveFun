@@ -559,6 +559,8 @@ public class ActivityController {
 
 ```java
     /**
+     * @param files              客户端传递若干MultipartFile文件，要求请求的参数名字都
+     *                           是file（就是要重复），这边接收就是自动加入List<MultipartFile>中
      * @param activityDetailJson 客户端将封装好的ActivityDetail类转换为Json串发送过来，
      *                           注意ActivityDetail里面的Activity类也得把数据都封装好，
      *                           添加操作，不需要设置id值，因为数据库id是自增的
@@ -566,13 +568,12 @@ public class ActivityController {
      * @description 添加活动，接受一个ActivityDetail类的Json串数据，且参数名称为activityJson
      */
     @RequestMapping("/addActivity")
-    public String addActivity(String activityDetailJson) {
+    public String addActivity(@RequestParam("file") List<MultipartFile> files, String activityDetailJson) {
         if (activityDetailJson == null) {
             System.out.println("addActivity Error");
             return "ErrorParameter";
         }
-        Activity activity = JSON.parseObject(activityDetailJson, Activity.class);
-        return activityService.addActivity(activity) ? "true" : "false";
+        return activityService.addActivity(files, activityDetailJson) ? "true" : "false";
     }
 ```
 

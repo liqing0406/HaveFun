@@ -36,6 +36,16 @@ public class Picture implements Serializable {
     //图片路径
     private String pictureName;
 
+    @Override
+    public int hashCode() {
+        return super.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return super.equals(obj);
+    }
+
     public Integer getPictureId() {
         return pictureId;
     }
