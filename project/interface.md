@@ -363,7 +363,8 @@ public class UserController {
 ```java
     /**
      * @param id 当前user的id
-     * @return 返回一个Messages类的list集合
+     * @return 返回一个List<Map < Messages, Integer>>,messages的数据表示用于展示聊天列表中
+     * 最新的一条消息，Integer的数据为未读消息数量，业务逻辑为我是接收者，发送者为对方，且消息未读
      * @description 获取和用户交流过的消息列表
      */
     @RequestMapping("/getMessageList")
@@ -372,7 +373,7 @@ public class UserController {
             System.out.println("getMessageList Error");
             return "ErrorParameter";
         }
-        List<Messages> messagesList = userService.getMessageList(id);
+        List<Map<Messages, Integer>> messagesList = userService.getMessageList(id);
         return messagesList.size() != 0 ? JSON.toJSONString(messagesList) : "empty";
     }
 ```

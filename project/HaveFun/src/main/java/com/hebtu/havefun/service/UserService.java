@@ -18,7 +18,10 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
@@ -222,14 +225,44 @@ public class UserService {
         return userDao.getOne(id);
     }
 
-    public List<Messages> getMessageList(Integer id) {
+    public List<Map<Messages, Integer>> getMessageList(Integer id) {
         User user = userDao.getOne(id);
         Specification<Messages> specification = (Specification<Messages>) (root, criteriaQuery, criteriaBuilder) -> {
             Predicate sendPredicate = criteriaBuilder.equal(root.get("sendUser"), user);
             Predicate receivePredicate = criteriaBuilder.equal(root.get("receiveUser"), user);
             return criteriaBuilder.or(sendPredicate, receivePredicate);
         };
-        return messagesDao.findAll(specification);
+        List<Messages> messagesList = messagesDao.findAll(specification);
+        List<User> list = new ArrayList<>();
+        List<Map<Messages, Integer>> returnMessages = new ArrayList<>();
+        for (Messages messages : messagesList) {
+            if (messages.getSendUser() == user) {
+                User u = messages.getReceiveUser();
+                if (!list.contains(u)) {
+                    list.add(u);
+                }
+            } else if (messages.getReceiveUser() == user) {
+                User u = messages.getSendUser();
+                if (!list.contains(u)) {
+                    list.add(u);
+                }
+            }
+        }
+        Integer count;
+        for (User u : list) {
+            Messages messages1 = messagesDao.findFirstBySendUserAndReceiveUserOrderByTimeDesc(u, user);
+            Messages messages2 = messagesDao.findFirstBySendUserAndReceiveUserOrderByTimeDesc(user, u);
+            count = messagesDao.countBySendUserAndReceiveUserAndIsRead(u, user, false);
+            Map<Messages, Integer> map = new HashMap<>();
+            if (messages1.getTime().compareTo(messages2.getTime()) > 0) {
+                map.put(messages1, count);
+                returnMessages.add(map);
+            } else {
+                map.put(messages2, count);
+                returnMessages.add(map);
+            }
+        }
+        return returnMessages;
     }
 
     public List<User> getFollowUsers(Integer id) {

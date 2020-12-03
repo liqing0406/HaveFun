@@ -21,6 +21,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
@@ -55,7 +56,6 @@ public class ActivityService {
     @Resource
     TypeOfKindDao typeOfKindDao;
 
-    @Cacheable(value = "test",key = "'testkey'")
     public String[] getRotationChartPictures() {
         System.out.println("进来了");
         return new String[]{ValueConfig.SERVER_URL + "localPictures/1.png",
@@ -134,7 +134,7 @@ public class ActivityService {
 
     @Transactional
     @Rollback(value = false)
-    public boolean addActivity(List<MultipartFile> files, String activityDetailJson) {
+    public boolean addActivity(@RequestParam(value = "file", required = false) List<MultipartFile> files, String activityDetailJson) {
         ActivityDetail activityDetail = JSON.parseObject(activityDetailJson, ActivityDetail.class);
         Set<Picture> pictures = new HashSet<>();
         int count = 0;
