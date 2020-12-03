@@ -12,6 +12,7 @@ import com.hebtu.havefun.entity.activity.Activity;
 import com.hebtu.havefun.entity.activity.ActivityDetail;
 import com.hebtu.havefun.entity.activity.Picture;
 import com.hebtu.havefun.entity.activity.TypeOfKind;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -54,7 +55,9 @@ public class ActivityService {
     @Resource
     TypeOfKindDao typeOfKindDao;
 
+    @Cacheable(value = "test",key = "'testkey'")
     public String[] getRotationChartPictures() {
+        System.out.println("进来了");
         return new String[]{ValueConfig.SERVER_URL + "localPictures/1.png",
                 ValueConfig.SERVER_URL + "localPictures/2.png",
                 ValueConfig.SERVER_URL + "localPictures/3.png",

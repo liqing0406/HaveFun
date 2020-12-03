@@ -190,7 +190,7 @@ public class UserController {
             return "ErrorParameter";
         }
         List<Messages> messagesList = userService.freshMsg(otherId, mineId);
-        return messagesList == null ? JSON.toJSONString(messagesList) : "empty";
+        return messagesList != null ? JSON.toJSONString(messagesList) : "empty";
     }
 
     /**

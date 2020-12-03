@@ -240,9 +240,8 @@ public class UserController {
             return "ErrorParameter";
         }
         List<Messages> messagesList = userService.freshMsg(otherId, mineId);
-        return messagesList == null ? JSON.toJSONString(messagesList) : "empty";
+        return messagesList != null ? JSON.toJSONString(messagesList) : "empty";
     }
-
 ```
 
 ## 判断是否关注
@@ -672,8 +671,8 @@ public class ActivityController {
      * @description 根据时间筛选活动
      */
     @RequestMapping("/screenTimeActivities")
-    public String screenTimeActivities(Integer howManyDays) {
-        List<Activity> activityList = activityService.screenTimeActivities(howManyDays);
+    public String screenTimeActivities(Integer howManyDays, Integer pageNum, Integer pageSize) {
+        List<Activity> activityList = activityService.screenTimeActivities(howManyDays, pageNum, pageSize);
         return activityList.size() != 0 ? JSON.toJSONString(activityList) : "empty";
     }
 ```
@@ -688,8 +687,8 @@ public class ActivityController {
      * @description 根据花费筛选活动
      */
     @RequestMapping("/screenTypeActivities")
-    public String screenTypeActivities(Integer lowCost, Integer highCost) {
-        List<Activity> activityList = activityService.screenCostActivities(lowCost, highCost);
+    public String screenTypeActivities(Integer lowCost, Integer highCost, Integer pageNum, Integer pageSize) {
+        List<Activity> activityList = activityService.screenCostActivities(lowCost, highCost, pageNum, pageSize);
         return activityList.size() != 0 ? JSON.toJSONString(activityList) : "empty";
     }
 ```
@@ -703,8 +702,8 @@ public class ActivityController {
      * @description 根据活动种类筛选活动
      */
     @RequestMapping("/screenCostActivities")
-    public String screenCostActivities(Integer tag) {
-        List<Activity> activityList = activityService.screenTypeActivities(tag);
+    public String screenCostActivities(Integer tag, Integer pageNum, Integer pageSize) {
+        List<Activity> activityList = activityService.screenTypeActivities(tag, pageNum, pageSize);
         return activityList.size() != 0 ? JSON.toJSONString(activityList) : "empty";
     }
 }
