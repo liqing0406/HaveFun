@@ -14,5 +14,5 @@ import org.springframework.data.jpa.repository.Query;
  */
 public interface ActivityDao extends JpaRepository<Activity, Integer>, JpaSpecificationExecutor<Activity> {
     @Query(value = "select * from collection_activity where user_id = ?1 and activity_id = ?2", nativeQuery = true)
-    Object judgeCollectedActivity(String userId, String activityId);
+    Object judgeCollectedActivity(Integer userId, Integer activityId);
 }

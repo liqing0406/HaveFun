@@ -2,8 +2,6 @@ package com.hebtu.havefun.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.google.gson.Gson;
-import com.hebtu.havefun.entity.activity.Activity;
-import com.hebtu.havefun.entity.activity.ActivityDetail;
 import com.hebtu.havefun.service.ActivityService;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -40,7 +38,7 @@ public class ActivityController {
      * @param activityKind 热门或者近期，1或者0
      * @param pageNum      页码
      * @param pageSize     页大小
-     * @return List<Activity>集合
+     * @return List<Activity>集合的JSON串
      * @description 获取活动列表
      */
     @RequestMapping("/getActivityList")
@@ -49,8 +47,8 @@ public class ActivityController {
             System.out.println("getActivityList Error");
             return "ErrorParameter";
         }
-        List<Activity> activities = activityService.getActivityList(activityKind, pageNum, pageSize);
-        return activities != null ? JSON.toJSONString(activities) : "";
+        String activities = activityService.getActivityList(activityKind, pageNum, pageSize);
+        return "empty".equals(activities) ? "" : activities;
     }
 
     /**
@@ -64,8 +62,8 @@ public class ActivityController {
             System.out.println("getActivityDetail Error");
             return "ErrorParameter";
         }
-        ActivityDetail activityDetail = activityService.getActivityDetail(activityId);
-        return activityDetail != null ? JSON.toJSONString(activityDetail) : "";
+        String activityDetail = activityService.getActivityDetail(activityId);
+        return activityDetail != null ? activityDetail : "";
     }
 
     /**
@@ -75,7 +73,7 @@ public class ActivityController {
      * @description 判断是否收藏
      */
     @RequestMapping("/judgeCollected")
-    public String judgeCollected(String id, String activityId) {
+    public String judgeCollected(Integer id, Integer activityId) {
         if (id == null || activityId == null) {
             System.out.println("judgeCollected Error");
             return "ErrorParameter";
@@ -84,23 +82,6 @@ public class ActivityController {
         return flag ? "true" : "false";
     }
 
-    /**
-     * @param activityId 活动的id
-     * @param id         用户id,注意不是getUserId,是getId
-     * @param collect    是否注册，发送给我的是"false"或者"true"
-     * @return
-     * @description 收藏或者取消收藏
-     */
-    @RequestMapping("/changeCollectActivity")
-    public String changeCollectActivity(Integer activityId, Integer id, String collect) {
-        if (activityId == null || id == null || collect == null) {
-            System.out.println("changeCollectActivity Error");
-            return "ErrorParameter";
-        }
-        boolean tag = Boolean.parseBoolean(collect);
-        boolean flag = activityService.changeCollectActivity(activityId, id, tag);
-        return flag ? "true" : "false";
-    }
 
     /**
      * @param id       用户id,注意不是getUserId,是getId
@@ -175,8 +156,8 @@ public class ActivityController {
      */
     @RequestMapping("/screenTimeActivities")
     public String screenTimeActivities(Integer howManyDays, Integer pageNum, Integer pageSize) {
-        List<Activity> activityList = activityService.screenTimeActivities(howManyDays, pageNum, pageSize);
-        return activityList.size() != 0 ? JSON.toJSONString(activityList) : "empty";
+        String activityList = activityService.screenTimeActivities(howManyDays, pageNum, pageSize);
+        return "empty".equals(activityList) ? JSON.toJSONString(activityList) : "empty";
     }
 
     /**
@@ -187,8 +168,8 @@ public class ActivityController {
      */
     @RequestMapping("/screenTypeActivities")
     public String screenTypeActivities(Integer lowCost, Integer highCost, Integer pageNum, Integer pageSize) {
-        List<Activity> activityList = activityService.screenCostActivities(lowCost, highCost, pageNum, pageSize);
-        return activityList.size() != 0 ? JSON.toJSONString(activityList) : "empty";
+        String activityList = activityService.screenCostActivities(lowCost, highCost, pageNum, pageSize);
+        return "empty".equals(activityList) ? JSON.toJSONString(activityList) : "empty";
     }
 
     /**
@@ -198,12 +179,8 @@ public class ActivityController {
      */
     @RequestMapping("/screenCostActivities")
     public String screenCostActivities(Integer tag, Integer pageNum, Integer pageSize) {
-        List<Activity> activityList = activityService.screenTypeActivities(tag, pageNum, pageSize);
-        return activityList.size() != 0 ? JSON.toJSONString(activityList) : "empty";
+        String activityList = activityService.screenTypeActivities(tag, pageNum, pageSize);
+        return "empty".equals(activityList) ? JSON.toJSONString(activityList) : "empty";
     }
 
-    @RequestMapping("/test")
-    public void test(MultipartFile file) {
-        System.out.println(file.getSize());
-    }
 }

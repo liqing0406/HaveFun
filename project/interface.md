@@ -81,7 +81,6 @@ public class UserController {
 ## 登录
 
 ```java
-
     /**
      * @param phoneNum 手机号
      * @param password 密码
@@ -102,7 +101,7 @@ public class UserController {
 ## 修改密码
 
 ```java
- /**
+    /**
      * @param phoneNum 电话号码
      * @param password 密码
      * @return 返回"true"或"false"
@@ -141,10 +140,50 @@ public class UserController {
     }
 ```
 
+## 取消报名活动
+
+```java
+    /**
+     * @param activityId 活动id
+     * @param id         用户id,注意不是getUserId,是getId
+     * @return 返回取消报名成功"true"或者失败"false"
+     * @description 取消报名活动
+     */
+    @RequestMapping("/cancelEnrollActivity")
+    public String cancelEnrollActivity(Integer activityId, Integer id) {
+        if (activityId == null || id == null) {
+            System.out.println("enrollActivity Error");
+            return "ErrorParameter";
+        }
+        return "success".equals(userService.cancelEnrollActivity(activityId, id)) ? "true" : "false";
+    }
+```
+
+## 收藏或者取消收藏
+
+```java
+    /**
+     * @param activityId 活动的id
+     * @param id         用户id,注意不是getUserId,是getId
+     * @param collect    是否注册，发送给我的是"false"或者"true"
+     * @return
+     * @description 收藏或者取消收藏
+     */
+    @RequestMapping("/changeCollectActivity")
+    public String changeCollectActivity(Integer activityId, Integer id, String collect) {
+        if (activityId == null || id == null || collect == null) {
+            System.out.println("changeCollectActivity Error");
+            return "ErrorParameter";
+        }
+        boolean tag = Boolean.parseBoolean(collect);
+        boolean flag = userService.changeCollectActivity(activityId, id, tag);
+        return flag ? "true" : "false";
+    }
+```
+
 ## 修改个性签名
 
 ```java
-
     /**
      * @param id                用户id,注意不是getUserId,是getIds
      * @param personalSignature 新的个性签名
@@ -164,11 +203,11 @@ public class UserController {
 ## 发送消息
 
 ```java
-   /**
+    /**
      * @param sender   发送者id,注意不是getUserId,是getId
      * @param receiver 接收者id,注意不是getUserId,是getId
      * @param msg      消息内容
-     * @return 返回这个消息对象Messages
+     * @return 返回这个消息对象Messages,出错返回"false"
      * @description 发送消息，这边插入数据库
      */
     @RequestMapping("/addMsg")
@@ -190,17 +229,17 @@ public class UserController {
      * @param receiver 接收者id,注意不是getUserId,是getId
      * @param pageNum  当前页码
      * @param pageSize 页面大小
-     * @return 返回List<Messages>集合Json
+     * @return 返回List<Messages>集合Json,没有消息则为empty
      * @description 获取消息列表，分页显示
      */
-    @RequestMapping("/freshMsg")
-    public String freshMsg(Integer otherId, Integer mineId) {
-        if (otherId == null || mineId == null) {
-            System.out.println("freshMsg Error");
+    @RequestMapping("/getMsg")
+    public String getMsg(Integer sender, Integer receiver, Integer pageNum, Integer pageSize) {
+        if (sender == null || receiver == null || pageNum == null || pageSize == null) {
+            System.out.println("getMsg Error");
             return "ErrorParameter";
         }
-        List<Messages> messagesList = userService.freshMsg(otherId, mineId);
-        return messagesList.size() != 0 ? JSON.toJSONString(messagesList) : "empty";
+        List<Messages> messagesList = userService.getMsg(sender, receiver, pageNum, pageSize);
+        return messagesList != null ? JSON.toJSONString(messagesList) : "empty";
     }
 ```
 
@@ -219,18 +258,18 @@ public class UserController {
             System.out.println("getMsgNum Error");
             return "ErrorParameter";
         }
-        return userService.getMsgNum(sender, receiver) + "";
+        Long count = userService.getMsgNum(sender, receiver);
+        return count + "";
     }
 ```
 
 ## 刷新消息
 
 ```java
-
     /**
      * @param otherId 对方的id，注意不是getUserId,是getId
      * @param mineId  自己的id，注意不是getUserId,是getId
-     * @return 返回依然是List<Messages>集合Json
+     * @return 返回依然是List<Messages>集合Json,没有新消息则是"empty"
      * @description 每隔若干秒刷新消息
      */
     @RequestMapping("/freshMsg")
@@ -240,18 +279,18 @@ public class UserController {
             return "ErrorParameter";
         }
         List<Messages> messagesList = userService.freshMsg(otherId, mineId);
-        return messagesList != null ? JSON.toJSONString(messagesList) : "empty";
+        return messagesList.size() != 0 ? JSON.toJSONString(messagesList) : "empty";
     }
 ```
 
 ## 判断是否关注
 
 ```java
-  /**
-     * @description 判断是否关注
+    /**
      * @param followId   当前用户的id，即关注者id，注意不是getUserId,是getId
      * @param followedId 对方id，即被关注者id，注意不是getUserId,是getId
      * @return 返回是否关注 "true"或者"false"
+     * @description 判断是否关注
      */
     @RequestMapping("/judgeFollow")
     public String judgeFollow(Integer followId, Integer followedId) {
@@ -305,9 +344,9 @@ public class UserController {
 
 ```java
     /**
-     * @description 获取用户被多少人关注，即粉丝数量
      * @param id 当前用户的id
      * @return 返回粉丝数量
+     * @description 获取用户被多少人关注，即粉丝数量
      */
     @RequestMapping("/getFollowedCount")
     public String getFollowedCount(Integer id) {
@@ -324,9 +363,9 @@ public class UserController {
 
 ```java
     /**
-     * @description 获取用户关注了多少人
      * @param id 当前用户的id
      * @return 返回关注人数
+     * @description 获取用户关注了多少人
      */
     @RequestMapping("/getFollowCount")
     public String getFollowCount(Integer id) {
@@ -343,14 +382,14 @@ public class UserController {
 
 ```java
     /**
-     * @description 根据id获取用户的信息，用于点击某个用户头像进入个人主页
      * @param id 用户的id
-     * @return 返回user对象的JSON串
+     * @return 返回user对象的JSON串,没找到对应的用户则是"false"
+     * @description 根据id获取用户的信息，用于点击某个用户头像进入个人主页
      */
     @RequestMapping("/getUser")
-    public String getUser(Integer id){
+    public String getUser(Integer id) {
         User user = userService.getUser(id);
-        if(id == null){
+        if (id == null) {
             System.out.println("getUser Error");
             return "ErrorParameter";
         }
@@ -363,8 +402,8 @@ public class UserController {
 ```java
     /**
      * @param id 当前user的id
-     * @return 返回一个List<Map < Messages, Integer>>,messages的数据表示用于展示聊天列表中
-     * 最新的一条消息，Integer的数据为未读消息数量，业务逻辑为我是接收者，发送者为对方，且消息未读
+     * @return 返回一个List<Map < Messages, Integer>>,messages的数据表示用于展示聊天列表中最新的一条消
+     * 息，Integer的数据为未读消息数量，业务逻辑为我是接收者，发送者为对方，且消息未读,没有聊天信息则是"empty"
      * @description 获取和用户交流过的消息列表
      */
     @RequestMapping("/getMessageList")
@@ -391,6 +430,7 @@ public class UserController {
         List<User> userList = userService.getFollowUsers(id);
         return userList.size() != 0 ? JSON.toJSONString(userList) : "empty";
     }
+
 ```
 
 ## 获取当前用户的粉丝列表
@@ -414,7 +454,7 @@ public class UserController {
     /**
      * @param headPortrait 使用OkHttp3传输图片，类型为MultipartFile，名称为headPortrait
      * @param id           用户id
-     * @return 返回修改成功还是失败
+     * @return 返回修改成功还是失败"true"或者"false"
      * @description 更改用户头像
      */
     @RequestMapping("/modifyUserHeadPortrait")
@@ -429,14 +469,13 @@ public class UserController {
     /**
      * @param userName 用户新昵称，请求参数名称为userName
      * @param id       用户id
-     * @return 返回修改成功还是失败
+     * @return 返回修改成功还是失败"true"或者"false"
      * @description 更改用户昵称
      */
     @RequestMapping("/modifyUserName")
     public String modifyUserName(String userName, Integer id) {
         return userService.modifyUserName(userName, id) ? "true" : "false";
     }
-
 ```
 
 ## 更改用户性别
@@ -445,7 +484,7 @@ public class UserController {
     /**
      * @param sex 用户性别字段，1或者0
      * @param id  用户id
-     * @return 返回修改成功还是失败
+     * @return 返回修改成功还是失败"true"或者"false"
      * @description 修改用户性别
      */
     @RequestMapping("/modifyUserSex")
@@ -506,7 +545,7 @@ public class ActivityController {
      * @param activityKind 热门或者近期，1或者0
      * @param pageNum      页码
      * @param pageSize     页大小
-     * @return List<Activity>集合
+     * @return List<Activity>集合的JSON串,没有活动则是"empty"
      * @description 获取活动列表
      */
     @RequestMapping("/getActivityList")
@@ -515,8 +554,8 @@ public class ActivityController {
             System.out.println("getActivityList Error");
             return "ErrorParameter";
         }
-        List<Activity> activities = activityService.getActivityList(activityKind, pageNum, pageSize);
-        return activities != null ? JSON.toJSONString(activities) : "";
+        String activities = activityService.getActivityList(activityKind, pageNum, pageSize);
+        return "empty".equals(activities) ? "" : activities;
     }
 ```
 
@@ -525,7 +564,7 @@ public class ActivityController {
 ```java
     /**
      * @param activityId 活动的id
-     * @return 返回ActivityDetail的json串
+     * @return 返回ActivityDetail的json串,如果没有找到对应的活动详细信息则返回空串""
      * @description 获取活动详细信息
      */
     @RequestMapping("/getActivityDetail")
@@ -534,8 +573,8 @@ public class ActivityController {
             System.out.println("getActivityDetail Error");
             return "ErrorParameter";
         }
-        ActivityDetail activityDetail = activityService.getActivityDetail(activityId);
-        return activityDetail != null ? JSON.toJSONString(activityDetail) : "";
+        String activityDetail = activityService.getActivityDetail(activityId);
+        return activityDetail != null ? activityDetail : "";
     }
 ```
 
@@ -549,34 +588,12 @@ public class ActivityController {
      * @description 判断是否收藏
      */
     @RequestMapping("/judgeCollected")
-    public String judgeCollected(String id, String activityId) {
+    public String judgeCollected(Integer id, Integer activityId) {
         if (id == null || activityId == null) {
             System.out.println("judgeCollected Error");
             return "ErrorParameter";
         }
         boolean flag = activityService.judgeCollected(id, activityId);
-        return flag ? "true" : "false";
-    }
-```
-
-## 收藏或者取消收藏
-
-```java
-    /**
-     * @param activityId 活动的id
-     * @param id         用户id,注意不是getUserId,是getId
-     * @param collect    是否注册，发送给我的是"false"或者"true"
-     * @return
-     * @description 收藏或者取消收藏
-     */
-    @RequestMapping("/changeCollectActivity")
-    public String changeCollectActivity(Integer activityId, Integer id, String collect) {
-        if (activityId == null || id == null || collect == null) {
-            System.out.println("changeCollectActivity Error");
-            return "ErrorParameter";
-        }
-        boolean tag = Boolean.parseBoolean(collect);
-        boolean flag = activityService.changeCollectActivity(activityId, id, tag);
         return flag ? "true" : "false";
     }
 ```
@@ -588,7 +605,7 @@ public class ActivityController {
      * @param id       用户id,注意不是getUserId,是getId
      * @param pageNum  页码
      * @param pageSize 页大小
-     * @return 返回List<UserCollectActivity>集合
+     * @return 返回List<UserCollectActivity>集合,如果没有就返回"empty"
      * @description 获取收藏的活动列表
      */
     @RequestMapping("/getCollectedActivities")
@@ -630,7 +647,7 @@ public class ActivityController {
      * @param id       用户id,注意不是getUserId,是getId
      * @param pageNum  页码
      * @param pageSize 页大小
-     * @return 返回List<UserCollectActivity>集合
+     * @return 返回List<UserCollectActivity>集合,如果没有就返回"empty"
      * @description 获取报名的活动列表
      */
     @RequestMapping("/getEnterActivities")
@@ -650,7 +667,7 @@ public class ActivityController {
      * @param id       用户id,注意不是getUserId,是getId
      * @param pageNum  页码
      * @param pageSize 页大小
-     * @return 返回List<UserCollectActivity>集合
+     * @return 返回List<UserCollectActivity>集合,如果没有就返回"empty"
      * @description 获取发布的活动列表
      */
     @RequestMapping("/getPublishActivities")
@@ -668,13 +685,13 @@ public class ActivityController {
 ```java
     /**
      * @param howManyDays 参数为近多少天，用于筛选符合要求的时间内开始的活动
-     * @return 返回一个List<Activity>集合
+     * @return 返回一个List<Activity>集合,如果没有就返回"empty"
      * @description 根据时间筛选活动
      */
     @RequestMapping("/screenTimeActivities")
     public String screenTimeActivities(Integer howManyDays, Integer pageNum, Integer pageSize) {
-        List<Activity> activityList = activityService.screenTimeActivities(howManyDays, pageNum, pageSize);
-        return activityList.size() != 0 ? JSON.toJSONString(activityList) : "empty";
+        String activityList = activityService.screenTimeActivities(howManyDays, pageNum, pageSize);
+        return "empty".equals(activityList) ? JSON.toJSONString(activityList) : "empty";
     }
 ```
 
@@ -684,13 +701,13 @@ public class ActivityController {
     /**
      * @param lowCost  价格区间的小值
      * @param highCost 价格区间的大值
-     * @return 返回一个List<Activity>集合
+     * @return 返回一个List<Activity>集合,如果没有就返回"empty"
      * @description 根据花费筛选活动
      */
     @RequestMapping("/screenTypeActivities")
     public String screenTypeActivities(Integer lowCost, Integer highCost, Integer pageNum, Integer pageSize) {
-        List<Activity> activityList = activityService.screenCostActivities(lowCost, highCost, pageNum, pageSize);
-        return activityList.size() != 0 ? JSON.toJSONString(activityList) : "empty";
+        String activityList = activityService.screenCostActivities(lowCost, highCost, pageNum, pageSize);
+        return "empty".equals(activityList) ? JSON.toJSONString(activityList) : "empty";
     }
 ```
 
@@ -699,15 +716,14 @@ public class ActivityController {
 ```java
     /**
      * @param tag tag为活动种类的最小划分，即小类而不是大类，值为种类的id
-     * @return 返回一个List<Activity>集合
+     * @return 返回一个List<Activity>集合,如果没有就返回"empty"
      * @description 根据活动种类筛选活动
      */
     @RequestMapping("/screenCostActivities")
     public String screenCostActivities(Integer tag, Integer pageNum, Integer pageSize) {
-        List<Activity> activityList = activityService.screenTypeActivities(tag, pageNum, pageSize);
-        return activityList.size() != 0 ? JSON.toJSONString(activityList) : "empty";
+        String activityList = activityService.screenTypeActivities(tag, pageNum, pageSize);
+        return "empty".equals(activityList) ? JSON.toJSONString(activityList) : "empty";
     }
-}
 ```
 
  

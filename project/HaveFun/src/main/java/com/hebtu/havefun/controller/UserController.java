@@ -114,6 +114,39 @@ public class UserController {
     }
 
     /**
+     * @param activityId 活动id
+     * @param id         用户id,注意不是getUserId,是getId
+     * @return 返回取消报名成功"true"或者失败"false"
+     * @description 取消报名活动
+     */
+    @RequestMapping("/cancelEnrollActivity")
+    public String cancelEnrollActivity(Integer activityId, Integer id) {
+        if (activityId == null || id == null) {
+            System.out.println("enrollActivity Error");
+            return "ErrorParameter";
+        }
+        return "success".equals(userService.cancelEnrollActivity(activityId, id)) ? "true" : "false";
+    }
+
+    /**
+     * @param activityId 活动的id
+     * @param id         用户id,注意不是getUserId,是getId
+     * @param collect    是否注册，发送给我的是"false"或者"true"
+     * @return
+     * @description 收藏或者取消收藏
+     */
+    @RequestMapping("/changeCollectActivity")
+    public String changeCollectActivity(Integer activityId, Integer id, String collect) {
+        if (activityId == null || id == null || collect == null) {
+            System.out.println("changeCollectActivity Error");
+            return "ErrorParameter";
+        }
+        boolean tag = Boolean.parseBoolean(collect);
+        boolean flag = userService.changeCollectActivity(activityId, id, tag);
+        return flag ? "true" : "false";
+    }
+
+    /**
      * @param id                用户id,注意不是getUserId,是getIds
      * @param personalSignature 新的个性签名
      * @return 返回"true"或者"false"
@@ -176,7 +209,6 @@ public class UserController {
             return "ErrorParameter";
         }
         Long count = userService.getMsgNum(sender, receiver);
-        System.out.println(count);
         return count + "";
     }
 

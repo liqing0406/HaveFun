@@ -1,23 +1,17 @@
 package com.hebtu.havefun.service;
 
 import com.alibaba.fastjson.JSON;
-import com.hebtu.havefun.Util.CountUserUtil;
 import com.hebtu.havefun.config.ValueConfig;
 import com.hebtu.havefun.dao.*;
 import com.hebtu.havefun.entity.Messages;
-import com.hebtu.havefun.entity.User.User;
-import com.hebtu.havefun.entity.User.UserDetail;
-import com.hebtu.havefun.entity.User.UserEnterActivity;
-import com.hebtu.havefun.entity.User.UserRelationship;
+import com.hebtu.havefun.entity.User.*;
 import com.hebtu.havefun.entity.activity.Activity;
-import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.data.domain.*;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.cache.annotation.Cacheable;
 
 import javax.annotation.Resource;
 import javax.persistence.criteria.Predicate;
@@ -41,8 +35,6 @@ public class UserService {
     @Resource
     UserDetailDao userDetailDao;
     @Resource
-    CountUserUtil countUserUtil;
-    @Resource
     ActivityDao activityDao;
     @Resource
     UserEnterActivityDao userEnterActivityDao;
@@ -50,6 +42,8 @@ public class UserService {
     MessagesDao messagesDao;
     @Resource
     UserRelationshipDao userRelationshipDao;
+    @Resource
+    UserCollectActivityDao userCollectActivityDao;
 
     //    @Cacheable(value = "user-register", key = "'judgeRegistered'+#phoneNum")
     public boolean judgeRegistered(String phoneNum) {
@@ -64,7 +58,7 @@ public class UserService {
         User user = new User();
         user.setPhoneNum(phoneNum);
         user.setPassword(password);
-        user.setUserId(ValueConfig.USER_ID + Integer.parseInt(countUserUtil.CountUser() + ""));
+        user.setUserId(ValueConfig.USER_ID + Integer.parseInt(userDao.count() + ""));
         user.setHeadPortrait("localPictures/man.png");
         user.setUserName("飞翔的企鹅");
         userDetail.setNumOfActivityForUser(0);
@@ -106,9 +100,45 @@ public class UserService {
             userEnterActivity = new UserEnterActivity();
             userEnterActivity.setUser(user);
             userEnterActivity.setActivity(activity);
+            userEnterActivity.setEnterTime(new Date());
             userEnterActivityDao.save(userEnterActivity);
             return "true";
         }
+    }
+
+    @Transactional
+    @Rollback(value = false)
+    public String cancelEnrollActivity(Integer activityId, Integer id) {
+        User user = userDao.getOne(id);
+        Activity activity = activityDao.getOne(activityId);
+        UserEnterActivity userEnterActivity = userEnterActivityDao.findUserEnterActivitiesByUserAndActivity(user, activity);
+        userEnterActivityDao.delete(userEnterActivity);
+        return "success";
+    }
+
+    @Transactional
+    @Rollback(value = false)
+//    @CacheEvict(value = "activity-collect")
+    public boolean changeCollectActivity(Integer activityId, Integer id, boolean tag) {
+        Activity activity = activityDao.getOne(activityId);
+        User user = userDao.getOne(id);
+        Date date = new Date();
+        if (tag) {//收藏
+            UserCollectActivity userCollectActivity = new UserCollectActivity();
+            userCollectActivity.setUser(user);
+            userCollectActivity.setActivity(activity);
+            userCollectActivity.setCollectTime(date);
+            userCollectActivityDao.save(userCollectActivity);
+            activity.setCollectNum(activity.getCollectNum() + 1);
+        } else {//取消收藏
+            System.out.println(activityId+","+id+","+tag);
+            UserCollectActivity userCollectActivity = userCollectActivityDao.findUserCollectActivitiesByUserAndActivity(user, activity);
+            userCollectActivity.setUser(user);
+            userCollectActivity.setActivity(activity);
+            userCollectActivityDao.delete(userCollectActivity);
+            activity.setCollectNum(activity.getCollectNum() - 1);
+        }
+        return true;
     }
 
     @Transactional
@@ -358,4 +388,6 @@ public class UserService {
         userDetailDao.save(userDetail);
         return true;
     }
+
+
 }

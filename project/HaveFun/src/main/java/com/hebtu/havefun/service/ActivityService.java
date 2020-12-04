@@ -1,7 +1,6 @@
 package com.hebtu.havefun.service;
 
 import com.alibaba.fastjson.JSON;
-import com.hebtu.havefun.Util.CountActivityUtil;
 import com.hebtu.havefun.config.ValueConfig;
 import com.hebtu.havefun.dao.*;
 import com.hebtu.havefun.entity.User.User;
@@ -43,8 +42,6 @@ public class ActivityService {
     @Resource
     ActivityDao activityDao;
     @Resource
-    CountActivityUtil countActivityUtil;
-    @Resource
     ActivityDetailDao activityDetailDao;
     @Resource
     UserDao userDao;
@@ -57,21 +54,15 @@ public class ActivityService {
     @Resource
     TypeOfKindDao typeOfKindDao;
 
-//    @Cacheable(value = "activity_constant",key = "'getRotationChartPictures'")
     public String[] getRotationChartPictures() {
-        System.out.println("进来了");
         return new String[]{ValueConfig.SERVER_URL + "localPictures/1.png",
                 ValueConfig.SERVER_URL + "localPictures/2.png",
                 ValueConfig.SERVER_URL + "localPictures/3.png",
                 ValueConfig.SERVER_URL + "localPictures/4.png",};
     }
 
-//    @Cacheable(value = "activity",key = "'getActivityList'+#activityKind+','+#pageNum+','+#pageSize")
-    public List<Activity> getActivityList(Integer activityKind, Integer pageNum, Integer pageSize) {
-        Long num = countActivityUtil.getActivityNum();
-        if ((num - 1) / pageSize + 1 < pageNum) {
-            return null;
-        }
+//    @Cacheable(value = "activity", key = "'getActivityList'+#activityKind+','+#pageNum+','+#pageSize")
+    public String getActivityList(Integer activityKind, Integer pageNum, Integer pageSize) {
         List<Activity> content = new ArrayList<>();
         Sort sort;
         Pageable pageable;
@@ -80,7 +71,7 @@ public class ActivityService {
         switch (activityKind) {
             case 1://热门活动
                 sort = Sort.by(Sort.Direction.DESC, "collectNum");
-                pageable = PageRequest.of(pageNum - 1, pageSize+1, sort);
+                pageable = PageRequest.of(pageNum - 1, pageSize, sort);
                 page = activityDao.findAll(specification, pageable);
                 content = page.getContent();
                 break;
@@ -91,43 +82,23 @@ public class ActivityService {
                 content = page.getContent();
                 break;
         }
-        return content;
+        return content.size() != 0 ? JSON.toJSONString(content) : "empty";
     }
-//    @Cacheable(value = "activity",key = "'getActivityDetail'+#activityId")
-    public ActivityDetail getActivityDetail(Integer activityId) {
-        return activityDetailDao.getOne(activityId);
+
+    //        @Cacheable(value = "activity",key = "'getActivityDetail'+#activityId")
+    public String getActivityDetail(Integer activityId) {
+        ActivityDetail activityDetail = activityDetailDao.getOne(activityId);
+        return JSON.toJSONString(activityDetail);
     }
-//    @Cacheable(value = "activity-collect",key = "'judgeCollected'+#userId+','+#activityId")
-    public boolean judgeCollected(String userId, String activityId) {
+
+    //        @Cacheable(value = "activity-collect",key = "'judgeCollected'+#userId+','+#activityId")
+    public boolean judgeCollected(Integer userId, Integer activityId) {
         Object object = activityDao.judgeCollectedActivity(userId, activityId);
         return object != null;
     }
 
-    @Transactional
-    @Rollback(value = false)
-//    @CacheEvict(value = "activity-collect")
-    public boolean changeCollectActivity(Integer activityId, Integer id, boolean tag) {
-        Activity activity = activityDao.getOne(activityId);
-        User user = userDao.getOne(id);
-        Date date = new Date();
-        if (tag) {//收藏
-            UserCollectActivity userCollectActivity = new UserCollectActivity();
-            userCollectActivity.setUser(user);
-            userCollectActivity.setActivity(activity);
-            userCollectActivity.setCollectTime(date);
-            userCollectActivityDao.save(userCollectActivity);
-            activity.setCollectNum(activity.getCollectNum() + 1);
-        } else {//取消收藏
-            UserCollectActivity userCollectActivity = userCollectActivityDao.findUserCollectActivitiesByUserAndActivity(user, activity);
-            userCollectActivity.setUser(user);
-            userCollectActivity.setActivity(activity);
-            userCollectActivityDao.delete(userCollectActivity);
-            activity.setCollectNum(activity.getCollectNum() - 1);
-        }
-        return true;
-    }
 
-    @Cacheable(value = "activity-collect",key = "'getCollectedActivities'+#id+','+#pageNum+','+pageSize")
+//    @Cacheable(value = "activity-collect", key = "'getCollectedActivities'+#id+','+#pageNum+','+pageSize")
     public String getCollectedActivities(Integer id, Integer pageNum, Integer pageSize) {
         User user = userDao.getOne(id);
         Specification<UserCollectActivity> spec = (Specification<UserCollectActivity>) (root, criteriaQuery, criteriaBuilder) -> criteriaBuilder.equal(root.get("user"), user);
@@ -139,7 +110,7 @@ public class ActivityService {
 
     @Transactional
     @Rollback(value = false)
-    @CacheEvict(value = "activity")
+//    @CacheEvict(value = "activity")
     public boolean addActivity(@RequestParam(value = "file", required = false) List<MultipartFile> files, String activityDetailJson) {
         ActivityDetail activityDetail = JSON.parseObject(activityDetailJson, ActivityDetail.class);
         Set<Picture> pictures = new HashSet<>();
@@ -172,7 +143,7 @@ public class ActivityService {
         return true;
     }
 
-//    @Cacheable(value = "activity-enter",key = "'getEnterActivities'+#id+','+#pageNum+','+pageSize")
+    //    @Cacheable(value = "activity-enter",key = "'getEnterActivities'+#id+','+#pageNum+','+pageSize")
     public String getEnterActivities(Integer id, Integer pageNum, Integer pageSize) {
         User user = userDao.getOne(id);
         Specification<UserEnterActivity> spec = (Specification<UserEnterActivity>) (root, criteriaQuery, criteriaBuilder) -> criteriaBuilder.equal(root.get("user"), user);
@@ -182,7 +153,7 @@ public class ActivityService {
         return content.size() == 0 ? "empty" : JSON.toJSONString(content);
     }
 
-//    @Cacheable(value = "activity",key = "'getPublishActivities'+#id+','+#pageNum+','+pageSize")
+    //    @Cacheable(value = "activity",key = "'getPublishActivities'+#id+','+#pageNum+','+pageSize")
     public String getPublishActivities(Integer id, Integer pageNum, Integer pageSize) {
         User user = userDao.getOne(id);
         Specification<UserPublishActivity> spec = (Specification<UserPublishActivity>) (root, criteriaQuery, criteriaBuilder) -> criteriaBuilder.equal(root.get("user"), user);
@@ -192,30 +163,33 @@ public class ActivityService {
         return content.size() == 0 ? "empty" : JSON.toJSONString(content);
     }
 
-    public List<Activity> screenTimeActivities(Integer howManyDays, Integer pageNum, Integer pageSize) {
+    public String screenTimeActivities(Integer howManyDays, Integer pageNum, Integer pageSize) {
         Specification<Activity> specification = (Specification<Activity>) (root, criteriaQuery, criteriaBuilder) -> {
             Calendar calendar = Calendar.getInstance();
             calendar.setTime(new Date());
             calendar.add(Calendar.DATE, howManyDays * (-1));
             return criteriaBuilder.greaterThanOrEqualTo(root.get("activityTime"), calendar.getTime());
         };
-        return activityDao.findAll(specification, PageRequest.of(pageNum - 1, pageSize, Sort.by(Sort.Direction.DESC, "activityTime"))).getContent();
+        List<Activity> activityList = activityDao.findAll(specification, PageRequest.of(pageNum - 1, pageSize, Sort.by(Sort.Direction.DESC, "activityTime"))).getContent();
+        return activityList.size() != 0 ? JSON.toJSONString(activityList) : "empty";
     }
 
-//    @Cacheable(value = "activity",key = "'screenTypeActivities'+#tag+','+#pageNum+','+pageSize")
-    public List<Activity> screenTypeActivities(Integer tag, Integer pageNum, Integer pageSize) {
+    //    @Cacheable(value = "activity",key = "'screenTypeActivities'+#tag+','+#pageNum+','+pageSize")
+    public String screenTypeActivities(Integer tag, Integer pageNum, Integer pageSize) {
         TypeOfKind typeOfKind = typeOfKindDao.getOne(tag);
         Specification<Activity> specification = (Specification<Activity>) (root, criteriaQuery, criteriaBuilder) -> criteriaBuilder.equal(root.get("typeOfKind"), typeOfKind);
-        return activityDao.findAll(specification, PageRequest.of(pageNum - 1, pageSize, Sort.by(Sort.Direction.DESC, "activityTime"))).getContent();
+        List<Activity> activityList = activityDao.findAll(specification, PageRequest.of(pageNum - 1, pageSize, Sort.by(Sort.Direction.DESC, "activityTime"))).getContent();
+        return activityList.size() != 0 ? JSON.toJSONString(activityList) : "empty";
     }
 
-//    @Cacheable(value = "activity",key = "'screenCostActivities'+#lowCost+','+#highCost+','+#pageNum+','+#pageSize")
-    public List<Activity> screenCostActivities(Integer lowCost, Integer highCost, Integer pageNum, Integer pageSize) {
+    //    @Cacheable(value = "activity",key = "'screenCostActivities'+#lowCost+','+#highCost+','+#pageNum+','+#pageSize")
+    public String screenCostActivities(Integer lowCost, Integer highCost, Integer pageNum, Integer pageSize) {
         Specification<Activity> specification = (Specification<Activity>) (root, criteriaQuery, criteriaBuilder) -> {
             Predicate lowPredicate = criteriaBuilder.le(root.get("activityCost").as(Integer.class), highCost);
             Predicate highPredicate = criteriaBuilder.ge(root.get("activityCost").as(Integer.class), lowCost);
             return criteriaBuilder.and(highPredicate, lowPredicate);
         };
-        return activityDao.findAll(specification, PageRequest.of(pageNum - 1, pageSize, Sort.by(Sort.Direction.DESC, "activityTime"))).getContent();
+        List<Activity> activityList = activityDao.findAll(specification, PageRequest.of(pageNum - 1, pageSize, Sort.by(Sort.Direction.DESC, "activityTime"))).getContent();
+        return activityList.size() != 0 ? JSON.toJSONString(activityList) : "empty";
     }
 }
