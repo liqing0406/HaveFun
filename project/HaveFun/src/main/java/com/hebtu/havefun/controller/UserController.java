@@ -175,7 +175,9 @@ public class UserController {
             System.out.println("getMsgNum Error");
             return "ErrorParameter";
         }
-        return userService.getMsgNum(sender, receiver) + "";
+        Long count = userService.getMsgNum(sender, receiver);
+        System.out.println(count);
+        return count + "";
     }
 
     /**
@@ -191,7 +193,7 @@ public class UserController {
             return "ErrorParameter";
         }
         List<Messages> messagesList = userService.freshMsg(otherId, mineId);
-        return messagesList != null ? JSON.toJSONString(messagesList) : "empty";
+        return messagesList.size() != 0 ? JSON.toJSONString(messagesList) : "empty";
     }
 
     /**

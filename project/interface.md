@@ -193,14 +193,14 @@ public class UserController {
      * @return 返回List<Messages>集合Json
      * @description 获取消息列表，分页显示
      */
-    @RequestMapping("/getMsg")
-    public String getMsg(Integer sender, Integer receiver, Integer pageNum, Integer pageSize) {
-        if (sender == null || receiver == null || pageNum == null || pageSize == null) {
-            System.out.println("getMsg Error");
+    @RequestMapping("/freshMsg")
+    public String freshMsg(Integer otherId, Integer mineId) {
+        if (otherId == null || mineId == null) {
+            System.out.println("freshMsg Error");
             return "ErrorParameter";
         }
-        List<Messages> messagesList = userService.getMsg(sender, receiver, pageNum, pageSize);
-        return messagesList != null ? JSON.toJSONString(messagesList) : "empty";
+        List<Messages> messagesList = userService.freshMsg(otherId, mineId);
+        return messagesList.size() != 0 ? JSON.toJSONString(messagesList) : "empty";
     }
 ```
 
@@ -710,3 +710,4 @@ public class ActivityController {
 }
 ```
 
+ 

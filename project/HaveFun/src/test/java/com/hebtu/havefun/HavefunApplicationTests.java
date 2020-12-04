@@ -35,6 +35,7 @@ class HavefunApplicationTests {
     ActivityDao activityDao;
     @Resource
     ActivityService activityService;
+
     @Test
     void contextLoads() throws InterruptedException {
 //        for (int i = 0; i < 10; i++) {
@@ -62,13 +63,13 @@ class HavefunApplicationTests {
         List<Map<Messages, Integer>> messageList = userService.getMessageList(3);
         String str = JSON.toJSONString(messageList);
         List<Map<Messages, Integer>> message;
-        message = JSON.parseObject(str, new TypeReference<List<Map<Messages, Integer>>>(){});
-        for(Map<Messages,Integer> map : message){
-            for (Map.Entry<Messages, Integer> entry : map.entrySet()) {
-                Messages mapKey = entry.getKey();
-                Integer mapValue = entry.getValue();
-                System.out.println(mapKey.toString() + "：" + mapValue);
-            }
+        message = JSON.parseObject(str, new TypeReference<List<Map<Messages, Integer>>>() {
+        });
+        Map<Messages, Integer> map = message.get(0);
+        for (Map.Entry<Messages, Integer> entry : map.entrySet()) {
+            Messages mapKey = entry.getKey();
+            Integer mapValue = entry.getValue();
+            System.out.println(mapKey.toString() + "：" + mapValue);
         }
     }
 }
