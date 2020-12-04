@@ -10,6 +10,7 @@ D:\Idea\workSpace\HaveFun\src\main\java\com\hebtu\havefun\entity\Messages.java
 D:\Idea\workSpace\HaveFun\src\main\java\com\hebtu\havefun\controller\UserController.java
 D:\Idea\workSpace\HaveFun\src\main\java\com\hebtu\havefun\Util\CountActivityUtil.java
 D:\Idea\workSpace\HaveFun\src\main\java\com\hebtu\havefun\config\WebMvcConfig.java
+D:\Idea\workSpace\HaveFun\src\main\java\com\hebtu\havefun\config\RedisConfig.java
 D:\Idea\workSpace\HaveFun\src\main\java\com\hebtu\havefun\config\ValueConfig.java
 D:\Idea\workSpace\HaveFun\src\main\java\com\hebtu\havefun\entity\User\UserDetail.java
 D:\Idea\workSpace\HaveFun\src\main\java\com\hebtu\havefun\dao\ActivityDetailDao.java

@@ -1,9 +1,15 @@
 package com.hebtu.havefun;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.TypeReference;
+import com.google.gson.JsonArray;
 import com.hebtu.havefun.config.ValueConfig;
 import com.hebtu.havefun.dao.ActivityDao;
 import com.hebtu.havefun.dao.UserDao;
 import com.hebtu.havefun.dao.UserDetailDao;
+import com.hebtu.havefun.entity.Messages;
 import com.hebtu.havefun.entity.activity.Activity;
 import com.hebtu.havefun.entity.activity.Picture;
 import com.hebtu.havefun.service.ActivityService;
@@ -12,7 +18,10 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 @SpringBootTest
 class HavefunApplicationTests {
@@ -26,7 +35,6 @@ class HavefunApplicationTests {
     ActivityDao activityDao;
     @Resource
     ActivityService activityService;
-
     @Test
     void contextLoads() throws InterruptedException {
 //        for (int i = 0; i < 10; i++) {
@@ -51,7 +59,16 @@ class HavefunApplicationTests {
 //            System.out.println(str);
 //        }
 //        System.out.println(activityService.judgeCollected("1", "2"));
-
-        System.out.println(new Date());
+        List<Map<Messages, Integer>> messageList = userService.getMessageList(3);
+        String str = JSON.toJSONString(messageList);
+        List<Map<Messages, Integer>> message;
+        message = JSON.parseObject(str, new TypeReference<List<Map<Messages, Integer>>>(){});
+        for(Map<Messages,Integer> map : message){
+            for (Map.Entry<Messages, Integer> entry : map.entrySet()) {
+                Messages mapKey = entry.getKey();
+                Integer mapValue = entry.getValue();
+                System.out.println(mapKey.toString() + "：" + mapValue);
+            }
+        }
     }
 }

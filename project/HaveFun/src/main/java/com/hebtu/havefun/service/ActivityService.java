@@ -56,6 +56,7 @@ public class ActivityService {
     @Resource
     TypeOfKindDao typeOfKindDao;
 
+    @Cacheable(value = "activity",key = "'getRotationChartPictures'")
     public String[] getRotationChartPictures() {
         System.out.println("进来了");
         return new String[]{ValueConfig.SERVER_URL + "localPictures/1.png",
