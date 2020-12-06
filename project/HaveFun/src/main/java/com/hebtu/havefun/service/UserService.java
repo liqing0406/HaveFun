@@ -6,6 +6,8 @@ import com.hebtu.havefun.dao.*;
 import com.hebtu.havefun.entity.Messages;
 import com.hebtu.havefun.entity.User.*;
 import com.hebtu.havefun.entity.activity.Activity;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.*;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
@@ -45,7 +47,7 @@ public class UserService {
     @Resource
     UserCollectActivityDao userCollectActivityDao;
 
-    //    @Cacheable(value = "user-register", key = "'judgeRegistered'+#phoneNum")
+    @Cacheable(value = "user-register", key = "'judgeRegistered'+#phoneNum")
     public boolean judgeRegistered(String phoneNum) {
         User user = userDao.findUserByPhoneNum(phoneNum);
         return user != null;
@@ -53,7 +55,7 @@ public class UserService {
 
     @Transactional
     @Rollback(value = false)
-//    @CacheEvict(value = "user-register")
+    @CacheEvict(value = "user-register")
     public boolean register(String phoneNum, String password) {
         User user = new User();
         user.setPhoneNum(phoneNum);
@@ -71,7 +73,7 @@ public class UserService {
         return true;
     }
 
-    //    @Cacheable(value = "user-login", key = "'login'+#phoneNum+','+#password")
+    @Cacheable(value = "user-login", key = "'login'+#phoneNum+','+#password")
     public String login(String phoneNum, String password) {
         User user = userDao.findUserByPhoneNumAndPassword(phoneNum, password);
         return user != null ? JSON.toJSONString(user) : "";
@@ -79,7 +81,7 @@ public class UserService {
 
     @Transactional
     @Rollback(value = false)
-//    @CacheEvict(value = "user-login")
+    @CacheEvict(value = "user-login")
     public boolean modifyPassword(String phoneNum, String password) {
         User user = userDao.findUserByPhoneNum(phoneNum);
         user.setPassword(password);
@@ -89,7 +91,7 @@ public class UserService {
 
     @Transactional
     @Rollback(value = false)
-//    @CacheEvict(value = "activity-enter")
+    @CacheEvict(value = "activity-enter")
     public String enrollActivity(Integer activityId, Integer id) {
         User user = userDao.getOne(id);
         Activity activity = activityDao.getOne(activityId);
@@ -108,6 +110,7 @@ public class UserService {
 
     @Transactional
     @Rollback(value = false)
+    @CacheEvict(value = "activity-enter", allEntries = true)
     public String cancelEnrollActivity(Integer activityId, Integer id) {
         User user = userDao.getOne(id);
         Activity activity = activityDao.getOne(activityId);
@@ -118,7 +121,7 @@ public class UserService {
 
     @Transactional
     @Rollback(value = false)
-//    @CacheEvict(value = "activity-collect")
+    @CacheEvict(value = "activity-collect", allEntries = true)
     public boolean changeCollectActivity(Integer activityId, Integer id, boolean tag) {
         Activity activity = activityDao.getOne(activityId);
         User user = userDao.getOne(id);
@@ -131,7 +134,7 @@ public class UserService {
             userCollectActivityDao.save(userCollectActivity);
             activity.setCollectNum(activity.getCollectNum() + 1);
         } else {//取消收藏
-            System.out.println(activityId+","+id+","+tag);
+            System.out.println(activityId + "," + id + "," + tag);
             UserCollectActivity userCollectActivity = userCollectActivityDao.findUserCollectActivitiesByUserAndActivity(user, activity);
             userCollectActivity.setUser(user);
             userCollectActivity.setActivity(activity);
@@ -143,7 +146,7 @@ public class UserService {
 
     @Transactional
     @Rollback(value = false)
-//    @CacheEvict(value = "user-login")
+    @CacheEvict(value = "user-login",allEntries = true)
     public Boolean modifyPersonalSignature(Integer id, String personalSignature) {
         User user = userDao.getOne(id);
         user.getUserDetail().setPersonalSignature(personalSignature);
@@ -153,7 +156,7 @@ public class UserService {
 
     @Transactional
     @Rollback(value = false)
-//    @CacheEvict(value = "user-msg")
+    @CacheEvict(value = "user-msg")
     public Messages addMsg(Integer sender, Integer receiver, String msg) {
         Messages messages = new Messages();
         User sendUser = userDao.getOne(sender);
@@ -167,7 +170,7 @@ public class UserService {
         return messages;
     }
 
-    //    @Cacheable(value = "user-msg",key = "'getMsg'+#sender+','+#receiver+','+#pageNum+','+#pageSize")
+    @Cacheable(value = "user-msg", key = "'getMsg'+#sender+','+#receiver+','+#pageNum+','+#pageSize")
     public List<Messages> getMsg(Integer sender, Integer receiver, Integer pageNum, Integer pageSize) {
         Sort sort = Sort.by(Sort.Direction.DESC, "time");
         if (userDao.existsById(sender) && userDao.existsById(receiver)) {
@@ -187,7 +190,7 @@ public class UserService {
         }
     }
 
-    //    @Cacheable(value = "user-msg",key = "'getMsgNum'+#sender+','+#receiver")
+    @Cacheable(value = "user-msg", key = "'getMsgNum'+#sender+','+#receiver")
     public long getMsgNum(Integer sender, Integer receiver) {
         User sendUser = userDao.getOne(sender);
         User receiveUser = userDao.getOne(receiver);
@@ -222,7 +225,7 @@ public class UserService {
 
     @Transactional
     @Rollback(value = false)
-//    @CacheEvict(value = "user-follow")
+    @CacheEvict(value = "user-follow")
     public boolean followUser(Integer followId, Integer followedId) {
         if (userDao.existsById(followId) && userDao.existsById(followedId)) {
             UserRelationship userRelationship = new UserRelationship();
@@ -237,14 +240,14 @@ public class UserService {
 
     @Transactional
     @Rollback(value = false)
-//    @CacheEvict(value = "user-follow")
+    @CacheEvict(value = "user-follow")
     public boolean unFollowUser(Integer followId, Integer followedId) {
         UserRelationship userRelationship = userRelationshipDao.findUserRelationshipByFollowUserIdAndFollowedUserId(followId, followedId);
         userRelationshipDao.delete(userRelationship);
         return true;
     }
 
-    //    @Cacheable(value = "user-follow", key = "'judgeFollow'+#followId+','+followedId")
+    @Cacheable(value = "user-follow", key = "'judgeFollow'+#followId+','+followedId")
     public boolean judgeFollow(Integer followId, Integer followedId) {
         UserRelationship userRelationship = new UserRelationship();
         userRelationship.setFollowUserId(followId);
@@ -258,19 +261,19 @@ public class UserService {
         return userRelationships.size() != 0;
     }
 
-    //    @Cacheable(value = "user-follow", key = "'getFollowedCount'+#id")
+    @Cacheable(value = "user-follow", key = "'getFollowedCount'+#id")
     public Long getFollowedCount(Integer id) {
         Specification<UserRelationship> specification = (Specification<UserRelationship>) (root, criteriaQuery, criteriaBuilder) -> criteriaBuilder.equal(root.get("followUserId"), id);
         return userRelationshipDao.count(specification);
     }
 
-    //    @Cacheable(value = "user-follow", key = "'getFollowCount'+#id")
+    @Cacheable(value = "user-follow", key = "'getFollowCount'+#id")
     public Long getFollowCount(Integer id) {
         Specification<UserRelationship> specification = (Specification<UserRelationship>) (root, criteriaQuery, criteriaBuilder) -> criteriaBuilder.equal(root.get("followedUserId"), id);
         return userRelationshipDao.count(specification);
     }
 
-    //    @Cacheable(value = "user", key = "'getUser'+#id")
+    @Cacheable(value = "user", key = "'getUser'+#id")
     public User getUser(Integer id) {
         return userDao.getOne(id);
     }
@@ -316,13 +319,13 @@ public class UserService {
         return returnMessages;
     }
 
-    //    @Cacheable(value = "user-follow", key = "'getFollowUsers'+#id")
+    @Cacheable(value = "user-follow", key = "'getFollowUsers'+#id")
     public List<User> getFollowUsers(Integer id) {
         Specification<UserRelationship> specification = (Specification<UserRelationship>) (root, criteriaQuery, criteriaBuilder) -> criteriaBuilder.equal(root.get("followUserId"), id);
         return getUsers(specification);
     }
 
-    //    @Cacheable(value = "user-follow", key = "'getFollowedUsers'+#id")
+    @Cacheable(value = "user-follow", key = "'getFollowedUsers'+#id")
     public List<User> getFollowedUsers(Integer id) {
         Specification<UserRelationship> specification = (Specification<UserRelationship>) (root, criteriaQuery, criteriaBuilder) -> criteriaBuilder.equal(root.get("followedUserId"), id);
         return getUsers(specification);
@@ -343,12 +346,12 @@ public class UserService {
 
     @Transactional
     @Rollback(value = false)
-//    @CacheEvict(value = "user")
+    @CacheEvict(value = "user-login",allEntries = true)
     public Boolean modifyUserHeadPortrait(MultipartFile headPortrait, Integer id) {
         User user = userDao.getOne(id);
         boolean flag;
-        String fileName = "head" + (headPortrait.getOriginalFilename()).substring(headPortrait.getOriginalFilename().lastIndexOf("."));
-        File dest = new File(ValueConfig.UPLOAD_FOLDER + "/user/" + user.getUserName() + "/" + fileName);
+        String fileName = "head" + (Objects.requireNonNull(headPortrait.getOriginalFilename())).substring(headPortrait.getOriginalFilename().lastIndexOf("."));
+        File dest = new File(ValueConfig.UPLOAD_FOLDER + "/user/" + user.getId() + "/" + fileName);
         if (!dest.getParentFile().exists()) { //判断文件父目录是否存在
             flag = dest.getParentFile().mkdir();
         } else {
@@ -357,7 +360,7 @@ public class UserService {
         if (flag) {
             try {
                 headPortrait.transferTo(dest); //保存文件
-                user.setHeadPortrait(ValueConfig.SERVER_URL + "localPictures/user/" + user.getUserName() + "/" + fileName);
+                user.setHeadPortrait("localPictures/user/" + user.getId() + "/" + fileName);
             } catch (IllegalStateException | IOException e) {
                 e.printStackTrace();
                 return false;
@@ -370,7 +373,7 @@ public class UserService {
 
     @Transactional
     @Rollback(value = false)
-//    @CacheEvict(value = "user")
+    @CacheEvict(value = "user-login",allEntries = true)
     public boolean modifyUserName(String userName, Integer id) {
         User user = userDao.getOne(id);
         user.setUserName(userName);
@@ -380,7 +383,7 @@ public class UserService {
 
     @Transactional
     @Rollback(value = false)
-//    @CacheEvict(value = "user")
+    @CacheEvict(value = "user-login",allEntries = true)
     public boolean modifyUserSex(Integer sex, Integer id) {
         User user = userDao.getOne(id);
         UserDetail userDetail = userDetailDao.findUserDetailByUser(user);
@@ -388,6 +391,4 @@ public class UserService {
         userDetailDao.save(userDetail);
         return true;
     }
-
-
 }

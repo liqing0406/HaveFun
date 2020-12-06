@@ -61,7 +61,7 @@ public class ActivityService {
                 ValueConfig.SERVER_URL + "localPictures/4.png",};
     }
 
-//    @Cacheable(value = "activity", key = "'getActivityList'+#activityKind+','+#pageNum+','+#pageSize")
+    @Cacheable(value = "activity", key = "'getActivityList'+#activityKind+','+#pageNum+','+#pageSize")
     public String getActivityList(Integer activityKind, Integer pageNum, Integer pageSize) {
         List<Activity> content = new ArrayList<>();
         Sort sort;
@@ -85,20 +85,20 @@ public class ActivityService {
         return content.size() != 0 ? JSON.toJSONString(content) : "empty";
     }
 
-    //        @Cacheable(value = "activity",key = "'getActivityDetail'+#activityId")
+    @Cacheable(value = "activity", key = "'getActivityDetail'+#activityId")
     public String getActivityDetail(Integer activityId) {
         ActivityDetail activityDetail = activityDetailDao.getOne(activityId);
         return JSON.toJSONString(activityDetail);
     }
 
-    //        @Cacheable(value = "activity-collect",key = "'judgeCollected'+#userId+','+#activityId")
+    @Cacheable(value = "activity-collect", key = "'judgeCollected'+#userId+','+#activityId")
     public boolean judgeCollected(Integer userId, Integer activityId) {
         Object object = activityDao.judgeCollectedActivity(userId, activityId);
         return object != null;
     }
 
 
-//    @Cacheable(value = "activity-collect", key = "'getCollectedActivities'+#id+','+#pageNum+','+pageSize")
+    @Cacheable(value = "activity-collect", key = "'getCollectedActivities'+#id+','+#pageNum+','+#pageSize")
     public String getCollectedActivities(Integer id, Integer pageNum, Integer pageSize) {
         User user = userDao.getOne(id);
         Specification<UserCollectActivity> spec = (Specification<UserCollectActivity>) (root, criteriaQuery, criteriaBuilder) -> criteriaBuilder.equal(root.get("user"), user);
@@ -110,7 +110,7 @@ public class ActivityService {
 
     @Transactional
     @Rollback(value = false)
-//    @CacheEvict(value = "activity")
+    @CacheEvict(value = "activity")
     public boolean addActivity(@RequestParam(value = "file", required = false) List<MultipartFile> files, String activityDetailJson) {
         ActivityDetail activityDetail = JSON.parseObject(activityDetailJson, ActivityDetail.class);
         Set<Picture> pictures = new HashSet<>();
@@ -143,7 +143,7 @@ public class ActivityService {
         return true;
     }
 
-    //    @Cacheable(value = "activity-enter",key = "'getEnterActivities'+#id+','+#pageNum+','+pageSize")
+    @Cacheable(value = "activity-enter", key = "'getEnterActivities'+#id+','+#pageNum+','+#pageSize")
     public String getEnterActivities(Integer id, Integer pageNum, Integer pageSize) {
         User user = userDao.getOne(id);
         Specification<UserEnterActivity> spec = (Specification<UserEnterActivity>) (root, criteriaQuery, criteriaBuilder) -> criteriaBuilder.equal(root.get("user"), user);
@@ -153,7 +153,7 @@ public class ActivityService {
         return content.size() == 0 ? "empty" : JSON.toJSONString(content);
     }
 
-    //    @Cacheable(value = "activity",key = "'getPublishActivities'+#id+','+#pageNum+','+pageSize")
+    @Cacheable(value = "activity", key = "'getPublishActivities'+#id+','+#pageNum+','+#pageSize")
     public String getPublishActivities(Integer id, Integer pageNum, Integer pageSize) {
         User user = userDao.getOne(id);
         Specification<UserPublishActivity> spec = (Specification<UserPublishActivity>) (root, criteriaQuery, criteriaBuilder) -> criteriaBuilder.equal(root.get("user"), user);
@@ -174,7 +174,7 @@ public class ActivityService {
         return activityList.size() != 0 ? JSON.toJSONString(activityList) : "empty";
     }
 
-    //    @Cacheable(value = "activity",key = "'screenTypeActivities'+#tag+','+#pageNum+','+pageSize")
+    @Cacheable(value = "activity", key = "'screenTypeActivities'+#tag+','+#pageNum+','+#pageSize")
     public String screenTypeActivities(Integer tag, Integer pageNum, Integer pageSize) {
         TypeOfKind typeOfKind = typeOfKindDao.getOne(tag);
         Specification<Activity> specification = (Specification<Activity>) (root, criteriaQuery, criteriaBuilder) -> criteriaBuilder.equal(root.get("typeOfKind"), typeOfKind);
@@ -182,7 +182,7 @@ public class ActivityService {
         return activityList.size() != 0 ? JSON.toJSONString(activityList) : "empty";
     }
 
-    //    @Cacheable(value = "activity",key = "'screenCostActivities'+#lowCost+','+#highCost+','+#pageNum+','+#pageSize")
+    @Cacheable(value = "activity", key = "'screenCostActivities'+#lowCost+','+#highCost+','+#pageNum+','+#pageSize")
     public String screenCostActivities(Integer lowCost, Integer highCost, Integer pageNum, Integer pageSize) {
         Specification<Activity> specification = (Specification<Activity>) (root, criteriaQuery, criteriaBuilder) -> {
             Predicate lowPredicate = criteriaBuilder.le(root.get("activityCost").as(Integer.class), highCost);
