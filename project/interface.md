@@ -691,7 +691,7 @@ public class ActivityController {
     @RequestMapping("/screenTimeActivities")
     public String screenTimeActivities(Integer howManyDays, Integer pageNum, Integer pageSize) {
         String activityList = activityService.screenTimeActivities(howManyDays, pageNum, pageSize);
-        return "empty".equals(activityList) ? JSON.toJSONString(activityList) : "empty";
+        return !"empty".equals(activityList) ? JSON.toJSONString(activityList) : "empty";
     }
 ```
 
@@ -707,7 +707,7 @@ public class ActivityController {
     @RequestMapping("/screenTypeActivities")
     public String screenTypeActivities(Integer lowCost, Integer highCost, Integer pageNum, Integer pageSize) {
         String activityList = activityService.screenCostActivities(lowCost, highCost, pageNum, pageSize);
-        return "empty".equals(activityList) ? JSON.toJSONString(activityList) : "empty";
+        return !"empty".equals(activityList) ? JSON.toJSONString(activityList) : "empty";
     }
 ```
 
@@ -722,8 +722,55 @@ public class ActivityController {
     @RequestMapping("/screenCostActivities")
     public String screenCostActivities(Integer tag, Integer pageNum, Integer pageSize) {
         String activityList = activityService.screenTypeActivities(tag, pageNum, pageSize);
-        return "empty".equals(activityList) ? JSON.toJSONString(activityList) : "empty";
+        return !"empty".equals(activityList) ? JSON.toJSONString(activityList) : "empty";
     }
 ```
 
- 
+##  根据城市地区筛选活动
+
+```java
+    /**
+     * @param city     城市名称，后面没有"市"
+     * @param county   区名称，同样后面没有"区"等后缀
+     * @param pageNum  页码
+     * @param pageSize 页大小
+     * @return 返回List<Activity>集合，如果没有则返回"empty"
+     */
+    @RequestMapping("/screenCityActivities")
+    public String screenCityActivities(String city, String county, Integer pageNum, Integer pageSize) {
+        String activityList = activityService.screenCityActivities(city, county, pageNum, pageSize);
+        return !"empty".equals(activityList) ? JSON.toJSONString(activityList) : "empty";
+    }
+```
+
+## 根据活动大类id筛选属于它的小类活动
+
+```java
+    /**
+     * @param kindId 大类id
+     * @return 小类集合List<TypeOfList>，空返回"empty"
+     * @description 根据活动种类的大类id查出属于它的小类
+     */
+    @RequestMapping("/getTypeFromKind")
+    public String getTypeFromKind(Integer kindId) {
+        String typeList = activityService.getTypeFromKind(kindId);
+        return !"empty".equals(typeList) ? typeList : "empty";
+    }
+```
+
+## 判断用户是否报名活动
+
+```java
+    /**
+     * @param id         用户id
+     * @param activityId 活动id
+     * @return 返回已报名"true"，未报名"false"
+     * @description 根据用户id和活动id查询用户是否报名这个活动
+     */
+    @RequestMapping("/judgeEnterActivity")
+    public String judgeEnterActivity(Integer id, Integer activityId) {
+        return activityService.judgeEnterActivity(id, activityId);
+    }
+}
+```
+

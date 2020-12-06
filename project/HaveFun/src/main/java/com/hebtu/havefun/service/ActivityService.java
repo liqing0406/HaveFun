@@ -7,16 +7,10 @@ import com.hebtu.havefun.entity.User.User;
 import com.hebtu.havefun.entity.User.UserCollectActivity;
 import com.hebtu.havefun.entity.User.UserEnterActivity;
 import com.hebtu.havefun.entity.User.UserPublishActivity;
-import com.hebtu.havefun.entity.activity.Activity;
-import com.hebtu.havefun.entity.activity.ActivityDetail;
-import com.hebtu.havefun.entity.activity.Picture;
-import com.hebtu.havefun.entity.activity.TypeOfKind;
+import com.hebtu.havefun.entity.activity.*;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.test.annotation.Rollback;
@@ -25,7 +19,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
@@ -53,6 +50,10 @@ public class ActivityService {
     UserPublishActivityDao userPublishActivityDao;
     @Resource
     TypeOfKindDao typeOfKindDao;
+    @Resource
+    ActivityKindDao activityKindDao;
+    @Resource
+    ActivityLocationDao activityLocationDao;
 
     public String[] getRotationChartPictures() {
         return new String[]{ValueConfig.SERVER_URL + "localPictures/1.png",
@@ -192,4 +193,33 @@ public class ActivityService {
         List<Activity> activityList = activityDao.findAll(specification, PageRequest.of(pageNum - 1, pageSize, Sort.by(Sort.Direction.DESC, "activityTime"))).getContent();
         return activityList.size() != 0 ? JSON.toJSONString(activityList) : "empty";
     }
+
+    @Cacheable(value = "activity", key = "'screenCityActivities'+#city+','+#county+','+#pageNum+','+#pageSize")
+    public String screenCityActivities(String city, String county, Integer pageNum, Integer pageSize) {
+        ActivityLocation activityLocation = activityLocationDao.findActivityLocationByCityAndCounty(city, county);
+        Specification<Activity> specification = (Specification<Activity>) (root, criteriaQuery, criteriaBuilder) -> criteriaBuilder.equal(root.get("activityLocation"), activityLocation);
+        List<Activity> activityList = activityDao.findAll(specification);
+        return activityList.size() != 0 ? JSON.toJSONString(activityList) : "empty";
+    }
+
+    @Cacheable(value = "activity", key = "'getTypeFromKind'+#kindId")
+    public String getTypeFromKind(Integer kindId) {
+        ActivityKind activityKind = activityKindDao.getOne(kindId);
+        Specification<TypeOfKind> specification = (Specification<TypeOfKind>) (root, criteriaQuery, criteriaBuilder) -> criteriaBuilder.equal(root.get("activityKind"), activityKind);
+        List<TypeOfKind> typeOfKindList = typeOfKindDao.findAll(specification);
+        return typeOfKindList.size() != 0 ? JSON.toJSONString(typeOfKindList) : "empty";
+    }
+
+    @Cacheable(value = "activity", key = "'getTypeFromKind'+#id+','+#activityId")
+    public String judgeEnterActivity(Integer id, Integer activityId) {
+        User user = userDao.getOne(id);
+        Activity activity = activityDao.getOne(activityId);
+        UserEnterActivity userEnterActivitiesByUserAndActivity = userEnterActivityDao.findUserEnterActivitiesByUserAndActivity(user, activity);
+        if (userEnterActivitiesByUserAndActivity != null) {
+            return "true";
+        } else {
+            return "false";
+        }
+    }
+
 }

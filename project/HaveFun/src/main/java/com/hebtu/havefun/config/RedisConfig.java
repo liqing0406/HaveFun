@@ -74,7 +74,7 @@ public class RedisConfig extends CachingConfigurerSupport {
                 .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(objectJackson2JsonRedisSerializer))
                 // 不缓存空值
                 .disableCachingNullValues()
-                // 设置缓存的默认过期时间 30分钟
+                // 设置缓存的默认过期时间 60分钟
                 .entryTtl(Duration.ofHours(1L));
 
         //特殊缓存空间应用不同的配置

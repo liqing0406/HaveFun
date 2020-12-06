@@ -289,12 +289,12 @@ public class UserService {
         List<User> list = new ArrayList<>();
         List<Map<Messages, Integer>> returnMessages = new ArrayList<>();
         for (Messages messages : messagesList) {
-            if (messages.getSendUser().getId() == user.getId()) {
+            if (messages.getSendUser().getId().equals(user.getId())) {
                 User u = messages.getReceiveUser();
                 if (!list.contains(u)) {
                     list.add(u);
                 }
-            } else if (messages.getReceiveUser().getId() == user.getId()) {
+            } else if (messages.getReceiveUser().getId().equals(user.getId())) {
                 User u = messages.getSendUser();
                 if (!list.contains(u)) {
                     System.out.println(u.getId());
