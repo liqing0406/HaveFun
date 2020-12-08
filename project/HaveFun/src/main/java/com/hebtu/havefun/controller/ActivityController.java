@@ -168,6 +168,7 @@ public class ActivityController {
             System.out.println("screenActivities Error");
             return "ErrorParameter";
         }
+        System.out.println(typeName+","+lowCost+","+highCost+","+howManyDays+","+city+","+county+","+pageNum+","+pageSize);
         String activityList = activityService.screenActivities(howManyDays, typeName, lowCost, highCost, city, county, pageNum, pageSize);
         return !"empty".equals(activityList) ? JSON.toJSONString(activityList) : "empty";
     }
