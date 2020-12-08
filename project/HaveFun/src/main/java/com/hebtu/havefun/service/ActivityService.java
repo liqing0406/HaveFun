@@ -145,6 +145,7 @@ public class ActivityService {
         activity.setForwardNum(0);
         activity.setActivityLocation(activityLocation);
         activity.setReleaseTime(new Date());
+        activity.setActivityTime(activityDetail.getActivity().getActivityTime());
         activityDao.save(activity);
         activityDetail.setActivity(activity);
         activityDetailDao.save(activityDetail);
