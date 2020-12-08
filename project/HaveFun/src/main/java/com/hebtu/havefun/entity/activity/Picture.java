@@ -24,7 +24,7 @@ public class Picture implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     //数据库表自增id
     private Integer pictureId;
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "activity_id")
     //一对一关联activity对象
     private Activity activity;

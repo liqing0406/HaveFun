@@ -36,7 +36,8 @@ public class Activity implements Serializable {
     @Column(name = "activity_time")
     private Date activityTime;
     //活动类型
-    @OneToOne(mappedBy = "activity", cascade = CascadeType.ALL)
+    @OneToOne
+    @JoinColumn(name = "type_of_kind")
     private TypeOfKind typeOfKind;
     //活动花费
     @Column(name = "activity_cost")
@@ -70,6 +71,7 @@ public class Activity implements Serializable {
     @Column(name = "person_limit")
     private Integer personLimit;
 
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     public Integer getActivityId() {
         return activityId;
     }

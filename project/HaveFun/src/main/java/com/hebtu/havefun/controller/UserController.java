@@ -1,7 +1,6 @@
 package com.hebtu.havefun.controller;
 
 import com.alibaba.fastjson.JSON;
-import com.hebtu.havefun.entity.Messages;
 import com.hebtu.havefun.entity.User.User;
 import com.hebtu.havefun.service.UserService;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -10,7 +9,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author PengHuAnZhi
@@ -162,73 +160,6 @@ public class UserController {
     }
 
     /**
-     * @param sender   发送者id,注意不是getUserId,是getId
-     * @param receiver 接收者id,注意不是getUserId,是getId
-     * @param msg      消息内容
-     * @return 返回这个消息对象Messages
-     * @description 发送消息，这边插入数据库
-     */
-    @RequestMapping("/addMsg")
-    public String addMsg(Integer sender, Integer receiver, String msg) {
-        if (sender == null || receiver == null || msg == null) {
-            System.out.println("addMsg Error");
-            return "ErrorParameter";
-        }
-        Messages messages = userService.addMsg(sender, receiver, msg);
-        return messages != null ? JSON.toJSONString(messages) : "false";
-    }
-
-    /**
-     * @param sender   发送者id,注意不是getUserId,是getId
-     * @param receiver 接收者id,注意不是getUserId,是getId
-     * @param pageNum  当前页码
-     * @param pageSize 页面大小
-     * @return 返回List<Messages>集合Json
-     * @description 获取消息列表，分页显示
-     */
-    @RequestMapping("/getMsg")
-    public String getMsg(Integer sender, Integer receiver, Integer pageNum, Integer pageSize) {
-        if (sender == null || receiver == null || pageNum == null || pageSize == null) {
-            System.out.println("getMsg Error");
-            return "ErrorParameter";
-        }
-        List<Messages> messagesList = userService.getMsg(sender, receiver, pageNum, pageSize);
-        return messagesList != null ? JSON.toJSONString(messagesList) : "empty";
-    }
-
-    /**
-     * @param sender   发送者id,注意不是getUserId,是getId
-     * @param receiver 接收者id,注意不是getUserId,是getId
-     * @return 返回的是一个数量的string类型
-     * @description 获取两个人之间总消息数量
-     */
-    @RequestMapping("/getMsgNum")
-    public String getMsgNum(Integer sender, Integer receiver) {
-        if (sender == null || receiver == null) {
-            System.out.println("getMsgNum Error");
-            return "ErrorParameter";
-        }
-        Long count = userService.getMsgNum(sender, receiver);
-        return count + "";
-    }
-
-    /**
-     * @param otherId 对方的id，注意不是getUserId,是getId
-     * @param mineId  自己的id，注意不是getUserId,是getId
-     * @return 返回依然是List<Messages>集合Json
-     * @description 每隔若干秒刷新消息
-     */
-    @RequestMapping("/freshMsg")
-    public String freshMsg(Integer otherId, Integer mineId) {
-        if (otherId == null || mineId == null) {
-            System.out.println("freshMsg Error");
-            return "ErrorParameter";
-        }
-        List<Messages> messagesList = userService.freshMsg(otherId, mineId);
-        return messagesList.size() != 0 ? JSON.toJSONString(messagesList) : "empty";
-    }
-
-    /**
      * @param followId   当前用户的id，即关注者id，注意不是getUserId,是getId
      * @param followedId 对方id，即被关注者id，注意不是getUserId,是getId
      * @return 返回是否关注 "true"或者"false"
@@ -310,28 +241,12 @@ public class UserController {
      */
     @RequestMapping("/getUser")
     public String getUser(Integer id) {
-        User user = userService.getUser(id);
         if (id == null) {
             System.out.println("getUser Error");
             return "ErrorParameter";
         }
+        User user = userService.getUser(id);
         return user != null ? JSON.toJSONString(user) : "false";
-    }
-
-    /**
-     * @param id 当前user的id
-     * @return 返回一个List<Map < Messages, Integer>>,messages的数据表示用于展示聊天列表中
-     * 最新的一条消息，Integer的数据为未读消息数量，业务逻辑为我是接收者，发送者为对方，且消息未读
-     * @description 获取和用户交流过的消息列表
-     */
-    @RequestMapping("/getMessageList")
-    public String getMessageList(Integer id) {
-        if (id == null) {
-            System.out.println("getMessageList Error");
-            return "ErrorParameter";
-        }
-        List<Map<Messages, Integer>> messagesList = userService.getMessageList(id);
-        return messagesList.size() != 0 ? JSON.toJSONString(messagesList) : "empty";
     }
 
     /**
@@ -341,6 +256,10 @@ public class UserController {
      */
     @RequestMapping("/getFollowUsers")
     public String getFollowUsers(Integer id) {
+        if (id == null) {
+            System.out.println("getFollowUsers Error");
+            return "ErrorParameter";
+        }
         List<User> userList = userService.getFollowUsers(id);
         return userList.size() != 0 ? JSON.toJSONString(userList) : "empty";
     }
@@ -352,6 +271,10 @@ public class UserController {
      */
     @RequestMapping("/getFollowedUsers")
     public String getFollowedUsers(Integer id) {
+        if (id == null) {
+            System.out.println("getFollowedUsers Error");
+            return "ErrorParameter";
+        }
         List<User> userList = userService.getFollowedUsers(id);
         return userList.size() != 0 ? JSON.toJSONString(userList) : "empty";
     }
@@ -364,6 +287,10 @@ public class UserController {
      */
     @RequestMapping("/modifyUserHeadPortrait")
     public String modifyUserHeadPortrait(MultipartFile headPortrait, Integer id) {
+        if (headPortrait == null || id == null) {
+            System.out.println("modifyUserHeadPortrait Error");
+            return "ErrorParameter";
+        }
         return userService.modifyUserHeadPortrait(headPortrait, id) ? "true" : "false";
     }
 
@@ -375,6 +302,10 @@ public class UserController {
      */
     @RequestMapping("/modifyUserName")
     public String modifyUserName(String userName, Integer id) {
+        if (userName == null || id == null) {
+            System.out.println("modifyUserName Error");
+            return "ErrorParameter";
+        }
         return userService.modifyUserName(userName, id) ? "true" : "false";
     }
 
@@ -386,6 +317,10 @@ public class UserController {
      */
     @RequestMapping("/modifyUserSex")
     public String modifyUserSex(Integer sex, Integer id) {
+        if (sex == null || id == null) {
+            System.out.println("modifyUserName Error");
+            return "ErrorParameter";
+        }
         return userService.modifyUserSex(sex, id) ? "true" : "false";
     }
 }

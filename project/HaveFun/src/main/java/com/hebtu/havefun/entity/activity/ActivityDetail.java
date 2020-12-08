@@ -25,7 +25,7 @@ public class ActivityDetail implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     //数据库表自增id
     private Integer activityDetailId;
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "activity_id")
     private Activity activity;
     //活动详细信息
@@ -35,8 +35,10 @@ public class ActivityDetail implements Serializable {
     @Column(name = "other_info")
     private String otherInfo;
     //活动图片
-    @OneToMany(mappedBy = "activityDetail",cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "activityDetail", cascade = CascadeType.ALL)
     private Set<Picture> activityPictures;
+
+
     public Activity getActivity() {
         return activity;
     }
@@ -62,6 +64,7 @@ public class ActivityDetail implements Serializable {
         this.otherInfo = otherInfo;
     }
 
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     public Integer getActivityDetailId() {
         return activityDetailId;
     }

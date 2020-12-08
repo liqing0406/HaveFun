@@ -114,6 +114,7 @@ public class ActivityController {
             System.out.println("addActivity Error");
             return "ErrorParameter";
         }
+        System.out.println(activityDetailJson);
         return activityService.addActivity(files, activityDetailJson) ? "true" : "false";
     }
 
@@ -156,6 +157,10 @@ public class ActivityController {
      */
     @RequestMapping("/screenTimeActivities")
     public String screenTimeActivities(Integer howManyDays, Integer pageNum, Integer pageSize) {
+        if (howManyDays == null || pageNum == null || pageSize == null) {
+            System.out.println("screenTimeActivities Error");
+            return "ErrorParameter";
+        }
         String activityList = activityService.screenTimeActivities(howManyDays, pageNum, pageSize);
         return !"empty".equals(activityList) ? JSON.toJSONString(activityList) : "empty";
     }
@@ -168,6 +173,10 @@ public class ActivityController {
      */
     @RequestMapping("/screenTypeActivities")
     public String screenTypeActivities(Integer lowCost, Integer highCost, Integer pageNum, Integer pageSize) {
+        if (lowCost == null || highCost == null || pageNum == null || pageSize == null) {
+            System.out.println("screenTypeActivities Error");
+            return "ErrorParameter";
+        }
         String activityList = activityService.screenCostActivities(lowCost, highCost, pageNum, pageSize);
         return !"empty".equals(activityList) ? JSON.toJSONString(activityList) : "empty";
     }
@@ -179,6 +188,10 @@ public class ActivityController {
      */
     @RequestMapping("/screenCostActivities")
     public String screenCostActivities(Integer tag, Integer pageNum, Integer pageSize) {
+        if (tag == null || pageNum == null || pageSize == null) {
+            System.out.println("screenCostActivities Error");
+            return "ErrorParameter";
+        }
         String activityList = activityService.screenTypeActivities(tag, pageNum, pageSize);
         return !"empty".equals(activityList) ? JSON.toJSONString(activityList) : "empty";
     }
@@ -192,6 +205,10 @@ public class ActivityController {
      */
     @RequestMapping("/screenCityActivities")
     public String screenCityActivities(String city, String county, Integer pageNum, Integer pageSize) {
+        if (city == null || county == null || pageNum == null || pageSize == null) {
+            System.out.println("screenCityActivities Error");
+            return "ErrorParameter";
+        }
         String activityList = activityService.screenCityActivities(city, county, pageNum, pageSize);
         return !"empty".equals(activityList) ? JSON.toJSONString(activityList) : "empty";
     }
@@ -203,6 +220,10 @@ public class ActivityController {
      */
     @RequestMapping("/getTypeFromKind")
     public String getTypeFromKind(Integer kindId) {
+        if (kindId == null) {
+            System.out.println("getTypeFromKind Error");
+            return "ErrorParameter";
+        }
         String typeList = activityService.getTypeFromKind(kindId);
         return !"empty".equals(typeList) ? typeList : "empty";
     }
@@ -215,6 +236,24 @@ public class ActivityController {
      */
     @RequestMapping("/judgeEnterActivity")
     public String judgeEnterActivity(Integer id, Integer activityId) {
+        if (id == null || activityId == null) {
+            System.out.println("judgeEnterActivity Error");
+            return "ErrorParameter";
+        }
         return activityService.judgeEnterActivity(id, activityId);
+    }
+
+    /**
+     * @param activityDetailJson 修改后的ActivityDetail对象的JSON串
+     * @return 返回修改成功"true"
+     * @description 修改活动信息
+     */
+    @RequestMapping("/modifyActivity")
+    public String modifyActivity(String activityDetailJson) {
+        if (activityDetailJson == null) {
+            System.out.println("modifyActivity Error");
+            return "ErrorParameter";
+        }
+        return activityService.modifyActivity(activityDetailJson);
     }
 }

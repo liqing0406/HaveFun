@@ -15,14 +15,10 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
@@ -54,6 +50,8 @@ public class ActivityService {
     ActivityKindDao activityKindDao;
     @Resource
     ActivityLocationDao activityLocationDao;
+    @Resource
+    PicturesDao picturesDao;
 
     public String[] getRotationChartPictures() {
         return new String[]{ValueConfig.SERVER_URL + "localPictures/1.png",
@@ -112,15 +110,41 @@ public class ActivityService {
     @Transactional
     @Rollback(value = false)
     @CacheEvict(value = "activity")
-    public boolean addActivity(@RequestParam(value = "file", required = false) List<MultipartFile> files, String activityDetailJson) {
+    public boolean addActivity(List<MultipartFile> files, String activityDetailJson) {
         ActivityDetail activityDetail = JSON.parseObject(activityDetailJson, ActivityDetail.class);
+        Activity activity = activityDetail.getActivity();
+        TypeOfKind typeOfKind = typeOfKindDao.findTypeOfKindByTypeName(activity.getTypeOfKind().getTypeName());
+        ActivityKind activityKind = activityKindDao.findActivityKindByKindName(activity.getTypeOfKind().getActivityKind().getKindName());
+        ActivityLocation activityLocation = new ActivityLocation();
+        String province = activityDetail.getActivity().getActivityLocation().getProvince();
+        String city = activityDetail.getActivity().getActivityLocation().getCity();
+        String county = activityDetail.getActivity().getActivityLocation().getCounty();
+        if (province != null && !"".equals(province)) {
+            activityLocation.setProvince(province);
+        }
+        if (city != null && !"".equals(city)) {
+            activityLocation.setCity(city);
+        }
+        if (county != null && !"".equals(county)) {
+            activityLocation.setCounty(county);
+        }
+        activityLocation.setActivity(activity);
+        typeOfKind.setActivityKind(activityKind);
+        activity.setTypeOfKind(typeOfKind);
+        activity.setCollectNum(0);
+        activity.setSignUpNum(0);
+        activity.setForwardNum(0);
+        activity.setActivityLocation(activityLocation);
+        activity.setReleaseTime(new Date());
+        activityDao.save(activity);
+        activityDetail.setActivity(activity);
+        activityDetailDao.save(activityDetail);
+        activityDetail = activityDetailDao.getOne(activityDetail.getActivityDetailId());
         Set<Picture> pictures = new HashSet<>();
-        int count = 0;
         boolean flag;
         for (MultipartFile file : files) {
-            count++;
-            String fileName = file.getOriginalFilename() + count + Objects.requireNonNull(file.getOriginalFilename()).substring(file.getOriginalFilename().lastIndexOf("."));
-            File dest = new File(ValueConfig.UPLOAD_FOLDER + "activity_pictures/" + fileName);
+            String fileName = "front.png";
+            File dest = new File(ValueConfig.UPLOAD_FOLDER + "activity_pictures/" + activity.getActivityId() + "/" + fileName);
             if (!dest.getParentFile().exists()) { //判断文件父目录是否存在
                 flag = dest.getParentFile().mkdir();
             } else {
@@ -132,8 +156,9 @@ public class ActivityService {
                     Picture picture = new Picture();
                     picture.setActivityDetail(activityDetail);
                     picture.setActivity(activityDetail.getActivity());
-                    picture.setPictureName(ValueConfig.SERVER_URL + "localPictures/activity_pictures/" + activityDetail.getActivity().getActivityId() + "/" + fileName);
+                    picture.setPictureName("activity_pictures/" + activityDetail.getActivity().getActivityId() + "/" + fileName);
                     pictures.add(picture);
+                    picturesDao.save(picture);
                 } catch (IllegalStateException | IOException e) {
                     e.printStackTrace();
                 }
@@ -222,4 +247,20 @@ public class ActivityService {
         }
     }
 
+    @Transactional
+    @Rollback(value = false)
+    public String modifyActivity(String activityDetailJson) {
+        ActivityDetail newActivityDetail = JSON.parseObject(activityDetailJson, ActivityDetail.class);
+        ActivityDetail activityDetail = activityDetailDao.getOne(newActivityDetail.getActivityDetailId());
+        activityDetail.getActivity().setActivityTile(newActivityDetail.getActivity().getActivityTile());
+        activityDetail.getActivity().setActivityTime(newActivityDetail.getActivity().getActivityTime());
+        activityDetail.getActivity().setActivityCost(newActivityDetail.getActivity().getActivityCost());
+        ActivityLocation activityLocation = activityLocationDao.getOne(newActivityDetail.getActivity().getActivityLocation().getLocationId());
+        activityDetail.getActivity().setActivityLocation(activityLocation);
+        activityDetail.getActivity().setActivityContact(newActivityDetail.getActivity().getActivityContact());
+        activityDetail.setActivityInfo(newActivityDetail.getActivityInfo());
+        activityDetail.setOtherInfo(newActivityDetail.getOtherInfo());
+        activityDetailDao.save(activityDetail);
+        return "true";
+    }
 }

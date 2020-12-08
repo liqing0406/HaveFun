@@ -3,12 +3,10 @@ package com.hebtu.havefun.service;
 import com.alibaba.fastjson.JSON;
 import com.hebtu.havefun.config.ValueConfig;
 import com.hebtu.havefun.dao.*;
-import com.hebtu.havefun.entity.Messages;
 import com.hebtu.havefun.entity.User.*;
 import com.hebtu.havefun.entity.activity.Activity;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.data.domain.*;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.test.annotation.Rollback;
@@ -41,8 +39,6 @@ public class UserService {
     @Resource
     UserEnterActivityDao userEnterActivityDao;
     @Resource
-    MessagesDao messagesDao;
-    @Resource
     UserRelationshipDao userRelationshipDao;
     @Resource
     UserCollectActivityDao userCollectActivityDao;
@@ -61,7 +57,7 @@ public class UserService {
         user.setPhoneNum(phoneNum);
         user.setPassword(password);
         user.setUserId(ValueConfig.USER_ID + Integer.parseInt(userDao.count() + ""));
-        user.setHeadPortrait("localPictures/man.png");
+        user.setHeadPortrait("man.png");
         user.setUserName("飞翔的企鹅");
         userDetail.setNumOfActivityForUser(0);
         userDetail.setSex(1);
@@ -70,6 +66,7 @@ public class UserService {
         user.setUserDetail(userDetail);
         userDetail.setUser(user);
         userDetailDao.save(userDetail);
+        userDao.save(user);
         return true;
     }
 
@@ -146,81 +143,12 @@ public class UserService {
 
     @Transactional
     @Rollback(value = false)
-    @CacheEvict(value = "user-login",allEntries = true)
+    @CacheEvict(value = "user-login", allEntries = true)
     public Boolean modifyPersonalSignature(Integer id, String personalSignature) {
         User user = userDao.getOne(id);
         user.getUserDetail().setPersonalSignature(personalSignature);
         userDao.save(user);
         return true;
-    }
-
-    @Transactional
-    @Rollback(value = false)
-    @CacheEvict(value = "user-msg")
-    public Messages addMsg(Integer sender, Integer receiver, String msg) {
-        Messages messages = new Messages();
-        User sendUser = userDao.getOne(sender);
-        User receiveUser = userDao.getOne(receiver);
-        messages.setSendUser(sendUser);
-        messages.setReceiveUser(receiveUser);
-        messages.setTime(new Date());
-        messages.setRead(false);
-        messages.setMessage(msg);
-        messagesDao.save(messages);
-        return messages;
-    }
-
-    @Cacheable(value = "user-msg", key = "'getMsg'+#sender+','+#receiver+','+#pageNum+','+#pageSize")
-    public List<Messages> getMsg(Integer sender, Integer receiver, Integer pageNum, Integer pageSize) {
-        Sort sort = Sort.by(Sort.Direction.DESC, "time");
-        if (userDao.existsById(sender) && userDao.existsById(receiver)) {
-            User sendUser = userDao.getOne(sender);
-            User receiveUser = userDao.getOne(receiver);
-            Pageable pageable = PageRequest.of(pageNum - 1, pageSize, sort);
-            Specification<Messages> spec = (Specification<Messages>) (root, criteriaQuery, criteriaBuilder) -> {
-                Predicate sendPredicate = criteriaBuilder.equal(root.get("sendUser"), sendUser);
-                Predicate receivePredicate = criteriaBuilder.equal(root.get("receiveUser"), receiveUser);
-                return criteriaBuilder.and(sendPredicate, receivePredicate);
-            };
-            Page<Messages> page = messagesDao.findAll(spec, pageable);
-            List<Messages> messagesList = page.getContent();
-            return messagesList.size() == 0 ? null : messagesList;
-        } else {
-            return null;
-        }
-    }
-
-    @Cacheable(value = "user-msg", key = "'getMsgNum'+#sender+','+#receiver")
-    public long getMsgNum(Integer sender, Integer receiver) {
-        User sendUser = userDao.getOne(sender);
-        User receiveUser = userDao.getOne(receiver);
-        Specification<Messages> spec = (Specification<Messages>) (root, criteriaQuery, criteriaBuilder) -> {
-            Predicate sendPredicate = criteriaBuilder.equal(root.get("sendUser"), sendUser);
-            Predicate receivePredicate = criteriaBuilder.equal(root.get("receiveUser"), receiveUser);
-            return criteriaBuilder.and(sendPredicate, receivePredicate);
-        };
-        return messagesDao.count(spec);
-    }
-
-    public List<Messages> freshMsg(Integer otherId, Integer mineId) {
-        if (userDao.existsById(otherId) && userDao.existsById(mineId)) {
-            User sendUser = userDao.getOne(otherId);
-            User receiveUser = userDao.getOne(mineId);
-            Specification<Messages> spec = (Specification<Messages>) (root, criteriaQuery, criteriaBuilder) -> {
-                Predicate statusPredicate = criteriaBuilder.equal(root.get("isRead"), false);
-                Predicate sendPredicate = criteriaBuilder.equal(root.get("sendUser"), sendUser);
-                Predicate receivePredicate = criteriaBuilder.equal(root.get("receiveUser"), receiveUser);
-                return criteriaBuilder.and(statusPredicate, sendPredicate, receivePredicate);
-            };
-            List<Messages> list = messagesDao.findAll(spec);
-            for (Messages messages : list) {
-                messages.setRead(true);
-                messagesDao.save(messages);
-            }
-            return list;
-        } else {
-            return null;
-        }
     }
 
     @Transactional
@@ -278,47 +206,6 @@ public class UserService {
         return userDao.getOne(id);
     }
 
-    public List<Map<Messages, Integer>> getMessageList(Integer id) {
-        User user = userDao.getOne(id);
-        Specification<Messages> specification = (Specification<Messages>) (root, criteriaQuery, criteriaBuilder) -> {
-            Predicate sendPredicate = criteriaBuilder.equal(root.get("sendUser"), user);
-            Predicate receivePredicate = criteriaBuilder.equal(root.get("receiveUser"), user);
-            return criteriaBuilder.or(sendPredicate, receivePredicate);
-        };
-        List<Messages> messagesList = messagesDao.findAll(specification);
-        List<User> list = new ArrayList<>();
-        List<Map<Messages, Integer>> returnMessages = new ArrayList<>();
-        for (Messages messages : messagesList) {
-            if (messages.getSendUser().getId().equals(user.getId())) {
-                User u = messages.getReceiveUser();
-                if (!list.contains(u)) {
-                    list.add(u);
-                }
-            } else if (messages.getReceiveUser().getId().equals(user.getId())) {
-                User u = messages.getSendUser();
-                if (!list.contains(u)) {
-                    System.out.println(u.getId());
-                    list.add(u);
-                }
-            }
-        }
-        Integer count;
-        for (User u : list) {
-            Messages messages1 = messagesDao.findFirstBySendUserAndReceiveUserOrderByTimeDesc(u, user);
-            Messages messages2 = messagesDao.findFirstBySendUserAndReceiveUserOrderByTimeDesc(user, u);
-            count = messagesDao.countBySendUserAndReceiveUserAndIsRead(u, user, false);
-            Map<Messages, Integer> map = new HashMap<>();
-            if (messages1.getTime().compareTo(messages2.getTime()) > 0) {
-                map.put(messages1, count);
-                returnMessages.add(map);
-            } else {
-                map.put(messages2, count);
-                returnMessages.add(map);
-            }
-        }
-        return returnMessages;
-    }
-
     @Cacheable(value = "user-follow", key = "'getFollowUsers'+#id")
     public List<User> getFollowUsers(Integer id) {
         Specification<UserRelationship> specification = (Specification<UserRelationship>) (root, criteriaQuery, criteriaBuilder) -> criteriaBuilder.equal(root.get("followUserId"), id);
@@ -346,7 +233,7 @@ public class UserService {
 
     @Transactional
     @Rollback(value = false)
-    @CacheEvict(value = "user-login",allEntries = true)
+    @CacheEvict(value = "user-login", allEntries = true)
     public Boolean modifyUserHeadPortrait(MultipartFile headPortrait, Integer id) {
         User user = userDao.getOne(id);
         boolean flag;
@@ -373,7 +260,7 @@ public class UserService {
 
     @Transactional
     @Rollback(value = false)
-    @CacheEvict(value = "user-login",allEntries = true)
+    @CacheEvict(value = "user-login", allEntries = true)
     public boolean modifyUserName(String userName, Integer id) {
         User user = userDao.getOne(id);
         user.setUserName(userName);
@@ -383,7 +270,7 @@ public class UserService {
 
     @Transactional
     @Rollback(value = false)
-    @CacheEvict(value = "user-login",allEntries = true)
+    @CacheEvict(value = "user-login", allEntries = true)
     public boolean modifyUserSex(Integer sex, Integer id) {
         User user = userDao.getOne(id);
         UserDetail userDetail = userDetailDao.findUserDetailByUser(user);

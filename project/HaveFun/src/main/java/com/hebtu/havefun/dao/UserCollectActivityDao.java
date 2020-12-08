@@ -6,8 +6,6 @@ import com.hebtu.havefun.entity.activity.Activity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
-import java.util.List;
-
 /**
  * @author PengHuAnZhi
  * @createTime 2020/11/29 15:58

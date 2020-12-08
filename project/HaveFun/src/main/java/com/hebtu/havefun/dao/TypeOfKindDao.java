@@ -12,6 +12,8 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
  * @className TypeOfKindDao.java
  * @description TODO
  */
-public interface TypeOfKindDao extends JpaRepository<TypeOfKind,Integer>, JpaSpecificationExecutor<TypeOfKind> {
+public interface TypeOfKindDao extends JpaRepository<TypeOfKind, Integer>, JpaSpecificationExecutor<TypeOfKind> {
     TypeOfKind findTypeOfKindByActivityKind(ActivityKind activityKind);
+
+    TypeOfKind findTypeOfKindByTypeName(String typeName);
 }

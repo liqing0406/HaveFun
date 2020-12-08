@@ -27,12 +27,9 @@ public class TypeOfKind implements Serializable {
     @Column(name = "name")
     //小类名称
     private String typeName;
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     //一对一关联对象
     private ActivityKind activityKind;
-    @OneToOne
-    @JoinColumn(name = "activity_id")
-    private Activity activity;
 
     public Integer getId() {
         return id;
@@ -58,13 +55,6 @@ public class TypeOfKind implements Serializable {
         this.activityKind = activityKind;
     }
 
-    public Activity getActivity() {
-        return activity;
-    }
-
-    public void setActivity(Activity activity) {
-        this.activity = activity;
-    }
 
     @Override
     public String toString() {
@@ -72,7 +62,6 @@ public class TypeOfKind implements Serializable {
                 "id=" + id +
                 ", typeName='" + typeName + '\'' +
                 ", activityKind=" + activityKind +
-                ", activity=" + activity +
                 '}';
     }
 

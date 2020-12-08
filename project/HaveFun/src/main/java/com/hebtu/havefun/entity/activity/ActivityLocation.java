@@ -1,5 +1,11 @@
 package com.hebtu.havefun.entity.activity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import org.hibernate.annotations.Proxy;
+import org.springframework.stereotype.Component;
+
+import javax.persistence.*;
+
 /**
  * @author PengHuAnZhi
  * @createTime 2020/11/29 16:20
@@ -7,12 +13,6 @@ package com.hebtu.havefun.entity.activity;
  * @className ActivityLocation.java
  * @description TODO
  */
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import org.hibernate.annotations.Proxy;
-import org.springframework.stereotype.Component;
-
-import javax.persistence.*;
-
 @Entity
 @Table(name = "activity_location")
 @Component

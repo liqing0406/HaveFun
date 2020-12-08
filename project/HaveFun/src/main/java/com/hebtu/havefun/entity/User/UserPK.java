@@ -1,7 +1,5 @@
 package com.hebtu.havefun.entity.User;
 
-import org.springframework.stereotype.Component;
-
 import javax.persistence.*;
 import java.io.Serializable;
 

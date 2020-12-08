@@ -1,13 +1,11 @@
 package com.hebtu.havefun.entity.User;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.hebtu.havefun.entity.activity.Activity;
 import org.hibernate.annotations.Proxy;
 import org.springframework.stereotype.Component;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.Set;
 
 /**
  * @author PengHuAnZhi

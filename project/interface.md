@@ -200,27 +200,6 @@ public class UserController {
     }
 ```
 
-## 发送消息
-
-```java
-    /**
-     * @param sender   发送者id,注意不是getUserId,是getId
-     * @param receiver 接收者id,注意不是getUserId,是getId
-     * @param msg      消息内容
-     * @return 返回这个消息对象Messages,出错返回"false"
-     * @description 发送消息，这边插入数据库
-     */
-    @RequestMapping("/addMsg")
-    public String addMsg(Integer sender, Integer receiver, String msg) {
-        if (sender == null || receiver == null || msg == null) {
-            System.out.println("addMsg Error");
-            return "ErrorParameter";
-        }
-        Messages messages = userService.addMsg(sender, receiver, msg);
-        return messages != null ? JSON.toJSONString(messages) : "false";
-    }
-```
-
 ## 获取消息列表，分页显示
 
 ```java
@@ -240,46 +219,6 @@ public class UserController {
         }
         List<Messages> messagesList = userService.getMsg(sender, receiver, pageNum, pageSize);
         return messagesList != null ? JSON.toJSONString(messagesList) : "empty";
-    }
-```
-
-## 获取两个人之间总消息数量
-
-```java
-    /**
-     * @param sender   发送者id,注意不是getUserId,是getId
-     * @param receiver 接收者id,注意不是getUserId,是getId
-     * @return 返回的是一个数量的string类型
-     * @description 获取两个人之间总消息数量
-     */
-    @RequestMapping("/getMsgNum")
-    public String getMsgNum(Integer sender, Integer receiver) {
-        if (sender == null || receiver == null) {
-            System.out.println("getMsgNum Error");
-            return "ErrorParameter";
-        }
-        Long count = userService.getMsgNum(sender, receiver);
-        return count + "";
-    }
-```
-
-## 刷新消息
-
-```java
-    /**
-     * @param otherId 对方的id，注意不是getUserId,是getId
-     * @param mineId  自己的id，注意不是getUserId,是getId
-     * @return 返回依然是List<Messages>集合Json,没有新消息则是"empty"
-     * @description 每隔若干秒刷新消息
-     */
-    @RequestMapping("/freshMsg")
-    public String freshMsg(Integer otherId, Integer mineId) {
-        if (otherId == null || mineId == null) {
-            System.out.println("freshMsg Error");
-            return "ErrorParameter";
-        }
-        List<Messages> messagesList = userService.freshMsg(otherId, mineId);
-        return messagesList.size() != 0 ? JSON.toJSONString(messagesList) : "empty";
     }
 ```
 
@@ -382,38 +321,18 @@ public class UserController {
 
 ```java
     /**
-     * @param id 用户的id
-     * @return 返回user对象的JSON串,没找到对应的用户则是"false"
-     * @description 根据id获取用户的信息，用于点击某个用户头像进入个人主页
-     */
+         * @param id 用户的id
+         * @return 返回user对象的JSON串,没找到对应的用户则是"false"
+         * @description 根据id获取用户的信息，用于点击某个用户头像进入个人主页
+         */
     @RequestMapping("/getUser")
     public String getUser(Integer id) {
-        User user = userService.getUser(id);
         if (id == null) {
             System.out.println("getUser Error");
             return "ErrorParameter";
         }
+        User user = userService.getUser(id);
         return user != null ? JSON.toJSONString(user) : "false";
-    }
-```
-
-## 获取和用户交流过的消息列表
-
-```java
-    /**
-     * @param id 当前user的id
-     * @return 返回一个List<Map < Messages, Integer>>,messages的数据表示用于展示聊天列表中最新的一条消
-     * 息，Integer的数据为未读消息数量，业务逻辑为我是接收者，发送者为对方，且消息未读,没有聊天信息则是"empty"
-     * @description 获取和用户交流过的消息列表
-     */
-    @RequestMapping("/getMessageList")
-    public String getMessageList(Integer id) {
-        if (id == null) {
-            System.out.println("getMessageList Error");
-            return "ErrorParameter";
-        }
-        List<Map<Messages, Integer>> messagesList = userService.getMessageList(id);
-        return messagesList.size() != 0 ? JSON.toJSONString(messagesList) : "empty";
     }
 ```
 
@@ -427,10 +346,13 @@ public class UserController {
      */
     @RequestMapping("/getFollowUsers")
     public String getFollowUsers(Integer id) {
+        if (id == null) {
+            System.out.println("getFollowUsers Error");
+            return "ErrorParameter";
+        }
         List<User> userList = userService.getFollowUsers(id);
         return userList.size() != 0 ? JSON.toJSONString(userList) : "empty";
     }
-
 ```
 
 ## 获取当前用户的粉丝列表
@@ -443,6 +365,10 @@ public class UserController {
      */
     @RequestMapping("/getFollowedUsers")
     public String getFollowedUsers(Integer id) {
+        if (id == null) {
+            System.out.println("getFollowedUsers Error");
+            return "ErrorParameter";
+        }
         List<User> userList = userService.getFollowedUsers(id);
         return userList.size() != 0 ? JSON.toJSONString(userList) : "empty";
     }
@@ -459,6 +385,10 @@ public class UserController {
      */
     @RequestMapping("/modifyUserHeadPortrait")
     public String modifyUserHeadPortrait(MultipartFile headPortrait, Integer id) {
+        if (headPortrait == null || id == null) {
+            System.out.println("modifyUserHeadPortrait Error");
+            return "ErrorParameter";
+        }
         return userService.modifyUserHeadPortrait(headPortrait, id) ? "true" : "false";
     }
 ```
@@ -474,6 +404,10 @@ public class UserController {
      */
     @RequestMapping("/modifyUserName")
     public String modifyUserName(String userName, Integer id) {
+        if (userName == null || id == null) {
+            System.out.println("modifyUserName Error");
+            return "ErrorParameter";
+        }
         return userService.modifyUserName(userName, id) ? "true" : "false";
     }
 ```
@@ -489,6 +423,10 @@ public class UserController {
      */
     @RequestMapping("/modifyUserSex")
     public String modifyUserSex(Integer sex, Integer id) {
+        if (sex == null || id == null) {
+            System.out.println("modifyUserName Error");
+            return "ErrorParameter";
+        }
         return userService.modifyUserSex(sex, id) ? "true" : "false";
     }
 }
@@ -690,6 +628,10 @@ public class ActivityController {
      */
     @RequestMapping("/screenTimeActivities")
     public String screenTimeActivities(Integer howManyDays, Integer pageNum, Integer pageSize) {
+        if (howManyDays == null || pageNum == null || pageSize == null) {
+            System.out.println("screenTimeActivities Error");
+            return "ErrorParameter";
+        }
         String activityList = activityService.screenTimeActivities(howManyDays, pageNum, pageSize);
         return !"empty".equals(activityList) ? JSON.toJSONString(activityList) : "empty";
     }
@@ -704,9 +646,13 @@ public class ActivityController {
      * @return 返回一个List<Activity>集合,如果没有就返回"empty"
      * @description 根据花费筛选活动
      */
-    @RequestMapping("/screenTypeActivities")
-    public String screenTypeActivities(Integer lowCost, Integer highCost, Integer pageNum, Integer pageSize) {
-        String activityList = activityService.screenCostActivities(lowCost, highCost, pageNum, pageSize);
+    @RequestMapping("/screenCostActivities")
+    public String screenCostActivities(Integer tag, Integer pageNum, Integer pageSize) {
+        if (tag == null || pageNum == null || pageSize == null) {
+            System.out.println("screenCostActivities Error");
+            return "ErrorParameter";
+        }
+        String activityList = activityService.screenTypeActivities(tag, pageNum, pageSize);
         return !"empty".equals(activityList) ? JSON.toJSONString(activityList) : "empty";
     }
 ```
@@ -719,9 +665,13 @@ public class ActivityController {
      * @return 返回一个List<Activity>集合,如果没有就返回"empty"
      * @description 根据活动种类筛选活动
      */
-    @RequestMapping("/screenCostActivities")
-    public String screenCostActivities(Integer tag, Integer pageNum, Integer pageSize) {
-        String activityList = activityService.screenTypeActivities(tag, pageNum, pageSize);
+    @RequestMapping("/screenTypeActivities")
+    public String screenTypeActivities(Integer lowCost, Integer highCost, Integer pageNum, Integer pageSize) {
+        if (lowCost == null || highCost == null || pageNum == null || pageSize == null) {
+            System.out.println("screenTypeActivities Error");
+            return "ErrorParameter";
+        }
+        String activityList = activityService.screenCostActivities(lowCost, highCost, pageNum, pageSize);
         return !"empty".equals(activityList) ? JSON.toJSONString(activityList) : "empty";
     }
 ```
@@ -738,6 +688,10 @@ public class ActivityController {
      */
     @RequestMapping("/screenCityActivities")
     public String screenCityActivities(String city, String county, Integer pageNum, Integer pageSize) {
+        if (city == null || county == null || pageNum == null || pageSize == null) {
+            System.out.println("screenCityActivities Error");
+            return "ErrorParameter";
+        }
         String activityList = activityService.screenCityActivities(city, county, pageNum, pageSize);
         return !"empty".equals(activityList) ? JSON.toJSONString(activityList) : "empty";
     }
@@ -753,6 +707,10 @@ public class ActivityController {
      */
     @RequestMapping("/getTypeFromKind")
     public String getTypeFromKind(Integer kindId) {
+        if (kindId == null) {
+            System.out.println("getTypeFromKind Error");
+            return "ErrorParameter";
+        }
         String typeList = activityService.getTypeFromKind(kindId);
         return !"empty".equals(typeList) ? typeList : "empty";
     }
@@ -769,7 +727,29 @@ public class ActivityController {
      */
     @RequestMapping("/judgeEnterActivity")
     public String judgeEnterActivity(Integer id, Integer activityId) {
+        if (id == null || activityId == null) {
+            System.out.println("judgeEnterActivity Error");
+            return "ErrorParameter";
+        }
         return activityService.judgeEnterActivity(id, activityId);
+    }
+```
+
+## 修改活动信息
+
+```java
+    /**
+     * @param activityJson 修改后的Activity对象的JSON串
+     * @return 返回修改成功"true"
+     * @description 修改活动信息
+     */
+    @RequestMapping("/modifyActivity")
+    public String modifyActivity(String activityJson) {
+        if (activityJson == null) {
+            System.out.println("modifyActivity Error");
+            return "ErrorParameter";
+        }
+        return activityService.modifyActivity(activityJson);
     }
 }
 ```

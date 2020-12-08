@@ -1,13 +1,11 @@
 package com.hebtu.havefun.entity.User;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.hebtu.havefun.entity.Messages;
 import org.hibernate.annotations.Proxy;
 import org.springframework.stereotype.Component;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.Set;
 
 /**
  * @author PengHuAnZhi
@@ -46,9 +44,6 @@ public class User implements Serializable {
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     //一对一关联对象
     private UserDetail userDetail;
-    @OneToMany
-    //消息
-    private Set<Messages> messages;
 
     public User() {
     }

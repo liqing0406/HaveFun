@@ -9,7 +9,6 @@ import com.hebtu.havefun.config.ValueConfig;
 import com.hebtu.havefun.dao.ActivityDao;
 import com.hebtu.havefun.dao.UserDao;
 import com.hebtu.havefun.dao.UserDetailDao;
-import com.hebtu.havefun.entity.Messages;
 import com.hebtu.havefun.entity.activity.Activity;
 import com.hebtu.havefun.entity.activity.Picture;
 import com.hebtu.havefun.service.ActivityService;
@@ -60,16 +59,5 @@ class HavefunApplicationTests {
 //            System.out.println(str);
 //        }
 //        System.out.println(activityService.judgeCollected("1", "2"));
-        List<Map<Messages, Integer>> messageList = userService.getMessageList(3);
-        String str = JSON.toJSONString(messageList);
-        List<Map<Messages, Integer>> message;
-        message = JSON.parseObject(str, new TypeReference<List<Map<Messages, Integer>>>() {
-        });
-        Map<Messages, Integer> map = message.get(0);
-        for (Map.Entry<Messages, Integer> entry : map.entrySet()) {
-            Messages mapKey = entry.getKey();
-            Integer mapValue = entry.getValue();
-            System.out.println(mapKey.toString() + "：" + mapValue);
-        }
     }
 }
