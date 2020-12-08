@@ -35,7 +35,7 @@ public class ActivityLocation {
     //详细地址
     @Column(name = "detailed_address")
     private String detailedAddress;
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "activity_id")
     //一对一关联activity对象
     private Activity activity;

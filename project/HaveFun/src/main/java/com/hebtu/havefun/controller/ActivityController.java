@@ -151,65 +151,24 @@ public class ActivityController {
     }
 
     /**
-     * @param howManyDays 参数为近多少天，用于筛选符合要求的时间内开始的活动
-     * @return 返回一个List<Activity>集合
-     * @description 根据时间筛选活动
-     */
-    @RequestMapping("/screenTimeActivities")
-    public String screenTimeActivities(Integer howManyDays, Integer pageNum, Integer pageSize) {
-        if (howManyDays == null || pageNum == null || pageSize == null) {
-            System.out.println("screenTimeActivities Error");
-            return "ErrorParameter";
-        }
-        String activityList = activityService.screenTimeActivities(howManyDays, pageNum, pageSize);
-        return !"empty".equals(activityList) ? JSON.toJSONString(activityList) : "empty";
-    }
-
-    /**
-     * @param lowCost  价格区间的小值
-     * @param highCost 价格区间的大值
-     * @return 返回一个List<Activity>集合
-     * @description 根据花费筛选活动
-     */
-    @RequestMapping("/screenTypeActivities")
-    public String screenTypeActivities(Integer lowCost, Integer highCost, Integer pageNum, Integer pageSize) {
-        if (lowCost == null || highCost == null || pageNum == null || pageSize == null) {
-            System.out.println("screenTypeActivities Error");
-            return "ErrorParameter";
-        }
-        String activityList = activityService.screenCostActivities(lowCost, highCost, pageNum, pageSize);
-        return !"empty".equals(activityList) ? JSON.toJSONString(activityList) : "empty";
-    }
-
-    /**
-     * @param tag tag为活动种类的最小划分，即小类而不是大类，值为种类的id
-     * @return 返回一个List<Activity>集合
-     * @description 根据活动种类筛选活动
-     */
-    @RequestMapping("/screenCostActivities")
-    public String screenCostActivities(Integer tag, Integer pageNum, Integer pageSize) {
-        if (tag == null || pageNum == null || pageSize == null) {
-            System.out.println("screenCostActivities Error");
-            return "ErrorParameter";
-        }
-        String activityList = activityService.screenTypeActivities(tag, pageNum, pageSize);
-        return !"empty".equals(activityList) ? JSON.toJSONString(activityList) : "empty";
-    }
-
-    /**
-     * @param city     城市名称，后面没有"市"
-     * @param county   区名称，同样后面没有"区"等后缀
-     * @param pageNum  页码
+     * @description 根据若干条件筛选活动
+     * @param typeName 小类活动的名称
+     * @param lowCost 价格区间的低区间
+     * @param highCost 价格区间的高区间
+     * @param howManyDays 近多少天
+     * @param city 市
+     * @param county 区
+     * @param pageNum 页码
      * @param pageSize 页大小
-     * @return 返回List<Activity>集合，如果没有则返回"empty"
+     * @return 返回一个List<Activity>集合的JSON串，如果集合为空，返回字符串"empty"
      */
-    @RequestMapping("/screenCityActivities")
-    public String screenCityActivities(String city, String county, Integer pageNum, Integer pageSize) {
-        if (city == null || county == null || pageNum == null || pageSize == null) {
-            System.out.println("screenCityActivities Error");
+    @RequestMapping("/screenActivities")
+    public String screenActivities(String typeName, Integer lowCost, Integer highCost, Integer howManyDays, String city, String county, Integer pageNum, Integer pageSize) {
+        if (howManyDays == null || pageNum == null || pageSize == null || typeName == null || lowCost == null || highCost == null || city == null || county == null) {
+            System.out.println("screenActivities Error");
             return "ErrorParameter";
         }
-        String activityList = activityService.screenCityActivities(city, county, pageNum, pageSize);
+        String activityList = activityService.screenActivities(howManyDays, typeName, lowCost, highCost, city, county, pageNum, pageSize);
         return !"empty".equals(activityList) ? JSON.toJSONString(activityList) : "empty";
     }
 
@@ -255,5 +214,19 @@ public class ActivityController {
             return "ErrorParameter";
         }
         return activityService.modifyActivity(activityDetailJson);
+    }
+
+    /**
+     * @param activityId 活动id
+     * @return 返回删除成功"true"或者"false"
+     * @description 删除活动，数据库状态字段置0
+     */
+    @RequestMapping("/deleteActivity")
+    public String deleteActivity(Integer activityId) {
+        if (activityId == null) {
+            System.out.println("deleteActivity Error");
+            return "ErrorParameter";
+        }
+        return "true".equals(activityService.deleteActivity(activityId)) ? "true" : "false";
     }
 }

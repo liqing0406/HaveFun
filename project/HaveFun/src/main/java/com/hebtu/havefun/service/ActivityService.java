@@ -66,7 +66,11 @@ public class ActivityService {
         Sort sort;
         Pageable pageable;
         Page<Activity> page;
-        Specification<Activity> specification = (Specification<Activity>) (root, criteriaQuery, criteriaBuilder) -> criteriaBuilder.greaterThanOrEqualTo(root.get("activityTime"), new Date());
+        Specification<Activity> specification = (Specification<Activity>) (root, criteriaQuery, criteriaBuilder) -> {
+            Predicate timePredicate = criteriaBuilder.greaterThanOrEqualTo(root.get("activityTime"), new Date());
+            Predicate statusPredicate = criteriaBuilder.equal(root.get("status"), 1);
+            return criteriaBuilder.and(timePredicate, statusPredicate);
+        };
         switch (activityKind) {
             case 1://热门活动
                 sort = Sort.by(Sort.Direction.DESC, "collectNum");
@@ -100,7 +104,11 @@ public class ActivityService {
     @Cacheable(value = "activity-collect", key = "'getCollectedActivities'+#id+','+#pageNum+','+#pageSize")
     public String getCollectedActivities(Integer id, Integer pageNum, Integer pageSize) {
         User user = userDao.getOne(id);
-        Specification<UserCollectActivity> spec = (Specification<UserCollectActivity>) (root, criteriaQuery, criteriaBuilder) -> criteriaBuilder.equal(root.get("user"), user);
+        Specification<UserCollectActivity> spec = (Specification<UserCollectActivity>) (root, criteriaQuery, criteriaBuilder) -> {
+            Predicate userPredicate = criteriaBuilder.equal(root.get("user"), user);
+            Predicate activityPredicate = criteriaBuilder.equal(root.get("activity").get("status"), 1);
+            return criteriaBuilder.and(activityPredicate, userPredicate);
+        };
         Pageable pageable = PageRequest.of(pageNum - 1, pageSize);
         Page<UserCollectActivity> page = userCollectActivityDao.findAll(spec, pageable);
         List<UserCollectActivity> content = page.getContent();
@@ -132,6 +140,7 @@ public class ActivityService {
         typeOfKind.setActivityKind(activityKind);
         activity.setTypeOfKind(typeOfKind);
         activity.setCollectNum(0);
+        activity.setStatus(1);
         activity.setSignUpNum(0);
         activity.setForwardNum(0);
         activity.setActivityLocation(activityLocation);
@@ -172,7 +181,11 @@ public class ActivityService {
     @Cacheable(value = "activity-enter", key = "'getEnterActivities'+#id+','+#pageNum+','+#pageSize")
     public String getEnterActivities(Integer id, Integer pageNum, Integer pageSize) {
         User user = userDao.getOne(id);
-        Specification<UserEnterActivity> spec = (Specification<UserEnterActivity>) (root, criteriaQuery, criteriaBuilder) -> criteriaBuilder.equal(root.get("user"), user);
+        Specification<UserEnterActivity> spec = (Specification<UserEnterActivity>) (root, criteriaQuery, criteriaBuilder) -> {
+            Predicate userPredicate = criteriaBuilder.equal(root.get("user"), user);
+            Predicate activityPredicate = criteriaBuilder.equal(root.get("activity").get("status"), 1);
+            return criteriaBuilder.and(activityPredicate, userPredicate);
+        };
         Pageable pageable = PageRequest.of(pageNum - 1, pageSize);
         Page<UserEnterActivity> page = userEnterActivityDao.findAll(spec, pageable);
         List<UserEnterActivity> content = page.getContent();
@@ -182,49 +195,15 @@ public class ActivityService {
     @Cacheable(value = "activity", key = "'getPublishActivities'+#id+','+#pageNum+','+#pageSize")
     public String getPublishActivities(Integer id, Integer pageNum, Integer pageSize) {
         User user = userDao.getOne(id);
-        Specification<UserPublishActivity> spec = (Specification<UserPublishActivity>) (root, criteriaQuery, criteriaBuilder) -> criteriaBuilder.equal(root.get("user"), user);
+        Specification<UserPublishActivity> spec = (Specification<UserPublishActivity>) (root, criteriaQuery, criteriaBuilder) -> {
+            Predicate userPredicate = criteriaBuilder.equal(root.get("user"), user);
+            Predicate activityPredicate = criteriaBuilder.equal(root.get("activity").get("status"), 1);
+            return criteriaBuilder.and(activityPredicate, userPredicate);
+        };
         Pageable pageable = PageRequest.of(pageNum - 1, pageSize);
         Page<UserPublishActivity> page = userPublishActivityDao.findAll(spec, pageable);
         List<UserPublishActivity> content = page.getContent();
         return content.size() == 0 ? "empty" : JSON.toJSONString(content);
-    }
-
-    public String screenTimeActivities(Integer howManyDays, Integer pageNum, Integer pageSize) {
-        Specification<Activity> specification = (Specification<Activity>) (root, criteriaQuery, criteriaBuilder) -> {
-            Calendar calendar = Calendar.getInstance();
-            calendar.setTime(new Date());
-            calendar.add(Calendar.DATE, howManyDays * (-1));
-            return criteriaBuilder.greaterThanOrEqualTo(root.get("activityTime"), calendar.getTime());
-        };
-        List<Activity> activityList = activityDao.findAll(specification, PageRequest.of(pageNum - 1, pageSize, Sort.by(Sort.Direction.DESC, "activityTime"))).getContent();
-        return activityList.size() != 0 ? JSON.toJSONString(activityList) : "empty";
-    }
-
-    @Cacheable(value = "activity", key = "'screenTypeActivities'+#tag+','+#pageNum+','+#pageSize")
-    public String screenTypeActivities(Integer tag, Integer pageNum, Integer pageSize) {
-        TypeOfKind typeOfKind = typeOfKindDao.getOne(tag);
-        Specification<Activity> specification = (Specification<Activity>) (root, criteriaQuery, criteriaBuilder) -> criteriaBuilder.equal(root.get("typeOfKind"), typeOfKind);
-        List<Activity> activityList = activityDao.findAll(specification, PageRequest.of(pageNum - 1, pageSize, Sort.by(Sort.Direction.DESC, "activityTime"))).getContent();
-        return activityList.size() != 0 ? JSON.toJSONString(activityList) : "empty";
-    }
-
-    @Cacheable(value = "activity", key = "'screenCostActivities'+#lowCost+','+#highCost+','+#pageNum+','+#pageSize")
-    public String screenCostActivities(Integer lowCost, Integer highCost, Integer pageNum, Integer pageSize) {
-        Specification<Activity> specification = (Specification<Activity>) (root, criteriaQuery, criteriaBuilder) -> {
-            Predicate lowPredicate = criteriaBuilder.le(root.get("activityCost").as(Integer.class), highCost);
-            Predicate highPredicate = criteriaBuilder.ge(root.get("activityCost").as(Integer.class), lowCost);
-            return criteriaBuilder.and(highPredicate, lowPredicate);
-        };
-        List<Activity> activityList = activityDao.findAll(specification, PageRequest.of(pageNum - 1, pageSize, Sort.by(Sort.Direction.DESC, "activityTime"))).getContent();
-        return activityList.size() != 0 ? JSON.toJSONString(activityList) : "empty";
-    }
-
-    @Cacheable(value = "activity", key = "'screenCityActivities'+#city+','+#county+','+#pageNum+','+#pageSize")
-    public String screenCityActivities(String city, String county, Integer pageNum, Integer pageSize) {
-        ActivityLocation activityLocation = activityLocationDao.findActivityLocationByCityAndCounty(city, county);
-        Specification<Activity> specification = (Specification<Activity>) (root, criteriaQuery, criteriaBuilder) -> criteriaBuilder.equal(root.get("activityLocation"), activityLocation);
-        List<Activity> activityList = activityDao.findAll(specification);
-        return activityList.size() != 0 ? JSON.toJSONString(activityList) : "empty";
     }
 
     @Cacheable(value = "activity", key = "'getTypeFromKind'+#kindId")
@@ -262,5 +241,59 @@ public class ActivityService {
         activityDetail.setOtherInfo(newActivityDetail.getOtherInfo());
         activityDetailDao.save(activityDetail);
         return "true";
+    }
+
+    @Transactional
+    @Rollback(value = false)
+    public String deleteActivity(Integer activityId) {
+        Activity activity = activityDao.getOne(activityId);
+        activity.setStatus(0);
+        activityDao.save(activity);
+        return "true";
+    }
+
+    public String screenActivities(Integer howManyDays, String typeName, Integer lowCost, Integer highCost, String city, String county, Integer pageNum, Integer pageSize) {
+        TypeOfKind typeOfKind = null;
+        if (!"empty".equals(typeName)) {
+            typeOfKind = typeOfKindDao.findTypeOfKindByTypeName(typeName);
+        }
+        ActivityLocation activityLocation = null;
+        if (!"empty".equals(city) && !"empty".equals(county)) {
+            activityLocation = activityLocationDao.findActivityLocationByCityAndCounty(city, county);
+        }
+        TypeOfKind finalTypeOfKind = typeOfKind;
+        ActivityLocation finalActivityLocation = activityLocation;
+        Specification<Activity> specification = (Specification<Activity>) (root, criteriaQuery, criteriaBuilder) -> {
+            //时间的筛选条件
+            Predicate timePredicate = criteriaBuilder.notEqual(root.get("activityTime"), null);
+            if (howManyDays != -1) {
+                Calendar calendar = Calendar.getInstance();
+                calendar.setTime(new Date());
+                calendar.add(Calendar.DATE, howManyDays * (-1));
+                timePredicate = criteriaBuilder.greaterThanOrEqualTo(root.get("activityTime"), calendar.getTime());
+            }
+            //种类的筛选
+            Predicate typePredicate = criteriaBuilder.notEqual(root.get("typeOfKind"), null);
+            if (finalTypeOfKind != null) {
+                typePredicate = criteriaBuilder.equal(root.get("typeOfKind"), finalTypeOfKind);
+            }
+            //价格的筛选
+            Predicate lowPredicate = criteriaBuilder.notEqual(root.get("activityCost"), null);
+            if (highCost != -1) {
+                lowPredicate = criteriaBuilder.le(root.get("activityCost").as(Integer.class), highCost);
+            }
+            Predicate highPredicate = criteriaBuilder.notEqual(root.get("activityCost"), null);
+            if (lowCost != -1) {
+                highPredicate = criteriaBuilder.ge(root.get("activityCost").as(Integer.class), lowCost);
+            }
+            //位置的筛选
+            Predicate locationPredicate = criteriaBuilder.notEqual(root.get("activityLocation"), null);
+            if (finalActivityLocation != null) {
+                locationPredicate = criteriaBuilder.equal(root.get("activityLocation"), finalActivityLocation);
+            }
+            return criteriaBuilder.and(locationPredicate, highPredicate, lowPredicate, typePredicate, timePredicate);
+        };
+        List<Activity> activityList = activityDao.findAll(specification, PageRequest.of(pageNum - 1, pageSize, Sort.by(Sort.Direction.DESC, "activityTime"))).getContent();
+        return activityList.size() != 0 ? JSON.toJSONString(activityList) : "empty";
     }
 }

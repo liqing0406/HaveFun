@@ -36,7 +36,7 @@ public class Activity implements Serializable {
     @Column(name = "activity_time")
     private Date activityTime;
     //活动类型
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "type_of_kind")
     private TypeOfKind typeOfKind;
     //活动花费
@@ -70,6 +70,9 @@ public class Activity implements Serializable {
     //活动人数
     @Column(name = "person_limit")
     private Integer personLimit;
+    //状态字段
+    @Column(name = "status")
+    private Integer status;
 
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     public Integer getActivityId() {
@@ -184,23 +187,29 @@ public class Activity implements Serializable {
         this.personLimit = personLimit;
     }
 
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
+    }
+
     @Override
     public String toString() {
         return "Activity{" +
                 "activityId=" + activityId +
                 ", activityTile='" + activityTile + '\'' +
                 ", activityTime=" + activityTime +
-                ", typeOfKind=" + typeOfKind +
                 ", activityCost='" + activityCost + '\'' +
-                ", activityLocation=" + activityLocation +
                 ", collectNum=" + collectNum +
                 ", signUpNum=" + signUpNum +
                 ", forwardNum=" + forwardNum +
-                ", frontPicture=" + frontPicture +
                 ", user=" + user +
                 ", releaseTime=" + releaseTime +
                 ", activityContact='" + activityContact + '\'' +
                 ", personLimit=" + personLimit +
+                ", status=" + status +
                 '}';
     }
 
