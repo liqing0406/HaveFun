@@ -1,8 +1,8 @@
 package com.hebtu.havefun.service;
 
 import com.alibaba.fastjson.JSON;
-import com.hebtu.havefun.config.ValueConfig;
 import com.hebtu.havefun.dao.*;
+import com.hebtu.havefun.entity.Constant;
 import com.hebtu.havefun.entity.User.User;
 import com.hebtu.havefun.entity.User.UserCollectActivity;
 import com.hebtu.havefun.entity.User.UserEnterActivity;
@@ -52,12 +52,14 @@ public class ActivityService {
     ActivityLocationDao activityLocationDao;
     @Resource
     PicturesDao picturesDao;
+    @Resource
+    Constant constant;
 
     public String[] getRotationChartPictures() {
-        return new String[]{ValueConfig.SERVER_URL + "localPictures/1.png",
-                ValueConfig.SERVER_URL + "localPictures/2.png",
-                ValueConfig.SERVER_URL + "localPictures/3.png",
-                ValueConfig.SERVER_URL + "localPictures/4.png",};
+        return new String[]{constant.getServerUrl() + "localPictures/1.png",
+                constant.getServerUrl() + "localPictures/2.png",
+                constant.getServerUrl() + "localPictures/3.png",
+                constant.getServerUrl() + "localPictures/4.png",};
     }
 
     @Cacheable(value = "activity", key = "'getActivityList'+#activityKind+','+#pageNum+','+#pageSize")
@@ -154,7 +156,7 @@ public class ActivityService {
         boolean flag;
         for (MultipartFile file : files) {
             String fileName = "front.png";
-            File dest = new File(ValueConfig.UPLOAD_FOLDER + "activity_pictures/" + activity.getActivityId() + "/" + fileName);
+            File dest = new File(constant.getUploadPath() + "activity_pictures/" + activity.getActivityId() + "/" + fileName);
             if (!dest.getParentFile().exists()) { //判断文件父目录是否存在
                 flag = dest.getParentFile().mkdir();
             } else {

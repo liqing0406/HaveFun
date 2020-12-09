@@ -1,8 +1,8 @@
 package com.hebtu.havefun.service;
 
 import com.alibaba.fastjson.JSON;
-import com.hebtu.havefun.config.ValueConfig;
 import com.hebtu.havefun.dao.*;
+import com.hebtu.havefun.entity.Constant;
 import com.hebtu.havefun.entity.User.*;
 import com.hebtu.havefun.entity.activity.Activity;
 import org.springframework.cache.annotation.CacheEvict;
@@ -42,6 +42,8 @@ public class UserService {
     UserRelationshipDao userRelationshipDao;
     @Resource
     UserCollectActivityDao userCollectActivityDao;
+    @Resource
+    Constant constant;
 
     @Cacheable(value = "user-register", key = "'judgeRegistered'+#phoneNum")
     public boolean judgeRegistered(String phoneNum) {
@@ -56,7 +58,7 @@ public class UserService {
         User user = new User();
         user.setPhoneNum(phoneNum);
         user.setPassword(password);
-        user.setUserId(ValueConfig.USER_ID + Integer.parseInt(userDao.count() + ""));
+        user.setUserId(constant.getUserId() + Integer.parseInt(userDao.count() + ""));
         user.setHeadPortrait("man.png");
         user.setUserName("飞翔的企鹅");
         userDetail.setNumOfActivityForUser(0);
@@ -238,7 +240,7 @@ public class UserService {
         User user = userDao.getOne(id);
         boolean flag;
         String fileName = "head" + (Objects.requireNonNull(headPortrait.getOriginalFilename())).substring(headPortrait.getOriginalFilename().lastIndexOf("."));
-        File dest = new File(ValueConfig.UPLOAD_FOLDER + "/user/" + user.getId() + "/" + fileName);
+        File dest = new File(constant.getUploadPath() + "/user/" + user.getId() + "/" + fileName);
         if (!dest.getParentFile().exists()) { //判断文件父目录是否存在
             flag = dest.getParentFile().mkdir();
         } else {
@@ -256,7 +258,6 @@ public class UserService {
         }
         return true;
     }
-
 
     @Transactional
     @Rollback(value = false)

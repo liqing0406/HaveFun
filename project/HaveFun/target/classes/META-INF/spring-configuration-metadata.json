@@ -1,0 +1,38 @@
+{
+  "groups": [
+    {
+      "name": "constant",
+      "type": "com.hebtu.havefun.entity.Constant",
+      "sourceType": "com.hebtu.havefun.entity.Constant"
+    },
+    {
+      "name": "spring.datasource",
+      "type": "javax.sql.DataSource",
+      "sourceType": "com.hebtu.havefun.config.DruidConfig",
+      "sourceMethod": "druid()"
+    }
+  ],
+  "properties": [
+    {
+      "name": "constant.server-mapping-path",
+      "type": "java.lang.String",
+      "sourceType": "com.hebtu.havefun.entity.Constant"
+    },
+    {
+      "name": "constant.server-url",
+      "type": "java.lang.String",
+      "sourceType": "com.hebtu.havefun.entity.Constant"
+    },
+    {
+      "name": "constant.upload-path",
+      "type": "java.lang.String",
+      "sourceType": "com.hebtu.havefun.entity.Constant"
+    },
+    {
+      "name": "constant.user-id",
+      "type": "java.lang.Integer",
+      "sourceType": "com.hebtu.havefun.entity.Constant"
+    }
+  ],
+  "hints": []
+}
