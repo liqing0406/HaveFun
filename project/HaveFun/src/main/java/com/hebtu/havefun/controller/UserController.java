@@ -99,7 +99,7 @@ public class UserController {
     /**
      * @param activityId 活动id
      * @param id         用户id,注意不是getUserId,是getId
-     * @return 返回报名成功"true"或者已经报名了"exists"
+     * @return 返回报名成功"true",如果超出活动人数上限，返回"enough",已经报名了"exists"
      * @description 报名活动
      */
     @RequestMapping("/enrollActivity")
@@ -322,5 +322,20 @@ public class UserController {
             return "ErrorParameter";
         }
         return userService.modifyUserSex(sex, id) ? "true" : "false";
+    }
+
+    /**
+     * @param id             用户id
+     * @param residentIdCard 身份证号
+     * @return 返回是否认证成功，"true"或者"false"
+     * @description 根据用户id设置用户身份证号
+     */
+    @RequestMapping("/idCardAuthentication")
+    public String idCardAuthentication(Integer id, String residentIdCard) {
+        if (id == null || residentIdCard == null) {
+            System.out.println("idCardAuthentication Error");
+            return "ErrorParameter";
+        }
+        return "true".equals(userService.idCardAuthentication(id, residentIdCard)) ? "true" : "false";
     }
 }

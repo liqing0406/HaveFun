@@ -45,7 +45,7 @@ public class UserService {
     @Resource
     Constant constant;
 
-//    @Cacheable(value = "user-register", key = "'judgeRegistered'+#phoneNum")
+    //    @Cacheable(value = "user-register", key = "'judgeRegistered'+#phoneNum")
     public boolean judgeRegistered(String phoneNum) {
         User user = userDao.findUserByPhoneNum(phoneNum);
         return user != null;
@@ -64,6 +64,7 @@ public class UserService {
         userDetail.setNumOfActivityForUser(0);
         userDetail.setSex(1);
         userDetail.setAge(0);
+        userDetail.setResidentIdCard("未认证");
         userDetail.setPersonalSignature("我是一条冷酷的签名");
         user.setUserDetail(userDetail);
         userDetail.setUser(user);
@@ -72,7 +73,7 @@ public class UserService {
         return true;
     }
 
-//    @Cacheable(value = "user-login", key = "'login'+#phoneNum+','+#password")
+    //    @Cacheable(value = "user-login", key = "'login'+#phoneNum+','+#password")
     public String login(String phoneNum, String password) {
         User user = userDao.findUserByPhoneNumAndPassword(phoneNum, password);
         return user != null ? JSON.toJSONString(user) : "";
@@ -98,6 +99,10 @@ public class UserService {
         if (userEnterActivity != null) {
             return "exists";
         } else {
+            if (activity.getSignUpNum() >= activity.getPersonLimit()) {
+                return "enough";
+            }
+            activity.setSignUpNum(activity.getSignUpNum() + 1);
             userEnterActivity = new UserEnterActivity();
             userEnterActivity.setUser(user);
             userEnterActivity.setActivity(activity);
@@ -113,6 +118,7 @@ public class UserService {
     public String cancelEnrollActivity(Integer activityId, Integer id) {
         User user = userDao.getOne(id);
         Activity activity = activityDao.getOne(activityId);
+        activity.setSignUpNum(activity.getSignUpNum() - 1);
         UserEnterActivity userEnterActivity = userEnterActivityDao.findUserEnterActivitiesByUserAndActivity(user, activity);
         userEnterActivityDao.delete(userEnterActivity);
         return "success";
@@ -177,7 +183,7 @@ public class UserService {
         return true;
     }
 
-//    @Cacheable(value = "user-follow", key = "'judgeFollow'+#followId+','+followedId")
+    //    @Cacheable(value = "user-follow", key = "'judgeFollow'+#followId+','+followedId")
     public boolean judgeFollow(Integer followId, Integer followedId) {
         UserRelationship userRelationship = new UserRelationship();
         userRelationship.setFollowUserId(followId);
@@ -191,30 +197,30 @@ public class UserService {
         return userRelationships.size() != 0;
     }
 
-//    @Cacheable(value = "user-follow", key = "'getFollowedCount'+#id")
+    //    @Cacheable(value = "user-follow", key = "'getFollowedCount'+#id")
     public Long getFollowedCount(Integer id) {
         Specification<UserRelationship> specification = (Specification<UserRelationship>) (root, criteriaQuery, criteriaBuilder) -> criteriaBuilder.equal(root.get("followUserId"), id);
         return userRelationshipDao.count(specification);
     }
 
-//    @Cacheable(value = "user-follow", key = "'getFollowCount'+#id")
+    //    @Cacheable(value = "user-follow", key = "'getFollowCount'+#id")
     public Long getFollowCount(Integer id) {
         Specification<UserRelationship> specification = (Specification<UserRelationship>) (root, criteriaQuery, criteriaBuilder) -> criteriaBuilder.equal(root.get("followedUserId"), id);
         return userRelationshipDao.count(specification);
     }
 
-//    @Cacheable(value = "user", key = "'getUser'+#id")
+    //    @Cacheable(value = "user", key = "'getUser'+#id")
     public User getUser(Integer id) {
         return userDao.getOne(id);
     }
 
-//    @Cacheable(value = "user-follow", key = "'getFollowUsers'+#id")
+    //    @Cacheable(value = "user-follow", key = "'getFollowUsers'+#id")
     public List<User> getFollowUsers(Integer id) {
         Specification<UserRelationship> specification = (Specification<UserRelationship>) (root, criteriaQuery, criteriaBuilder) -> criteriaBuilder.equal(root.get("followUserId"), id);
         return getUsers(specification);
     }
 
-//    @Cacheable(value = "user-follow", key = "'getFollowedUsers'+#id")
+    //    @Cacheable(value = "user-follow", key = "'getFollowedUsers'+#id")
     public List<User> getFollowedUsers(Integer id) {
         Specification<UserRelationship> specification = (Specification<UserRelationship>) (root, criteriaQuery, criteriaBuilder) -> criteriaBuilder.equal(root.get("followedUserId"), id);
         return getUsers(specification);
@@ -278,5 +284,23 @@ public class UserService {
         userDetail.setSex(sex);
         userDetailDao.save(userDetail);
         return true;
+    }
+
+    @Transactional
+    @Rollback(value = false)
+    public String idCardAuthentication(Integer id, String residentIdCard) {
+        User user = userDao.getOne(id);
+        userDetail = userDetailDao.findUserDetailByUser(user);
+        userDetail.setResidentIdCard(residentIdCard);
+        userDetailDao.save(userDetail);
+        return "true";
+    }
+
+    @Transactional
+    @Rollback(value = false)
+    public boolean judgeIdCardAuthentication(Integer id) {
+        User user = userDao.getOne(id);
+        userDetail = userDetailDao.findUserDetailByUser(user);
+        return "未认证".equals(userDetail.getResidentIdCard());
     }
 }

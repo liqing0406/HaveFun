@@ -212,14 +212,6 @@ public class ActivityService {
         return content.size() == 0 ? "empty" : JSON.toJSONString(content);
     }
 
-    //    @Cacheable(value = "activity", key = "'getTypeFromKind'+#kindId")
-    public String getTypeFromKind(Integer kindId) {
-        ActivityKind activityKind = activityKindDao.getOne(kindId);
-        Specification<TypeOfKind> specification = (Specification<TypeOfKind>) (root, criteriaQuery, criteriaBuilder) -> criteriaBuilder.equal(root.get("activityKind"), activityKind);
-        List<TypeOfKind> typeOfKindList = typeOfKindDao.findAll(specification);
-        return typeOfKindList.size() != 0 ? JSON.toJSONString(typeOfKindList) : "empty";
-    }
-
     //    @Cacheable(value = "activity", key = "'getTypeFromKind'+#id+','+#activityId")
     public String judgeEnterActivity(Integer id, Integer activityId) {
         User user = userDao.getOne(id);
@@ -268,7 +260,6 @@ public class ActivityService {
             //时间的筛选条件
             Predicate timePredicate = criteriaBuilder.equal(criteriaBuilder.literal(1), 1);
             if (howManyDays != -1) {
-                System.out.println("howManyDays!=-1");
                 Calendar calendar = Calendar.getInstance();
                 calendar.setTime(new Date());
                 calendar.add(Calendar.DATE, howManyDays * (-1));
@@ -277,24 +268,20 @@ public class ActivityService {
             //种类的筛选
             Predicate typePredicate = criteriaBuilder.equal(criteriaBuilder.literal(1), 1);
             if (finalTypeOfKind != null) {
-                System.out.println("finalTypeOfKind!=null");
                 typePredicate = criteriaBuilder.equal(root.get("typeOfKind"), finalTypeOfKind);
             }
             //价格的筛选
             Predicate lowPredicate = criteriaBuilder.equal(criteriaBuilder.literal(1), 1);
             if (highCost != -1) {
-                System.out.println("highCost!=-1");
                 lowPredicate = criteriaBuilder.le(root.get("activityCost").as(Integer.class), highCost);
             }
             Predicate highPredicate = criteriaBuilder.equal(criteriaBuilder.literal(1), 1);
             if (lowCost != -1) {
-                System.out.println("lowCost!=-1");
                 highPredicate = criteriaBuilder.ge(root.get("activityCost").as(Integer.class), lowCost);
             }
             //位置的筛选
             Predicate locationPredicate = criteriaBuilder.equal(criteriaBuilder.literal(1), 1);
             if (!"empty".equals(city) || !"empty".equals(county)) {
-                System.out.println("city!=empty && county!=empty");
                 locationPredicate = criteriaBuilder.and(criteriaBuilder.equal(root.get("activityLocation").get("city"), city), criteriaBuilder.equal(root.get("activityLocation").get("county"), county));
             }
             return criteriaBuilder.and(locationPredicate, highPredicate, lowPredicate, typePredicate, timePredicate);

@@ -1,8 +1,5 @@
 package com.hebtu.havefun.controller;
 
-import com.alibaba.fastjson.JSON;
-import com.google.gson.Gson;
-import com.hebtu.havefun.entity.activity.Activity;
 import com.hebtu.havefun.service.ActivityService;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -171,21 +168,6 @@ public class ActivityController {
         }
         String activityList = activityService.screenActivities(howManyDays, typeName, lowCost, highCost, city, county, pageNum, pageSize);
         return !"empty".equals(activityList) ? activityList : "empty";
-    }
-
-    /**
-     * @param kindId 大类id
-     * @return 小类集合List<TypeOfList>，空返回"empty"
-     * @description 根据活动种类的大类id查出属于它的小类
-     */
-    @RequestMapping("/getTypeFromKind")
-    public String getTypeFromKind(Integer kindId) {
-        if (kindId == null) {
-            System.out.println("getTypeFromKind Error");
-            return "ErrorParameter";
-        }
-        String typeList = activityService.getTypeFromKind(kindId);
-        return !"empty".equals(typeList) ? typeList : "empty";
     }
 
     /**

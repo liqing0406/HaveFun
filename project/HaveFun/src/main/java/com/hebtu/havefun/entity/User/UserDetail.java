@@ -41,6 +41,9 @@ public class UserDetail implements Serializable {
     @JoinColumn(name = "user_id")
     //一对一关联用户对象
     private User user;
+    @Column(name = "resident_id_card")
+    //用户身份证
+    private String residentIdCard;
 
     public UserDetail() {
     }
@@ -91,5 +94,26 @@ public class UserDetail implements Serializable {
 
     public void setNumOfActivityForUser(Integer numOfActivityForUser) {
         this.numOfActivityForUser = numOfActivityForUser;
+    }
+
+    public String getResidentIdCard() {
+        return residentIdCard;
+    }
+
+    public void setResidentIdCard(String residentIdCard) {
+        this.residentIdCard = residentIdCard;
+    }
+
+    @Override
+    public String toString() {
+        return "UserDetail{" +
+                "userDetailId=" + userDetailId +
+                ", sex=" + sex +
+                ", age=" + age +
+                ", personalSignature='" + personalSignature + '\'' +
+                ", numOfActivityForUser=" + numOfActivityForUser +
+                ", user=" + user +
+                ", residentIdCard='" + residentIdCard + '\'' +
+                '}';
     }
 }

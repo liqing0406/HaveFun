@@ -433,8 +433,29 @@ public class UserController {
         }
         return userService.modifyUserSex(sex, id) ? "true" : "false";
     }
+```
+
+## 身份证号认证
+
+```java
+    /**
+     * @param id             用户id
+     * @param residentIdCard 身份证号
+     * @return 返回是否认证成功，"true"或者"false"
+     * @description 根据用户id设置用户身份证号
+     */
+    @RequestMapping("/idCardAuthentication")
+    public String idCardAuthentication(Integer id, String residentIdCard) {
+        if (id == null || residentIdCard == null) {
+            System.out.println("idCardAuthentication Error");
+            return "ErrorParameter";
+        }
+        return "true".equals(userService.idCardAuthentication(id, residentIdCard)) ? "true" : "false";
+    }
 }
 ```
+
+
 
 # ==Activity相关==
 
@@ -645,25 +666,6 @@ public class ActivityController {
         }
         String activityList = activityService.screenActivities(howManyDays, typeName, lowCost, highCost, city, county, pageNum, pageSize);
         return !"empty".equals(activityList) ? JSON.toJSONString(activityList) : "empty";
-    }
-```
-
-## 根据活动大类id筛选属于它的小类活动
-
-```java
-    /**
-     * @param kindId 大类id
-     * @return 小类集合List<TypeOfList>，空返回"empty"
-     * @description 根据活动种类的大类id查出属于它的小类
-     */
-    @RequestMapping("/getTypeFromKind")
-    public String getTypeFromKind(Integer kindId) {
-        if (kindId == null) {
-            System.out.println("getTypeFromKind Error");
-            return "ErrorParameter";
-        }
-        String typeList = activityService.getTypeFromKind(kindId);
-        return !"empty".equals(typeList) ? typeList : "empty";
     }
 ```
 
