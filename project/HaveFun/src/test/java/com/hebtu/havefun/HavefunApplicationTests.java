@@ -1,6 +1,7 @@
 package com.hebtu.havefun;
 
 import com.alibaba.druid.pool.DruidDataSource;
+import com.alibaba.fastjson.JSON;
 import com.hebtu.havefun.dao.ActivityDao;
 import com.hebtu.havefun.dao.UserDao;
 import com.hebtu.havefun.dao.UserDetailDao;
@@ -31,8 +32,7 @@ class HavefunApplicationTests {
 
     @Test
     void contextLoads() {
-        System.out.println(dataSource.getMaxWait());
-        System.out.println(dataSource.getDriverClassName());
-        System.out.println(dataSource.getUrl());
+        String[] strs = {"1", "2", "3"};
+        System.out.println(JSON.toJSONString(strs));
     }
 }

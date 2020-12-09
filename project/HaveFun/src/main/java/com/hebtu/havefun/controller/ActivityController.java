@@ -32,7 +32,7 @@ public class ActivityController {
      */
     @RequestMapping("/getRotationChartPictures")
     public String getRotationChartPictures() {
-        return new Gson().toJson(activityService.getRotationChartPictures());
+        return activityService.getRotationChartPictures();
     }
 
     /**

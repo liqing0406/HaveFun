@@ -115,7 +115,7 @@ spring:
       on-profile: dev
 constant:
   server_url:
-    "http://10.7.89.9:8080/"
+    "http://10.7.90.253:8080/"
   upload_path:
     "D:/HaveFunResources/pictures/"
   server_mapping_path:

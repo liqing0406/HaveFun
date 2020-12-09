@@ -690,17 +690,35 @@ public class ActivityController {
 
 ```java
     /**
-     * @param activityJson 修改后的Activity对象的JSON串
+     * @param activityDetailJson 修改后的ActivityDetail对象的JSON串
      * @return 返回修改成功"true"
      * @description 修改活动信息
      */
     @RequestMapping("/modifyActivity")
-    public String modifyActivity(String activityJson) {
-        if (activityJson == null) {
+    public String modifyActivity(String activityDetailJson) {
+        if (activityDetailJson == null) {
             System.out.println("modifyActivity Error");
             return "ErrorParameter";
         }
-        return activityService.modifyActivity(activityJson);
+        return activityService.modifyActivity(activityDetailJson);
+    }
+```
+
+## 删除活动
+
+```java
+    /**
+     * @param activityId 活动id
+     * @return 返回删除成功"true"或者"false"
+     * @description 删除活动，数据库状态字段置0
+     */
+    @RequestMapping("/deleteActivity")
+    public String deleteActivity(Integer activityId) {
+        if (activityId == null) {
+            System.out.println("deleteActivity Error");
+            return "ErrorParameter";
+        }
+        return "true".equals(activityService.deleteActivity(activityId)) ? "true" : "false";
     }
 }
 ```
