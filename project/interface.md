@@ -131,7 +131,7 @@ public class UserController {
     /**
      * @param activityId 活动id
      * @param id         用户id,注意不是getUserId,是getId
-     * @return 返回报名成功"true"或者已经报名了"exists"
+     * @return 返回报名成功"true",如果超出活动人数上限，返回"enough",已经报名了"exists"
      * @description 报名活动
      */
     @RequestMapping("/enrollActivity")
