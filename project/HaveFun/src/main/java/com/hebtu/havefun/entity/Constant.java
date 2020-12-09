@@ -17,6 +17,7 @@ public class Constant {
     private String uploadPath;
     private String serverMappingPath;
     private Integer userId;
+    private String downloadPath;
 
     public String getServerUrl() {
         return serverUrl;
@@ -50,6 +51,14 @@ public class Constant {
         this.userId = userId;
     }
 
+    public String getDownloadPath() {
+        return downloadPath;
+    }
+
+    public void setDownloadPath(String downloadPath) {
+        this.downloadPath = downloadPath;
+    }
+
     @Override
     public String toString() {
         return "Constant{" +
@@ -57,6 +66,7 @@ public class Constant {
                 ", uploadPath='" + uploadPath + '\'' +
                 ", serverMappingPath='" + serverMappingPath + '\'' +
                 ", userId=" + userId +
+                ", downloadPath='" + downloadPath + '\'' +
                 '}';
     }
 }

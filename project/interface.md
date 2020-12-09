@@ -4,6 +4,10 @@
 public static final String BASE_URL = "http://39.105.43.3:8080/";
 ```
 
+# ==apk下载链接==
+
+[HaveFun](39.105.43.3:8080/HaveFun/download)
+
 # ==User相关==
 
 ```java

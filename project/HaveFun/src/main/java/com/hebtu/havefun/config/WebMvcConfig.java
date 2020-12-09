@@ -1,8 +1,11 @@
 package com.hebtu.havefun.config;
 
+import com.hebtu.havefun.entity.Constant;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
+import javax.annotation.Resource;
 
 /**
  * @author PengHuAnZhi
@@ -13,9 +16,10 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
  */
 @Configuration
 public class WebMvcConfig implements WebMvcConfigurer {
+    @Resource
+    Constant constant;
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-//        registry.addResourceHandler("/localPictures/**").addResourceLocations("file:/HaveFunResources/pictures/");
-        registry.addResourceHandler("/localPictures/**").addResourceLocations("file:/home/HaveFunResources/pictures/");
+        registry.addResourceHandler("/localPictures/**").addResourceLocations(constant.getServerMappingPath());
     }
 }

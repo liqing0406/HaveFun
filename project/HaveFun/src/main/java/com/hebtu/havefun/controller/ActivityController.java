@@ -2,6 +2,7 @@ package com.hebtu.havefun.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.google.gson.Gson;
+import com.hebtu.havefun.entity.activity.Activity;
 import com.hebtu.havefun.service.ActivityService;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -151,16 +152,16 @@ public class ActivityController {
     }
 
     /**
-     * @description 根据若干条件筛选活动
-     * @param typeName 小类活动的名称
-     * @param lowCost 价格区间的低区间
-     * @param highCost 价格区间的高区间
+     * @param typeName    小类活动的名称
+     * @param lowCost     价格区间的低区间
+     * @param highCost    价格区间的高区间
      * @param howManyDays 近多少天
-     * @param city 市
-     * @param county 区
-     * @param pageNum 页码
-     * @param pageSize 页大小
+     * @param city        市
+     * @param county      区
+     * @param pageNum     页码
+     * @param pageSize    页大小
      * @return 返回一个List<Activity>集合的JSON串，如果集合为空，返回字符串"empty"
+     * @description 根据若干条件筛选活动
      */
     @RequestMapping("/screenActivities")
     public String screenActivities(String typeName, Integer lowCost, Integer highCost, Integer howManyDays, String city, String county, Integer pageNum, Integer pageSize) {
@@ -168,9 +169,8 @@ public class ActivityController {
             System.out.println("screenActivities Error");
             return "ErrorParameter";
         }
-        System.out.println(typeName+","+lowCost+","+highCost+","+howManyDays+","+city+","+county+","+pageNum+","+pageSize);
         String activityList = activityService.screenActivities(howManyDays, typeName, lowCost, highCost, city, county, pageNum, pageSize);
-        return !"empty".equals(activityList) ? JSON.toJSONString(activityList) : "empty";
+        return !"empty".equals(activityList) ? activityList : "empty";
     }
 
     /**

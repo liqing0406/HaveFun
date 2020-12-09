@@ -14,6 +14,11 @@
   ],
   "properties": [
     {
+      "name": "constant.download-path",
+      "type": "java.lang.String",
+      "sourceType": "com.hebtu.havefun.entity.Constant"
+    },
+    {
       "name": "constant.server-mapping-path",
       "type": "java.lang.String",
       "sourceType": "com.hebtu.havefun.entity.Constant"
