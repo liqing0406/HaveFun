@@ -14,6 +14,4 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
  * @description TODO
  */
 public interface UserPublishActivityDao extends JpaRepository<UserPublishActivity, Integer>, JpaSpecificationExecutor<UserPublishActivity> {
-    UserPublishActivity findUserPublishActivitiesByUserAndActivity(User user, Activity activity);
-
 }

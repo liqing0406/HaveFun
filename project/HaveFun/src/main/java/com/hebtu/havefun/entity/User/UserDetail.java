@@ -44,6 +44,9 @@ public class UserDetail implements Serializable {
     @Column(name = "resident_id_card")
     //用户身份证
     private String residentIdCard;
+    @Column(name = "real_name")
+    //真名
+    private String realName;
 
     public UserDetail() {
     }
@@ -104,6 +107,14 @@ public class UserDetail implements Serializable {
         this.residentIdCard = residentIdCard;
     }
 
+    public String getRealName() {
+        return realName;
+    }
+
+    public void setRealName(String realName) {
+        this.realName = realName;
+    }
+
     @Override
     public String toString() {
         return "UserDetail{" +
@@ -114,6 +125,7 @@ public class UserDetail implements Serializable {
                 ", numOfActivityForUser=" + numOfActivityForUser +
                 ", user=" + user +
                 ", residentIdCard='" + residentIdCard + '\'' +
+                ", realName='" + realName + '\'' +
                 '}';
     }
 }

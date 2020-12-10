@@ -13,6 +13,7 @@ import org.springframework.data.jpa.repository.Query;
  * @description TODO
  */
 public interface ActivityDao extends JpaRepository<Activity, Integer>, JpaSpecificationExecutor<Activity> {
+    //传入用户id和活动id判断用户是否收藏某活动
     @Query(value = "select * from collection_activity where user_id = ?1 and activity_id = ?2", nativeQuery = true)
     Object judgeCollectedActivity(Integer userId, Integer activityId);
 }

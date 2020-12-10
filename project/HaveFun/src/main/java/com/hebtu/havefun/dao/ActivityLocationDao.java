@@ -12,5 +12,4 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
  * @description TODO
  */
 public interface ActivityLocationDao extends JpaSpecificationExecutor<ActivityLocation>, JpaRepository<ActivityLocation, Integer> {
-    ActivityLocation findActivityLocationByCityAndCounty(String city, String county);
 }

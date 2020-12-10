@@ -83,12 +83,11 @@ public class RedisConfig extends CachingConfigurerSupport {
         map.put("activity_constant", config.entryTtl(Duration.ofMinutes(-1L)));//provider1缓存空间过期时间 30分钟
 
         //使用自定义的缓存配置初始化一个RedisCacheManager
-        RedisCacheManager cacheManager = RedisCacheManager.builder(connectionFactory)
+
+        return RedisCacheManager.builder(connectionFactory)
                 .cacheDefaults(config) //默认配置
                 .withInitialCacheConfigurations(map) //特殊缓存
                 .transactionAware() //事务
                 .build();
-
-        return cacheManager;
     }
 }

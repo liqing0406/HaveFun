@@ -12,5 +12,6 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
  * @description TODO
  */
 public interface UserRelationshipDao extends JpaRepository<UserRelationship,Integer>, JpaSpecificationExecutor<UserRelationship> {
+    //通过关注者id和被关注者id查找用户关系类
     UserRelationship findUserRelationshipByFollowUserIdAndFollowedUserId(Integer followUserId,Integer followedUserId);
 }

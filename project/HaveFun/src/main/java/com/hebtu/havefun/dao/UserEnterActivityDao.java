@@ -14,5 +14,6 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
  * @description TODO
  */
 public interface UserEnterActivityDao extends JpaRepository<UserEnterActivity, Integer>, JpaSpecificationExecutor<UserEnterActivity> {
+    //通过用户和活动查找报名活动类UserEnterActivity
     UserEnterActivity findUserEnterActivitiesByUserAndActivity(User user, Activity activity);
 }

@@ -14,8 +14,10 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
  */
 public interface UserDao extends JpaRepository<User,Integer> , JpaSpecificationExecutor<User> {
 
+    //通过电话号码查找用户
     User findUserByPhoneNum(String phoneNum);
 
+    //通过电话号码和密码查找用户
     User findUserByPhoneNumAndPassword(String phoneNum,String password);
 
 }

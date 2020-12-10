@@ -12,5 +12,6 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
  * @description TODO
  */
 public interface ActivityKindDao extends JpaRepository<ActivityKind, Integer>, JpaSpecificationExecutor<ActivityKind> {
+    //通过活动大类名称查找ActivityKind
     ActivityKind findActivityKindByKindName(String kindName);
 }

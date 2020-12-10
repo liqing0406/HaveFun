@@ -8,9 +8,11 @@ import com.hebtu.havefun.entity.activity.Activity;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
@@ -44,20 +46,36 @@ public class UserService {
     UserCollectActivityDao userCollectActivityDao;
     @Resource
     Constant constant;
+    @Resource
+    RedisTemplate<String, Object> redisTemplate;
 
-    //    @Cacheable(value = "user-register", key = "'judgeRegistered'+#phoneNum")
+    /**
+     * @param phoneNum 电话号码
+     * @return 返回"true"或者"false"
+     * @description 判断是否注册
+     */
+    //将用户是否注册结果加入缓存
+    @Cacheable(value = "user-register", key = "#phoneNum+'_judgeRegistered'")
     public boolean judgeRegistered(String phoneNum) {
         User user = userDao.findUserByPhoneNum(phoneNum);
         return user != null;
     }
 
+    /**
+     * @param phoneNum 手机号码
+     * @param password 密码
+     * @return 返回"true"或者"false"
+     * @description 注册
+     */
+    //注册这个业务逻辑就不需要缓存
     @Transactional
     @Rollback(value = false)
-//    @CacheEvict(value = "user-register")
     public boolean register(String phoneNum, String password) {
         User user = new User();
+        //用户基本信息的录入，部分为默认数据
         user.setPhoneNum(phoneNum);
         user.setPassword(password);
+        //开始想的是用一个类似于qq号的唯一表示，但是后面写着写着就忽视了，也没咋用，就是一个基数加上当前数据库中现在的用户总数
         user.setUserId(constant.getUserId() + Integer.parseInt(userDao.count() + ""));
         user.setHeadPortrait("man.png");
         user.setUserName("飞翔的企鹅");
@@ -70,18 +88,36 @@ public class UserService {
         userDetail.setUser(user);
         userDetailDao.save(userDetail);
         userDao.save(user);
+        //当用户注册后，更新判断用户是否注册的缓存
+        Set<String> keys = redisTemplate.keys("user-register::" + phoneNum + "_*");
+        if (!CollectionUtils.isEmpty(keys)) {
+            redisTemplate.delete(keys);
+        }
         return true;
     }
 
-    //    @Cacheable(value = "user-login", key = "'login'+#phoneNum+','+#password")
+    /**
+     * @param phoneNum 手机号
+     * @param password 密码
+     * @return 返回的是user的对象Json串
+     * @description 登录
+     */
+    //用户登录后把用户对象作为json串返回，这里直接放在缓存中，就不用每次都查
+    @Cacheable(value = "user-login", key = "#phoneNum+'_login'")
     public String login(String phoneNum, String password) {
         User user = userDao.findUserByPhoneNumAndPassword(phoneNum, password);
         return user != null ? JSON.toJSONString(user) : "";
     }
 
+    /**
+     * @param phoneNum 电话号码
+     * @param password 密码
+     * @return 返回"true"或"false"
+     * @description 修改密码
+     */
     @Transactional
     @Rollback(value = false)
-//    @CacheEvict(value = "user-login")
+    //修改了密码不会更新用户的基本信息，所以这个地方不删除缓存
     public boolean modifyPassword(String phoneNum, String password) {
         User user = userDao.findUserByPhoneNum(phoneNum);
         user.setPassword(password);
@@ -89,17 +125,24 @@ public class UserService {
         return true;
     }
 
+    /**
+     * @param activityId 活动id
+     * @param id         用户id,注意不是getUserId,是getId
+     * @return 返回报名成功"true",如果超出活动人数上限，返回"enough",已经报名了"exists"
+     * @description 报名活动
+     */
     @Transactional
     @Rollback(value = false)
-//    @CacheEvict(value = "activity-enter")
     public String enrollActivity(Integer activityId, Integer id) {
         User user = userDao.getOne(id);
         Activity activity = activityDao.getOne(activityId);
         UserEnterActivity userEnterActivity = userEnterActivityDao.findUserEnterActivitiesByUserAndActivity(user, activity);
         if (userEnterActivity != null) {
+            //表示已经报名了
             return "exists";
         } else {
             if (activity.getSignUpNum() >= activity.getPersonLimit()) {
+                //如果这个活动的报名人数已经满了，就返回不能报名
                 return "enough";
             }
             activity.setSignUpNum(activity.getSignUpNum() + 1);
@@ -108,25 +151,46 @@ public class UserService {
             userEnterActivity.setActivity(activity);
             userEnterActivity.setEnterTime(new Date());
             userEnterActivityDao.save(userEnterActivity);
+            //用户更新了报名的活动信息，随之将和该用户下的关于报名活动的部分缓存删除
+            Set<String> keys = redisTemplate.keys("activity-enter::" + id + "_*");
+            if (!CollectionUtils.isEmpty(keys)) {
+                redisTemplate.delete(keys);
+            }
             return "true";
         }
     }
 
+    /**
+     * @param activityId 活动id
+     * @param id         用户id,注意不是getUserId,是getId
+     * @return 返回取消报名成功"true"或者失败"false"
+     * @description 取消报名活动
+     */
     @Transactional
     @Rollback(value = false)
-//    @CacheEvict(value = "activity-enter", allEntries = true)
     public String cancelEnrollActivity(Integer activityId, Integer id) {
         User user = userDao.getOne(id);
         Activity activity = activityDao.getOne(activityId);
         activity.setSignUpNum(activity.getSignUpNum() - 1);
         UserEnterActivity userEnterActivity = userEnterActivityDao.findUserEnterActivitiesByUserAndActivity(user, activity);
         userEnterActivityDao.delete(userEnterActivity);
+        //用户更新了报名的活动信息，随之将和该用户下的关于报名活动的部分缓存删除
+        Set<String> keys = redisTemplate.keys("activity-enter::" + id + "_*");
+        if (!CollectionUtils.isEmpty(keys)) {
+            redisTemplate.delete(keys);
+        }
         return "success";
     }
 
+    /**
+     * @param activityId 活动的id
+     * @param id         用户id,注意不是getUserId,是getId
+     * @param tag        是否收藏，发送给我的是"false"或者"true"
+     * @return 返回是否操作成功
+     * @description 收藏或者取消收藏
+     */
     @Transactional
     @Rollback(value = false)
-//    @CacheEvict(value = "activity-collect", allEntries = true)
     public boolean changeCollectActivity(Integer activityId, Integer id, boolean tag) {
         Activity activity = activityDao.getOne(activityId);
         User user = userDao.getOne(id);
@@ -146,44 +210,88 @@ public class UserService {
             userCollectActivityDao.delete(userCollectActivity);
             activity.setCollectNum(activity.getCollectNum() - 1);
         }
+        //用户更新了收藏的活动信息，随之将和该用户下的关于收藏活动的部分缓存删除
+        Set<String> keys = redisTemplate.keys("activity-collect::" + id + "_*");
+        if (!CollectionUtils.isEmpty(keys)) {
+            redisTemplate.delete(keys);
+        }
         return true;
     }
 
+    /**
+     * @param id                用户id,注意不是getUserId,是getIds
+     * @param personalSignature 新的个性签名
+     * @return 返回"true"或者"false"
+     * @description 修改个性签名
+     */
     @Transactional
     @Rollback(value = false)
-//    @CacheEvict(value = "user-login", allEntries = true)
     public Boolean modifyPersonalSignature(Integer id, String personalSignature) {
         User user = userDao.getOne(id);
         user.getUserDetail().setPersonalSignature(personalSignature);
         userDao.save(user);
+        //当用户更改了个人的基本信息后，删除缓存中保存的用户基本信息
+        redisTemplate.keys("user-login::" + user.getPhoneNum() + "_*");
         return true;
     }
 
+    /**
+     * @param followId   当前用户的id，即关注者id，注意不是getUserId,是getId
+     * @param followedId 对方id，即被关注者id，注意不是getUserId,是getId
+     * @return 返回关注成功还是失败true或者false
+     * @description 关注用户
+     */
     @Transactional
     @Rollback(value = false)
-//    @CacheEvict(value = "user-follow")
     public boolean followUser(Integer followId, Integer followedId) {
         if (userDao.existsById(followId) && userDao.existsById(followedId)) {
             UserRelationship userRelationship = new UserRelationship();
             userRelationship.setFollowUserId(followId);
             userRelationship.setFollowedUserId(followedId);
             userRelationshipDao.save(userRelationship);
+            //如果关注了用户，直接给缓存中对应判断是否关注设置true返回值
+            redisTemplate.opsForValue().set("user-follow::" + followId + "," + followedId + "_judgeFollow", true);
+            //关注这个业务逻辑中被关注followedId的粉丝数量自增一
+            redisTemplate.opsForValue().increment("user-follow::" + followedId + "_getFollowedCount");
+            //关注这个业务逻辑中关注者followedId的关注数量自增一
+            redisTemplate.opsForValue().increment("user-follow::" + followId + "_getFollowCount");
+            //关注后，将此人的关注列表缓存删除
+            redisTemplate.delete("user-follow::" + followId + "_getFollowUsers");
             return true;
         } else {
             return false;
         }
     }
 
+    /**
+     * @param followId   当前用户的id，即关注者id，注意不是getUserId,是getId
+     * @param followedId 对方id，即被关注者id，注意不是getUserId,是getId
+     * @return 返回取消关注成功还是失败true或者false
+     * @description 关注用户
+     */
     @Transactional
     @Rollback(value = false)
-//    @CacheEvict(value = "user-follow")
     public boolean unFollowUser(Integer followId, Integer followedId) {
         UserRelationship userRelationship = userRelationshipDao.findUserRelationshipByFollowUserIdAndFollowedUserId(followId, followedId);
         userRelationshipDao.delete(userRelationship);
+        //如果取关了用户，直接给缓存中对应判断是否关注设置false返回值
+        redisTemplate.opsForValue().set("user-follow::" + followId + "," + followedId + "_judgeFollow", false);
+        //取消关注这个业务逻辑中被关注者followedId的粉丝数量自减一
+        redisTemplate.opsForValue().decrement("user-follow::" + followedId + "_getFollowedCount");
+        //取消关注这个业务逻辑中关注者followId的关注数量自减一
+        redisTemplate.opsForValue().decrement("user-follow::" + followId + "_getFollowCount");
+        //取消关注后，将此人的关注列表缓存删除
+        redisTemplate.delete("user-follow::" + followId + "_getFollowUsers");
         return true;
     }
 
-    //    @Cacheable(value = "user-follow", key = "'judgeFollow'+#followId+','+followedId")
+    /**
+     * @param followId   当前用户的id，即关注者id，注意不是getUserId,是getId
+     * @param followedId 对方id，即被关注者id，注意不是getUserId,是getId
+     * @return 返回是否关注 "true"或者"false"
+     * @description 判断是否关注
+     */
+    @Cacheable(value = "user-follow", key = "#followId+','+followedId+'_judgeFollow'")
     public boolean judgeFollow(Integer followId, Integer followedId) {
         UserRelationship userRelationship = new UserRelationship();
         userRelationship.setFollowUserId(followId);
@@ -197,35 +305,70 @@ public class UserService {
         return userRelationships.size() != 0;
     }
 
-    //    @Cacheable(value = "user-follow", key = "'getFollowedCount'+#id")
+    /**
+     * @param id 当前用户的id
+     * @return 返回粉丝数量
+     * @description 获取用户被多少人关注，即粉丝数量
+     */
+    //将用户的粉丝人数存入内存
+    @Cacheable(value = "user-follow", key = "#id+'_getFollowedCount'")
     public Long getFollowedCount(Integer id) {
         Specification<UserRelationship> specification = (Specification<UserRelationship>) (root, criteriaQuery, criteriaBuilder) -> criteriaBuilder.equal(root.get("followUserId"), id);
         return userRelationshipDao.count(specification);
     }
 
-    //    @Cacheable(value = "user-follow", key = "'getFollowCount'+#id")
+    /**
+     * @param id 当前用户的id
+     * @return 返回关注人数
+     * @description 获取用户关注了多少人
+     */
+    //将用户的关注人数存入内存
+    @Cacheable(value = "user-follow", key = "#id+'_getFollowCount'")
     public Long getFollowCount(Integer id) {
         Specification<UserRelationship> specification = (Specification<UserRelationship>) (root, criteriaQuery, criteriaBuilder) -> criteriaBuilder.equal(root.get("followedUserId"), id);
         return userRelationshipDao.count(specification);
     }
 
-    //    @Cacheable(value = "user", key = "'getUser'+#id")
+    /**
+     * @param id 用户的id
+     * @return 返回user对象的JSON串
+     * @description 根据id获取用户的信息，用于点击某个用户头像进入个人主页
+     */
+    //将用户基本信息存入缓存
+    @Cacheable(value = "user", key = "#id+'_getUser'")
     public User getUser(Integer id) {
         return userDao.getOne(id);
     }
 
-    //    @Cacheable(value = "user-follow", key = "'getFollowUsers'+#id")
+    /**
+     * @param id 当前用户的id
+     * @return 返回一个用户列表的Json串，如果为空则返回empty
+     * @description 获取当前用户的关注列表
+     */
+    //将这个user的关注列表存入缓存
+    @Cacheable(value = "user-follow", key = "#id+'_getFollowUsers'")
     public List<User> getFollowUsers(Integer id) {
         Specification<UserRelationship> specification = (Specification<UserRelationship>) (root, criteriaQuery, criteriaBuilder) -> criteriaBuilder.equal(root.get("followUserId"), id);
         return getUsers(specification);
     }
 
-    //    @Cacheable(value = "user-follow", key = "'getFollowedUsers'+#id")
+    /**
+     * @param id 当前用户的id
+     * @return 返回一个用户列表的Json串，如果为空则返回empty
+     * @description 获取当前用户的粉丝列表
+     */
+    //将这个user的粉丝列表存入缓存
+    @Cacheable(value = "user-follow", key = "#id+'_getFollowedUsers'")
     public List<User> getFollowedUsers(Integer id) {
         Specification<UserRelationship> specification = (Specification<UserRelationship>) (root, criteriaQuery, criteriaBuilder) -> criteriaBuilder.equal(root.get("followedUserId"), id);
         return getUsers(specification);
     }
 
+    /**
+     * @param specification 条件，区分是获取关注还是粉丝列表
+     * @return 返回符合条件的用户列表
+     * @description 综合获取关注和粉丝列表的重复代码
+     */
     private List<User> getUsers(Specification<UserRelationship> specification) {
         List<UserRelationship> userRelationships = userRelationshipDao.findAll(specification);
         if (userRelationships.size() == 0) {
@@ -239,13 +382,21 @@ public class UserService {
         }
     }
 
+    /**
+     * @param headPortrait 使用OkHttp3传输图片，类型为MultipartFile，名称为headPortrait
+     * @param id           用户id
+     * @return 返回修改成功还是失败
+     * @description 更改用户头像
+     */
     @Transactional
     @Rollback(value = false)
-//    @CacheEvict(value = "user-login", allEntries = true)
+    @CacheEvict(value = "user-login", allEntries = true)
     public Boolean modifyUserHeadPortrait(MultipartFile headPortrait, Integer id) {
         User user = userDao.getOne(id);
         boolean flag;
+        //拼接文件名称
         String fileName = "head" + (Objects.requireNonNull(headPortrait.getOriginalFilename())).substring(headPortrait.getOriginalFilename().lastIndexOf("."));
+        //创建在服务器中存储的路径file对象
         File dest = new File(constant.getUploadPath() + "/user/" + user.getId() + "/" + fileName);
         if (!dest.getParentFile().exists()) { //判断文件父目录是否存在
             flag = dest.getParentFile().mkdir();
@@ -265,9 +416,15 @@ public class UserService {
         return true;
     }
 
+    /**
+     * @param userName 用户新昵称，请求参数名称为userName
+     * @param id       用户id
+     * @return 返回修改成功还是失败
+     * @description 更改用户昵称
+     */
     @Transactional
     @Rollback(value = false)
-//    @CacheEvict(value = "user-login", allEntries = true)
+    @CacheEvict(value = "user-login", allEntries = true)
     public boolean modifyUserName(String userName, Integer id) {
         User user = userDao.getOne(id);
         user.setUserName(userName);
@@ -275,9 +432,15 @@ public class UserService {
         return true;
     }
 
+    /**
+     * @param sex 用户性别字段，1或者0
+     * @param id  用户id
+     * @return 返回修改成功还是失败
+     * @description 修改用户性别
+     */
     @Transactional
     @Rollback(value = false)
-//    @CacheEvict(value = "user-login", allEntries = true)
+    @CacheEvict(value = "user-login", allEntries = true)
     public boolean modifyUserSex(Integer sex, Integer id) {
         User user = userDao.getOne(id);
         UserDetail userDetail = userDetailDao.findUserDetailByUser(user);
@@ -286,21 +449,21 @@ public class UserService {
         return true;
     }
 
+    /**
+     * @param id             用户id
+     * @param residentIdCard 身份证号
+     * @return 返回是否认证成功，"true"或者"false"
+     * @description 根据用户id设置用户身份证号
+     */
     @Transactional
     @Rollback(value = false)
-    public String idCardAuthentication(Integer id, String residentIdCard) {
+    @CacheEvict(value = "user-login", allEntries = true)
+    public String idCardAuthentication(Integer id, String residentIdCard, String realName) {
         User user = userDao.getOne(id);
         userDetail = userDetailDao.findUserDetailByUser(user);
         userDetail.setResidentIdCard(residentIdCard);
+        userDetail.setRealName(realName);
         userDetailDao.save(userDetail);
         return "true";
-    }
-
-    @Transactional
-    @Rollback(value = false)
-    public boolean judgeIdCardAuthentication(Integer id) {
-        User user = userDao.getOne(id);
-        userDetail = userDetailDao.findUserDetailByUser(user);
-        return "未认证".equals(userDetail.getResidentIdCard());
     }
 }

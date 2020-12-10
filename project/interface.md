@@ -441,21 +441,20 @@ public class UserController {
     /**
      * @param id             用户id
      * @param residentIdCard 身份证号
+     * @param realName       真实姓名
      * @return 返回是否认证成功，"true"或者"false"
      * @description 根据用户id设置用户身份证号
      */
     @RequestMapping("/idCardAuthentication")
-    public String idCardAuthentication(Integer id, String residentIdCard) {
-        if (id == null || residentIdCard == null) {
+    public String idCardAuthentication(Integer id, String residentIdCard, String realName) {
+        if (id == null || residentIdCard == null || realName == null) {
             System.out.println("idCardAuthentication Error");
             return "ErrorParameter";
         }
-        return "true".equals(userService.idCardAuthentication(id, residentIdCard)) ? "true" : "false";
+        return "true".equals(userService.idCardAuthentication(id, residentIdCard, realName)) ? "true" : "false";
     }
 }
 ```
-
-
 
 # ==Activity相关==
 
@@ -724,4 +723,3 @@ public class ActivityController {
     }
 }
 ```
-

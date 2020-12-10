@@ -38,7 +38,6 @@ public class ActivityDetail implements Serializable {
     @OneToMany(mappedBy = "activityDetail", cascade = CascadeType.ALL)
     private Set<Picture> activityPictures;
 
-
     public Activity getActivity() {
         return activity;
     }

@@ -14,5 +14,6 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
  * @description TODO
  */
 public interface UserCollectActivityDao extends JpaSpecificationExecutor<UserCollectActivity>, JpaRepository<UserCollectActivity,Integer> {
+    //通过用户和活动查询收藏活动类UserCollectActivity
     UserCollectActivity findUserCollectActivitiesByUserAndActivity(User user, Activity activity);
 }

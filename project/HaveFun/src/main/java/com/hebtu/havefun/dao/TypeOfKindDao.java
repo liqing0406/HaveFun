@@ -13,7 +13,6 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
  * @description TODO
  */
 public interface TypeOfKindDao extends JpaRepository<TypeOfKind, Integer>, JpaSpecificationExecutor<TypeOfKind> {
-    TypeOfKind findTypeOfKindByActivityKind(ActivityKind activityKind);
-
+    //通过小类名称查找小类TypeOfKind
     TypeOfKind findTypeOfKindByTypeName(String typeName);
 }
