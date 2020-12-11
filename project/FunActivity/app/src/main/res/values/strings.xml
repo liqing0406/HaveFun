@@ -1,0 +1,6 @@
+<resources>
+    <string name="app_name">FunActivity</string>
+    <string name="string_compelete">完成</string>
+    <string name="firstname">趣玩儿</string>
+    <string name="appintro">在这里快速发布想玩的休闲活动。看到喜欢的活动，举手报名，一起来玩！</string>
+</resources>

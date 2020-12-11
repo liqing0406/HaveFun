@@ -1,0 +1,3 @@
+include ':EaseUI'
+include ':app'
+rootProject.name='FunActivity'
