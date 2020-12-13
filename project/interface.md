@@ -14,7 +14,6 @@ public static final String BASE_URL = "http://39.105.43.3:8080/";
 package com.hebtu.havefun.controller;
 
 import com.alibaba.fastjson.JSON;
-import com.hebtu.havefun.entity.Messages;
 import com.hebtu.havefun.service.UserService;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
