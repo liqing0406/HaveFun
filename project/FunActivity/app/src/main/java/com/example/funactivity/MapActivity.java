@@ -125,6 +125,7 @@ public class MapActivity extends AppCompatActivity {
                     //获取定位成功的经纬度
                     double latitude = bdLocation.getLatitude();
                     double longitude = bdLocation.getLongitude();
+                    Log.e("经纬度",latitude+" "+longitude);
                     //移动地图界面显示到当前位置
                     LatLng point = new LatLng(latitude,longitude);
                     MapStatusUpdate update = MapStatusUpdateFactory.newLatLng(point);
