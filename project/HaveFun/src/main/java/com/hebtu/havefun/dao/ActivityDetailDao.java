@@ -1,5 +1,6 @@
 package com.hebtu.havefun.dao;
 
+import com.hebtu.havefun.entity.activity.Activity;
 import com.hebtu.havefun.entity.activity.ActivityDetail;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
@@ -12,4 +13,5 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
  * @description TODO
  */
 public interface ActivityDetailDao extends JpaRepository<ActivityDetail,Integer>, JpaSpecificationExecutor<ActivityDetail> {
+    ActivityDetail findActivityDetailByActivity(Activity activity);
 }

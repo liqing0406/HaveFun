@@ -1,5 +1,6 @@
 package com.hebtu.havefun.controller;
 
+import com.hebtu.havefun.entity.activity.Activity;
 import com.hebtu.havefun.service.ActivityService;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;

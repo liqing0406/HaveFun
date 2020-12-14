@@ -120,7 +120,8 @@ public class ActivityService {
      */
     @Cacheable(value = "activity", key = "'getActivityDetail'+#activityId")
     public String getActivityDetail(Integer activityId) {
-        ActivityDetail activityDetail = activityDetailDao.getOne(activityId);
+        Activity activity = activityDao.getOne(activityId);
+        ActivityDetail activityDetail = activityDetailDao.findActivityDetailByActivity(activity);
         return JSON.toJSONString(activityDetail);
     }
 
@@ -212,6 +213,7 @@ public class ActivityService {
         activityDetailDao.save(activityDetail);
         activityDetail = activityDetailDao.getOne(activityDetail.getActivityDetailId());
         Set<Picture> pictures = new HashSet<>();
+
         boolean flag;
         for (MultipartFile file : files) {
             String fileName = "front.png";
@@ -239,6 +241,12 @@ public class ActivityService {
         //将图片对象保存到activity Detail中
         activityDetail.setActivityPictures(pictures);
         activityDetailDao.save(activityDetail);
+        //保存到用户发布活动的表里面
+        UserPublishActivity userPublish = new UserPublishActivity();
+        userPublish.setActivity(activity);
+        userPublish.setUser(activity.getUser());
+        userPublish.setPublishTime(new Date());
+        userPublishActivityDao.save(userPublish);
         //用户发布了报名的活动信息，随之将和该用户下的关于报名活动的部分和总的活动列表缓存删除
         Set<String> userPublishActivity = redisTemplate.keys("activity-enter::" + activity.getUser().getId() + "_*");
         Set<String> activityList = redisTemplate.keys("activities*");
