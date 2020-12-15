@@ -125,7 +125,7 @@ public class MyFragment extends Fragment {
                 case 2:
                     String s = (String)msg.obj;
                     if (s.equals("true")){
-                        user.setHeadPortrait("user/"+user.getId()+"/head.png");
+                        user.setHeadPortrait("user/user_"+user.getId()+"/head.png");
                         activity.setUser(user);
                         img.setImageBitmap(bitmap);
                     }else {

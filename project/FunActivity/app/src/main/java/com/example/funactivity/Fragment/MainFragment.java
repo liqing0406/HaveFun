@@ -234,6 +234,11 @@ public class MainFragment extends Fragment {
     public void onHiddenChanged(boolean hidden) {
         super.onHiddenChanged(hidden);
         adapter.notifyDataSetChanged();
+        Glide.with(view)
+                .load(Constant.PIC_PATH + user.getHeadPortrait())
+                .signature(new ObjectKey(UUID.randomUUID().toString()))
+                .apply(options)
+                .into(img);
     }
 
 
