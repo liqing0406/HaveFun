@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:paddingLeft="10dp"
-    android:background="#efe752"
+    android:background="#ffffff"
     android:paddingRight="10dp">
     <LinearLayout
         android:id="@+id/ll_top"
@@ -41,24 +41,24 @@
                     android:orientation="vertical">
                     <ImageView
                         android:id="@+id/iv_img"
-                        android:alpha="0.8"
+                        android:alpha="0.9"
                         android:layout_width="match_parent"
-                        android:layout_height="200dp"
+                        android:layout_height="150dp"
                         android:background="@drawable/random" />
                 </LinearLayout>
                 <RelativeLayout
                     android:id="@+id/ll_title"
                     android:layout_below="@+id/ll_head"
-                    android:layout_marginTop="-50dp"
+                    android:layout_marginTop="-40dp"
                     android:layout_centerHorizontal="true"
                     android:layout_width="300dp"
-                    android:layout_height="100dp">
+                    android:layout_height="60dp">
                     <TextView
                         android:id="@+id/tv_title"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:text="活动主题"
-                        android:textColor="#ffffff"
+                        android:textColor="@color/noaction"
                         android:textStyle="bold"
                         android:gravity="center"
                         android:textSize="40dp"/>
@@ -238,6 +238,7 @@
     </RelativeLayout>
 
     <LinearLayout
+        android:layout_marginTop="15dp"
         android:id="@+id/ll1"
         android:layout_width="match_parent"
         android:layout_height="63dp"
@@ -330,8 +331,8 @@
                 android:layout_alignParentRight="true"
                 android:layout_marginRight="20dp"
                 android:onClick="buttonClicked"
+                android:textColor="@color/noaction"
                 android:background="@drawable/button"
-                android:textColor="#ffffff"
                 android:text="报  名"
                 android:textSize="20sp" />
         </RelativeLayout>
