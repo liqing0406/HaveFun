@@ -43,7 +43,6 @@ public class Main2Activity extends AppCompatActivity {
     private TextView mineTv;
     private String code;//表示跳转过来的页面;100:主页面 200:我的页面 300:聊天页面
 
-
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
