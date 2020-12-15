@@ -204,7 +204,15 @@ public class MainFragment extends Fragment {
             //处理上拉加载更多
             srl.setOnLoadMoreListener(refreshLayout -> requestData(1, pageNum1, pageSize,cityStr));
         }
-        scan.setOnClickListener(v ->initActivity());//扫描活动二维码
+        scan.setOnClickListener(v ->requestPermissions(new String[]{Manifest.permission.CAMERA},100));//扫描活动二维码
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == 100){
+            initActivity();
+        }
     }
 
     private void initActivity() {

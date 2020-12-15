@@ -66,7 +66,8 @@ public class MapActivity extends AppCompatActivity {
         //设置显示为普通地图
         baiduMap.setMapType(BaiduMap.MAP_TYPE_NORMAL);
         //设置默认比例尺为500米
-        MapStatusUpdate mapStatusUpdate = MapStatusUpdateFactory.zoomTo(15);
+        MapStatusUpdate mapStatusUpdate = MapStatusUpdateFactory.zoomTo(14);
+        baiduMap.setMapStatus(mapStatusUpdate);
         //用户定位
         client = new LocationClient(getApplicationContext());
         //动态申请权限

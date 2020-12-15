@@ -1,5 +1,6 @@
 package com.example.funactivity.login;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -45,8 +46,7 @@ public class RegisterNextActivity extends AppCompatActivity {
         setContentView(R.layout.activity_register_next);
         EventBus.getDefault().register(this);
         initView();
-        //获取返回的位置信息
-        cityStr = new LocationUtil(RegisterNextActivity.this).getLocality();
+
         Intent intent = getIntent();
         num = intent.getStringExtra("num");
         login.setOnClickListener(new View.OnClickListener() {
@@ -61,6 +61,13 @@ public class RegisterNextActivity extends AppCompatActivity {
         password = findViewById(R.id.et_password);
         login = findViewById(R.id.btn_login);
         client = new OkHttpClient();
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        //获取返回的位置信息
+        cityStr = new LocationUtil(RegisterNextActivity.this).getLocality();
     }
 
     public void register() {
