@@ -5,11 +5,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.ImageView;
@@ -17,8 +19,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.alibaba.fastjson.JSON;
+import com.example.funactivity.DetailActivity;
 import com.example.funactivity.Fragment.MyFragment;
 import com.example.funactivity.R;
+import com.example.funactivity.adapter.CollectAdapter;
 import com.example.funactivity.adapter.SignUpAdapter;
 import com.example.funactivity.entity.User.UserEnterActivity;
 import com.example.funactivity.entity.User.UserPublishActivity;
@@ -94,7 +98,19 @@ public class SignUpActivity extends AppCompatActivity {
         //点击事件
         signUpAdapter.setOnItemClickListener(onMyItemClickListener);
         recyclerView.setAdapter(signUpAdapter);
-
+        signUpAdapter.setOn(new SignUpAdapter.onItemClickListener() {
+            @Override
+            public void onItemClick(View view) {
+                int position=recyclerView.getChildAdapterPosition(view);
+                Intent intent = new Intent();
+                intent.putExtra("collect",false);//是否收藏
+                intent.putExtra("id", id + "");//用户id
+                intent.putExtra("activityId", list.get(position).getActivity().getActivityId() + "");//活动id
+                Log.e("id",list.get(position).getId() + "");
+                intent.setClass(view.getContext(), DetailActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 
     private void initView() {

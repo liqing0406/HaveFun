@@ -142,6 +142,7 @@ public class CollectActivity extends AppCompatActivity {
         collectAdapter.setOnItemClickListener(onItemClickListener);
         recyclerView.setAdapter(collectAdapter);
     }
+
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void updataUI(String msg) {
         if (msg.equals("update")) {
@@ -151,6 +152,7 @@ public class CollectActivity extends AppCompatActivity {
             srl.finishLoadMore();
         }
     }
+
     //从服务端获取数据
     private void requestData(int pageNum, int pageSize) {
         FormBody.Builder builder = new FormBody.Builder();
@@ -186,6 +188,7 @@ public class CollectActivity extends AppCompatActivity {
             }
         });
     }
+
     private CollectAdapter.OnMyItemClickListener onItemClickListener = new CollectAdapter.OnMyItemClickListener() {
         @Override
         public void onMyItemClick(View view, int position) {

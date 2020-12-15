@@ -25,24 +25,43 @@ public class SignUpAdapter extends RecyclerView.Adapter<SignUpAdapter.ViewHolder
     private List<UserEnterActivity> lists;
     private int item;
     private OnMyItemClickListener onMyItemClickListener;
+    private onItemClickListener onItemClickListener;
+
     public SignUpAdapter(Context context, int item, List<UserEnterActivity> lists){
         this.context=context;
         this.item=item;
         this.lists=lists;
     }
+
     public interface OnMyItemClickListener {
         void onMyItemClick(View view, int position);
     }
-    public void setOnItemClickListener(OnMyItemClickListener onItemClickListener){
-        this.onMyItemClickListener=onItemClickListener;
+
+    public interface onItemClickListener{
+        void onItemClick(View view);
+    }
+
+    public void setOnItemClickListener(OnMyItemClickListener onItemClickListener) {
+        this.onMyItemClickListener = onItemClickListener;
+    }
+
+    public void setOn(onItemClickListener onItemClickListener){
+        this.onItemClickListener=onItemClickListener;
     }
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        inflater = LayoutInflater.from(context).inflate(item,parent,false);
-        ViewHolder myViewHolder=new ViewHolder(inflater);
-        myViewHolder.onMyItemClickListener=onMyItemClickListener;
-        return myViewHolder;
+        ViewHolder viewHolder;
+        inflater = LayoutInflater.from(context).inflate(item, parent, false);
+        viewHolder = new ViewHolder(inflater);
+        viewHolder.onMyItemClickListener = onMyItemClickListener;
+        viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onItemClickListener.onItemClick(v);
+            }
+        });
+        return viewHolder;
     }
 
     @Override

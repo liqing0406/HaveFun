@@ -116,10 +116,7 @@ public class CollectAdapter extends RecyclerView.Adapter<CollectAdapter.ViewHold
         });
     }
 
-    @Override
-    public int getItemCount() {
-        return activities.size();
-    }
+
 
     public interface OnMyItemClickListener {
         void onMyItemClick(View view, int position);
@@ -132,6 +129,11 @@ public class CollectAdapter extends RecyclerView.Adapter<CollectAdapter.ViewHold
     }
     public void setOn(onItemClickListener onItemClickListener){
         this.onItemClickListener=onItemClickListener;
+    }
+
+    @Override
+    public int getItemCount() {
+        return activities.size();
     }
 
     class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
