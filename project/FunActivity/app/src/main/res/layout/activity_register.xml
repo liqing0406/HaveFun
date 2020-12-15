@@ -53,9 +53,8 @@
             android:layout_height="40dp"/>
 
         <RelativeLayout
-            android:background="@color/pink"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="40dp"
             android:layout_marginTop="120dp">
             <EditText
                 android:id="@+id/et_code"
@@ -71,14 +70,16 @@
                 android:background="@color/bgWhite"
                 android:textColor="@color/smssdk_common_black"
                 android:layout_width="wrap_content"
-                android:layout_height="40dp"
+                android:layout_height="35dp"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="5dp"
                 android:layout_alignParentRight="true"
                 android:text="获取验证码"/>
         </RelativeLayout>
         <Button
             android:textSize="25dp"
             android:id="@+id/btn_submit"
-            android:background="@color/background"
+            android:background="@color/noaction"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="确定"

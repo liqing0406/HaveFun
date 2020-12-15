@@ -49,7 +49,7 @@
     <Button
         android:textSize="25dp"
         android:id="@+id/btn_login"
-        android:background="@color/background"
+        android:background="@color/noaction"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="登录"
