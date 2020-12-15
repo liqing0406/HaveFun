@@ -79,8 +79,8 @@ public class ActivityService {
      * @param pageSize     页大小
      * @return 返回符合条件的List<Activity>集合的Json
      */
-    @Cacheable(value = "activities", key = "'getActivityList'+#activityKind+','+#pageNum+','+#pageSize")
-    public String getActivityList(Integer activityKind, Integer pageNum, Integer pageSize) {
+    @Cacheable(value = "activities", key = "'getActivityList'+#activityKind+','+#city+','+#pageNum+','+#pageSize")
+    public String getActivityList(Integer activityKind, String city, Integer pageNum, Integer pageSize) {
         List<Activity> content = new ArrayList<>();
         Sort sort;
         Pageable pageable;
@@ -90,7 +90,8 @@ public class ActivityService {
             Predicate timePredicate = criteriaBuilder.greaterThanOrEqualTo(root.get("activityTime"), new Date());
             //筛选出有效的活动，即1表示有效
             Predicate statusPredicate = criteriaBuilder.equal(root.get("status"), 1);
-            return criteriaBuilder.and(timePredicate, statusPredicate);
+            Predicate locationPredicate = criteriaBuilder.equal(root.get("activityLocation").get("city"), city);
+            return criteriaBuilder.and(timePredicate, statusPredicate, locationPredicate);
         };
         switch (activityKind) {
             case 1://热门活动
@@ -438,7 +439,6 @@ public class ActivityService {
             return criteriaBuilder.and(locationPredicate, highPredicate, lowPredicate, typePredicate, timePredicate, activityPredicate);
         };
         List<Activity> activityList = activityDao.findAll(specification, PageRequest.of(pageNum - 1, pageSize, Sort.by(Sort.Direction.DESC, "activityTime"))).getContent();
-        System.out.println(activityList.size());
         return activityList.size() != 0 ? JSON.toJSONString(activityList) : "empty";
     }
 }

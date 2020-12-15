@@ -1,6 +1,5 @@
 package com.hebtu.havefun.controller;
 
-import com.hebtu.havefun.entity.activity.Activity;
 import com.hebtu.havefun.service.ActivityService;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -41,12 +40,12 @@ public class ActivityController {
      * @description 获取活动列表
      */
     @RequestMapping("/getActivityList")
-    public String getActivityList(Integer activityKind, Integer pageNum, Integer pageSize) {
+    public String getActivityList(Integer activityKind, String city, Integer pageNum, Integer pageSize) {
         if (activityKind == null || pageNum == null || pageSize == null) {
             System.out.println("getActivityList Error");
             return "ErrorParameter";
         }
-        String activities = activityService.getActivityList(activityKind, pageNum, pageSize);
+        String activities = activityService.getActivityList(activityKind, city, pageNum, pageSize);
         return "empty".equals(activities) ? "" : activities;
     }
 
@@ -113,7 +112,6 @@ public class ActivityController {
             System.out.println("addActivity Error");
             return "ErrorParameter";
         }
-        System.out.println(activityDetailJson);
         return activityService.addActivity(files, activityDetailJson) ? "true" : "false";
     }
 

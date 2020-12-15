@@ -21,7 +21,7 @@ spring:
     hibernate:
       #更新或者创建数据表结构
       ddl-auto: update
-    show-sql: true
+    show-sql: false
     database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
   servlet:
     multipart:

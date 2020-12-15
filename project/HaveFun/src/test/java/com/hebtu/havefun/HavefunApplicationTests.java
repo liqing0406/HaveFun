@@ -1,7 +1,6 @@
 package com.hebtu.havefun;
 
 import com.alibaba.druid.pool.DruidDataSource;
-import com.alibaba.fastjson.JSON;
 import com.hebtu.havefun.dao.ActivityDao;
 import com.hebtu.havefun.dao.UserDao;
 import com.hebtu.havefun.dao.UserDetailDao;
@@ -32,7 +31,6 @@ class HavefunApplicationTests {
 
     @Test
     void contextLoads() {
-        String[] strs = {"1", "2", "3"};
-        System.out.println(JSON.toJSONString(strs));
+        userService.register("123","123");
     }
 }

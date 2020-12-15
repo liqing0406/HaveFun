@@ -5,6 +5,7 @@ import com.hebtu.havefun.dao.*;
 import com.hebtu.havefun.entity.Constant;
 import com.hebtu.havefun.entity.User.*;
 import com.hebtu.havefun.entity.activity.Activity;
+import com.hebtu.havefun.entity.exception.BizException;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.jpa.domain.Specification;
@@ -397,7 +398,7 @@ public class UserService {
         //拼接文件名称
         String fileName = "head" + (Objects.requireNonNull(headPortrait.getOriginalFilename())).substring(headPortrait.getOriginalFilename().lastIndexOf("."));
         //创建在服务器中存储的路径file对象
-        File dest = new File(constant.getUploadPath() + "/user/" + user.getId() + "/" + fileName);
+        File dest = new File(constant.getUploadPath() + "/user/user_" + user.getId() + "/" + fileName);
         if (!dest.getParentFile().exists()) { //判断文件父目录是否存在
             flag = dest.getParentFile().mkdir();
         } else {
@@ -406,7 +407,7 @@ public class UserService {
         if (flag) {
             try {
                 headPortrait.transferTo(dest); //保存文件
-                user.setHeadPortrait("localPictures/user/" + user.getId() + "/" + fileName);
+                user.setHeadPortrait("user/user_" + user.getId() + "/" + fileName);
             } catch (IllegalStateException | IOException e) {
                 e.printStackTrace();
                 return false;
