@@ -88,7 +88,7 @@ public class CollectActivity extends AppCompatActivity {
         initView();
 
         recyclerView = findViewById(R.id.recycle_view);
-        collectAdapter = new CollectAdapter(this, R.layout.signup_or_collect_layout, activities);
+        collectAdapter = new CollectAdapter(this, R.layout.signup_or_collect_layout, activities,id);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(linearLayoutManager);
@@ -134,7 +134,7 @@ public class CollectActivity extends AppCompatActivity {
             }
         });
         recyclerView = findViewById(R.id.recycle_view);
-        collectAdapter = new CollectAdapter(this, R.layout.signup_or_collect_layout, activities);
+        collectAdapter = new CollectAdapter(this, R.layout.signup_or_collect_layout, activities,id);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(linearLayoutManager);

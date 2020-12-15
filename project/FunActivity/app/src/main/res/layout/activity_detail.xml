@@ -202,14 +202,16 @@
                             android:background="@drawable/other"
                             android:layout_marginRight="20dp"
                             android:onClick="buttonClicked"/>
+
                         <TextView
                             android:id="@+id/tv_other"
-                            android:layout_toRightOf="@+id/iv_other"
                             android:layout_width="wrap_content"
                             android:layout_height="50dp"
+                            android:layout_gravity="center"
+                            android:layout_toRightOf="@+id/iv_other"
                             android:maxLines="3"
                             android:minLines="1"
-                            android:layout_gravity="center"
+                            android:gravity="center"
                             android:text="本次活动在河北省举行" />
                     </RelativeLayout>
                     <RelativeLayout
