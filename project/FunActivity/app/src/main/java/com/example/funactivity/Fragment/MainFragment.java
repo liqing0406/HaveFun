@@ -88,6 +88,7 @@ public class MainFragment extends Fragment {
     private int pageSize = 4;//每页数据条数
     private Boolean statusRecent = true;
     private Boolean statusHot = true;
+    private String cityStr;//城市
     final RequestOptions options = new RequestOptions()
             .circleCrop();
     private Handler handler = new Handler(){
@@ -133,10 +134,11 @@ public class MainFragment extends Fragment {
         }
         Main2Activity activity = (Main2Activity) getActivity();
         user = activity.getUser();
-        //动态获取位置的相关权限
-        requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION,
-                        Manifest.permission.ACCESS_FINE_LOCATION,},
-                100);
+        String str = activity.getCityStr();
+        Log.e("定位信息",str);
+        String[] strings = str.split(" ");
+        cityStr = strings[0];
+        Log.e("城市名",cityStr);
         initView();
         activitynum.setText(user.getUserDetail().getNumOfActivityForUser() + "");
         username.setText(user.getUserName());
@@ -159,6 +161,7 @@ public class MainFragment extends Fragment {
         username = view.findViewById(R.id.tv_username);
         activitynum = view.findViewById(R.id.tv_activitynum);
         city = view.findViewById(R.id.tv_city);
+        city.setText(cityStr);
         banner = view.findViewById(R.id.banner);
         all = view.findViewById(R.id.rg_all);
         hot = view.findViewById(R.id.rb_hot);
@@ -187,7 +190,7 @@ public class MainFragment extends Fragment {
         recent.setTextSize(22);
         recent.setTextColor(ContextCompat.getColor(getContext(), R.color.gray));
         if (statusHot) {
-            requestData(1, pageNum1, pageSize);
+            requestData(1, pageNum1, pageSize,cityStr);
             adapter = new RecylerAdapter(getContext(), R.layout.item_layout, activities1,user.getId());
             recyclerView.setAdapter(adapter);
             adapter.setItemClickListener((view, position) -> {
@@ -199,7 +202,7 @@ public class MainFragment extends Fragment {
                 startActivityForResult(intent,1000);
             });
             //处理上拉加载更多
-            srl.setOnLoadMoreListener(refreshLayout -> requestData(1, pageNum1, pageSize));
+            srl.setOnLoadMoreListener(refreshLayout -> requestData(1, pageNum1, pageSize,cityStr));
         }
         scan.setOnClickListener(v ->initActivity());//扫描活动二维码
     }
@@ -210,16 +213,6 @@ public class MainFragment extends Fragment {
         startActivity(intent);
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == 100) {
-            //获取返回的位置信息
-//            String citystr = new LocationUtil(getContext()).getLocality();
-            city.setText("石家庄");
-            //city.setText(citystr);
-        }
-    }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -257,12 +250,13 @@ public class MainFragment extends Fragment {
     }
 
     //获取活动信息
-    private void requestData(final int acttype, final int pageNum, int pageSize) {
+    private void requestData(final int acttype, final int pageNum, int pageSize,String citystr) {
         FormBody.Builder builder = new FormBody.Builder();
         builder.add("activityKind", acttype + "");
         builder.add("pageNum", pageNum + "");
         builder.add("pageSize", pageSize + "");
-        builder.add("city",city.getText().toString());
+        Log.e("获取的城市信息",citystr);
+        builder.add("city",citystr);
         FormBody body = builder.build();
         Request request = new Request.Builder()
                 .post(body)
@@ -328,7 +322,7 @@ public class MainFragment extends Fragment {
                     recent.setTextSize(22);
                     recent.setTextColor(ContextCompat.getColor(getContext(), R.color.gray));
                     //处理上拉加载更多
-                    srl.setOnLoadMoreListener(refreshLayout -> requestData(1, pageNum1, pageSize));
+                    srl.setOnLoadMoreListener(refreshLayout -> requestData(1, pageNum1, pageSize,cityStr));
                     adapter = new RecylerAdapter(getContext(), R.layout.item_layout, activities1,user.getId());
                     recyclerView.setAdapter(adapter);
                     adapter.setItemClickListener((view, position) -> {
@@ -346,10 +340,10 @@ public class MainFragment extends Fragment {
                     recent.setTextSize(25);
                     recent.setTextColor(ContextCompat.getColor(getContext(), R.color.pink));
                     if (pageNum2 == 1) {
-                        requestData(2, pageNum2, pageSize);
+                        requestData(2, pageNum2, pageSize,cityStr);
                     }
                     //处理上拉加载更多
-                    srl.setOnLoadMoreListener(refreshLayout -> requestData(2, pageNum2, pageSize));
+                    srl.setOnLoadMoreListener(refreshLayout -> requestData(2, pageNum2, pageSize,cityStr));
                     adapter = new RecylerAdapter(getContext(), R.layout.item_layout, activities2,user.getId());
                     recyclerView.setAdapter(adapter);
                     adapter.setItemClickListener((view, position) -> {

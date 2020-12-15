@@ -15,6 +15,7 @@ import com.example.funactivity.Main2Activity;
 import com.example.funactivity.R;
 import com.example.funactivity.entity.User.User;
 import com.example.funactivity.util.Constant;
+import com.example.funactivity.util.LocationUtil;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -35,6 +36,8 @@ public class RegisterNextActivity extends AppCompatActivity {
     private String num;
     private OkHttpClient client;
     private String userJson;
+    private String cityStr = "石家庄市 裕华区";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,7 +45,8 @@ public class RegisterNextActivity extends AppCompatActivity {
         setContentView(R.layout.activity_register_next);
         EventBus.getDefault().register(this);
         initView();
-
+        //获取返回的位置信息
+        cityStr = new LocationUtil(RegisterNextActivity.this).getLocality();
         Intent intent = getIntent();
         num = intent.getStringExtra("num");
         login.setOnClickListener(new View.OnClickListener() {
@@ -94,13 +98,11 @@ public class RegisterNextActivity extends AppCompatActivity {
         //提交键值对格式数据
         FormBody.Builder builder = new FormBody.Builder();
         builder.add("phoneNum", num);
-//        builder.add("num",num.getText().toString());
         builder.add("password", password.getText().toString());
         FormBody body = builder.build();
         //创建请求对象
         Request request = new Request.Builder()
                 .post(body)//请求方式为post
-//                .url(Constant.BASE_URL+"LoginServlet")
                 .url(Constant.BASE_URL + "user/login")
                 .build();
         //创建call对象
@@ -133,6 +135,7 @@ public class RegisterNextActivity extends AppCompatActivity {
             Intent intent = new Intent();
             intent.putExtra("user", userJson);
             intent.putExtra("code",100+"");
+            intent.putExtra("cityStr",cityStr);
             intent.setClass(this, Main2Activity.class);
             startActivity(intent);
         }

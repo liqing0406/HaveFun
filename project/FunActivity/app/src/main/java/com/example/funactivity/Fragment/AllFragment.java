@@ -94,8 +94,6 @@ public class AllFragment extends Fragment implements View.OnClickListener{
     private RelativeLayout rl_type;
     private RelativeLayout rl_price;
     private RelativeLayout rl_time;
-    private TableLayout tl_parent;
-    private LinearLayout text;
     private ImageView  image1;
     private ImageView image2;
     private ImageView image3;
@@ -111,7 +109,7 @@ public class AllFragment extends Fragment implements View.OnClickListener{
     private TextView tv_price;
     private Map<String,Integer> times=new HashMap<>();
     private Map<String,Integer> price=new HashMap<>();
-
+    private String cityStr;//市+区
 
 
     private Handler handler = new Handler(){
@@ -164,11 +162,9 @@ public class AllFragment extends Fragment implements View.OnClickListener{
         }
         Main2Activity activity = (Main2Activity) getActivity();
         user = activity.getUser();
+        cityStr = activity.getCityStr();
         initMap();
         initViews();
-        //动态获取权限
-        requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION,
-                Manifest.permission.ACCESS_FINE_LOCATION,},1);
         //初始化下拉列表的点击事件
         initListOnClickListener();
         //获取各参数的值
@@ -198,7 +194,6 @@ public class AllFragment extends Fragment implements View.OnClickListener{
         rl_type = view.findViewById(R.id.rl_type);
         rl_price = view.findViewById(R.id.rl_price);
         rl_time =view.findViewById(R.id.rl_time);
-        tl_parent =view.findViewById(R.id.tl_parent);
         image1=view.findViewById(R.id.iv_img1);
         image2=view.findViewById(R.id.iv_img2);
         image3=view.findViewById(R.id.iv_img3);
@@ -208,11 +203,14 @@ public class AllFragment extends Fragment implements View.OnClickListener{
         all = view.findViewById(R.id.tv_all);
         weather = view.findViewById(R.id.iv_weather);
         city = view.findViewById(R.id.tv_city);
+        city.setText(cityStr);
+        String[] str = cityStr.split(" ");
+        sendRequestWithHttpClient(cityStr);
         selectedType ="empty";
         selectedTime=-1;
         selectedPrice=-1;
-        selectedCity="empty";
-        selectedCountry="empty";
+        selectedCity=str[0];
+        selectedCountry=str[1];
 
         Typeface typeface = Typeface.createFromAsset(getContext().getAssets(), "FZGongYHJW.TTF");
         all.setTypeface(typeface);
@@ -333,16 +331,6 @@ public class AllFragment extends Fragment implements View.OnClickListener{
                 }
             }
         });
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == 1){
-            String citystr = new LocationUtil(getContext()).getLocality();
-            city.setText(citystr);
-            sendRequestWithHttpClient(citystr);
-        }
     }
 
     private void sendRequestWithHttpClient(final String citystr) {

@@ -1,5 +1,6 @@
 package com.example.funactivity;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
@@ -7,6 +8,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.Manifest;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -21,6 +23,7 @@ import com.example.funactivity.Fragment.MainFragment;
 import com.example.funactivity.Fragment.MyFragment;
 import com.example.funactivity.Fragment.NewsFragment;
 import com.example.funactivity.entity.User.User;
+import com.example.funactivity.util.LocationUtil;
 
 public class Main2Activity extends AppCompatActivity {
     private User user;
@@ -42,11 +45,13 @@ public class Main2Activity extends AppCompatActivity {
     private TextView newsTv;
     private TextView mineTv;
     private String code;//表示跳转过来的页面;100:主页面 200:我的页面 300:聊天页面
+    private String cityStr;//市+区
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main2);
+
         if (savedInstanceState != null) {
             addFragment = (AddFragment) manager.findFragmentByTag("addFragment");
             allFragment = (AllFragment) manager.findFragmentByTag("allFragment");
@@ -64,6 +69,7 @@ public class Main2Activity extends AppCompatActivity {
         //获取上个页面传来的user
         Intent intent = getIntent();
         user = JSON.parseObject(intent.getStringExtra("user"), User.class);
+        cityStr = intent.getStringExtra("cityStr");
         Log.e("user",""+user.getHeadPortrait());
         code = intent.getStringExtra("code");
         //初始化控件
@@ -101,6 +107,14 @@ public class Main2Activity extends AppCompatActivity {
                 changeTab(newsFragment);
                 break;
         }
+    }
+
+    public String getCityStr() {
+        return cityStr;
+    }
+
+    public void setCityStr(String cityStr) {
+        this.cityStr = cityStr;
     }
 
     //获取控件（并设置图片文字资源，但是切换的时候很多都不需要重新设置，有点浪费资源，你觉得可以改就改改，我不改了）不改

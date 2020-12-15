@@ -1,7 +1,9 @@
 package com.example.funactivity.login;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.Manifest;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Looper;
@@ -23,6 +25,7 @@ import com.example.funactivity.entity.User.User;
 import com.example.funactivity.model.Model;
 import com.example.funactivity.model.bean.UserInfo;
 import com.example.funactivity.util.Constant;
+import com.example.funactivity.util.LocationUtil;
 import com.hyphenate.EMCallBack;
 import com.hyphenate.chat.EMClient;
 import com.hyphenate.easeui.EaseConstant;
@@ -51,7 +54,7 @@ public class LoginActivity extends AppCompatActivity {
     private Button register;
     private OkHttpClient client;
     private boolean flag = false;
-
+    private String cityStr = "石家庄市 裕华区";//市+区
     private String userJson;
 
     @Override
@@ -61,6 +64,10 @@ public class LoginActivity extends AppCompatActivity {
         //注册事件订阅者
         EventBus.getDefault().register(this);
         initView();
+        //动态获取位置的相关权限
+        requestPermissions(new String[]{android.Manifest.permission.ACCESS_COARSE_LOCATION,
+                        Manifest.permission.ACCESS_FINE_LOCATION,},
+                100);
         //设置密码是否可见
         visible.setOnClickListener(v -> {
             if (flag) {
@@ -95,6 +102,23 @@ public class LoginActivity extends AppCompatActivity {
             Intent intent = new Intent(v.getContext(), RegisterActivity.class);
             startActivity(intent);
         });
+    }
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == 100) {
+            //获取返回的位置信息
+            cityStr = new LocationUtil(LoginActivity.this).getLocality();
+            //city.setText(citystr);
+        }
+    }
+
+    public String getCityStr() {
+        return cityStr;
+    }
+
+    public void setCityStr(String cityStr) {
+        this.cityStr = cityStr;
     }
 
     private void initView() {
@@ -178,6 +202,7 @@ public class LoginActivity extends AppCompatActivity {
             Intent intent = new Intent();
             intent.putExtra("user", userJson);
             intent.putExtra("code", 100 + "");
+            intent.putExtra("cityStr",cityStr);
             intent.setClass(this, Main2Activity.class);
             startActivity(intent);
         }
