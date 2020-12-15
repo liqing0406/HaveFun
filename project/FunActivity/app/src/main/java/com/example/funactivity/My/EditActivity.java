@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.annotation.SuppressLint;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -59,6 +60,7 @@ public class EditActivity extends AppCompatActivity {
     private String activityId;//活动id
     private OkHttpClient client;
     private ActivityDetail activityDetail;
+    @SuppressLint("HandlerLeak")
     private Handler handler=new Handler(){
         @Override
         public void handleMessage(@NonNull Message msg) {
@@ -73,13 +75,10 @@ public class EditActivity extends AppCompatActivity {
         }
     };
 
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit);
-
         initView();
         getData();
     }
@@ -123,18 +122,8 @@ public class EditActivity extends AppCompatActivity {
         AlertDialog.Builder alertDialog=new AlertDialog.Builder(this)
                 .setTitle("删除确认")
                 .setMessage("确认删除这项活动吗?")
-                .setPositiveButton("确认", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        deleteActivity();
-                    }
-                })
-                .setNegativeButton("取消", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                });
+                .setPositiveButton("确认", (dialog, which) -> deleteActivity())
+                .setNegativeButton("取消", (dialog, which) -> dialog.dismiss());
         alertDialog.show();
     }
 
@@ -264,7 +253,7 @@ public class EditActivity extends AppCompatActivity {
     }
 
     private void setData(ActivityDetail activityDetail) {
-        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+        @SuppressLint("SimpleDateFormat") DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
         //显示修改前的活动信息
         title.setText(activityDetail.getActivity().getActivityTile());
         theme.setText(activityDetail.getActivity().getTypeOfKind().toString());
@@ -281,6 +270,4 @@ public class EditActivity extends AppCompatActivity {
                 .load(Constant.PIC_PATH + activityDetail.getActivity().getFrontPicture().getPictureName())
                 .into(img);
     }
-
-
 }

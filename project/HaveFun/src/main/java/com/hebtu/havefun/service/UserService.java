@@ -211,8 +211,8 @@ public class UserService {
             userCollectActivityDao.delete(userCollectActivity);
             activity.setCollectNum(activity.getCollectNum() - 1);
         }
-        //用户更新了收藏的活动信息，随之将和该用户下的关于收藏活动的部分缓存删除
-        Set<String> keys = redisTemplate.keys("activity-collect::" + id + "_*");
+        //用户更新了收藏的活动信息，活动的收藏人数也会更新，这个地方也得清除，按理说不能这样频繁，但是先这样吧
+        Set<String> keys = redisTemplate.keys("activit*");
         if (!CollectionUtils.isEmpty(keys)) {
             redisTemplate.delete(keys);
         }
