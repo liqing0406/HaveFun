@@ -251,7 +251,7 @@
             android:layout_height="wrap_content">
             <RelativeLayout
                 android:id="@+id/rl1"
-                android:layout_width="50sp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
                 <ImageView
                     android:id="@+id/iv_chat"
@@ -261,15 +261,16 @@
                     android:layout_marginRight="10dp"
                     android:layout_marginBottom="2dp"
                     android:src="@drawable/chat"
+                    android:layout_centerHorizontal="true"
                     android:onClick="buttonClicked"/>
                 <TextView
                     android:id="@+id/tv_chat"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/iv_chat"
                     android:textColor="#ffffff"
-                    android:layout_gravity="center"
                     android:text="私信"
+                    android:layout_centerHorizontal="true"
                     android:textSize="10sp" />
             </RelativeLayout>
            <RelativeLayout
@@ -284,6 +285,7 @@
                    android:layout_marginLeft="5dp"
                    android:layout_marginBottom="2dp"
                    android:layout_marginRight="10dp"
+                   android:layout_centerHorizontal="true"
                    android:onClick="buttonClicked" />
                <TextView
                    android:id="@+id/tv_collectnum"
@@ -291,6 +293,7 @@
                    android:layout_height="wrap_content"
                    android:layout_marginLeft="8dp"
                    android:textColor="#ffffff"
+                   android:layout_centerHorizontal="true"
                    android:layout_below="@+id/iv_like"
                    android:textSize="10sp"/>
            </RelativeLayout>
@@ -306,6 +309,7 @@
                     android:layout_marginRight="10dp"
                     android:layout_marginBottom="2dp"
                     android:src="@drawable/share"
+                    android:layout_centerHorizontal="true"
                     android:onClick="buttonClicked"/>
                 <TextView
                     android:layout_width="wrap_content"
@@ -314,6 +318,7 @@
                     android:textColor="#ffffff"
                     android:layout_marginLeft="8dp"
                     android:text="分享"
+                    android:layout_centerHorizontal="true"
                     android:textSize="10sp" />
             </RelativeLayout>
 

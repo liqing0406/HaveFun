@@ -72,7 +72,8 @@ public class SignUpAdapter extends RecyclerView.Adapter<SignUpAdapter.ViewHolder
         holder.time.setText(new SimpleDateFormat("yyyy--MM-dd  HH:mm").format(lists.get(position).getActivity().getActivityTime()));
         holder.address.setText(lists.get(position).getActivity().getActivityLocation().toString());
         holder.money.setText(lists.get(position).getActivity().getActivityCost());
-        holder.apply.setText(lists.get(position).getActivity().getActivityContact());
+        holder.apply.setText(lists.get(position).getActivity().getSignUpNum()+"");
+        holder.collect.setText(lists.get(position).getActivity().getCollectNum()+"");
         holder.button_cancel.setText("取消报名");
         Glide.with(context)
                 .load(Constant.PIC_PATH+lists.get(position).getActivity().getFrontPicture().getPictureName())
@@ -108,7 +109,7 @@ public class SignUpAdapter extends RecyclerView.Adapter<SignUpAdapter.ViewHolder
             address=itemView.findViewById(R.id.tv_address);
             money=itemView.findViewById(R.id.tv_money);
             apply=itemView.findViewById(R.id.tv_apply);//报名人数
-            collect=itemView.findViewById(R.id.tv_collect);//收藏人数
+            collect = itemView.findViewById(R.id.tv_collect);//收藏人数
             button_cancel=itemView.findViewById(R.id.btn_cancel);//取消报名按钮
             button_cancel.setOnClickListener(this);
         }

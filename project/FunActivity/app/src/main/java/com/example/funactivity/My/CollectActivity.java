@@ -100,7 +100,6 @@ public class CollectActivity extends AppCompatActivity {
             public void onItemClick(View view) {
                 int position=recyclerView.getChildAdapterPosition(view);
                 Intent intent = new Intent();
-                intent.putExtra("collect",false);//是否收藏
                 intent.putExtra("id", id + "");//用户id
                 intent.putExtra("activityId", activities.get(position).getActivity().getActivityId() + "");//活动id
                 Log.e("id",activities.get(position).getId() + "");

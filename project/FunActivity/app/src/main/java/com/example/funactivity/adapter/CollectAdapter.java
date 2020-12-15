@@ -83,7 +83,7 @@ public class CollectAdapter extends RecyclerView.Adapter<CollectAdapter.ViewHold
         holder.time.setText(dateFormat.format(activities.get(position).getActivity().getActivityTime()));
         holder.address.setText(activities.get(position).getActivity().getActivityLocation().toString());
         holder.money.setText(activities.get(position).getActivity().getActivityCost() + "");
-        holder.apply.setText(activities.get(position).getActivity().getActivityContact() + "");
+        holder.apply.setText(activities.get(position).getActivity().getSignUpNum() + "");
         holder.collect.setText(activities.get(position).getActivity().getCollectNum() + "");
         holder.button_cancel.setText("取消收藏");
         ifHanUp(position,holder.handler);
@@ -115,8 +115,6 @@ public class CollectAdapter extends RecyclerView.Adapter<CollectAdapter.ViewHold
             }
         });
     }
-
-
 
     public interface OnMyItemClickListener {
         void onMyItemClick(View view, int position);

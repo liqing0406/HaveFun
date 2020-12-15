@@ -69,7 +69,6 @@ public class DetailActivity extends AppCompatActivity {
     private String activityId;//活动id
     private Integer num;//收藏人数
     private Boolean isCollect;//是否收藏过
-    private Boolean collect;//收藏是否可点击
     private ActivityDetail activityDetail;
     private LinearLayout toChat;
     private File file;
@@ -104,15 +103,16 @@ public class DetailActivity extends AppCompatActivity {
                     if (result2) { //返回修改成功结果
                         if (isCollect) {//当前为已收藏，点击更换为未收藏，收藏人数-1
                             like.setImageResource(R.drawable.like1);
-                            Log.e("收藏人数", num + "");
                             collectNum.setText((--num) + "");
                             isCollect = !isCollect;
                             Toast.makeText(DetailActivity.this, "已取消收藏", Toast.LENGTH_SHORT).show();
+                            like.setImageResource(R.drawable.like1);
                         } else {//当前为未收藏，点击更换为已收藏，收藏人数+1
                             like.setImageResource(R.drawable.like);
                             collectNum.setText((++num) + "");
                             isCollect = !isCollect;
                             Toast.makeText(DetailActivity.this, "收藏成功", Toast.LENGTH_SHORT).show();
+                            like.setImageResource(R.drawable.like);
                         }
                     } else {
                         Toast.makeText(DetailActivity.this, "请重试", Toast.LENGTH_SHORT).show();
@@ -130,6 +130,8 @@ public class DetailActivity extends AppCompatActivity {
                     String s = (String) msg.obj;
                     if (s.equals("true")) {
                         enroll.setText("已报名");
+                    }else {
+                        enroll.setText("报名");
                     }
                     break;
             }
@@ -195,7 +197,6 @@ public class DetailActivity extends AppCompatActivity {
 //        toChat = findViewById(R.id.chat);
         client = new OkHttpClient();
         final Intent intent = getIntent();
-        collect = intent.getBooleanExtra("collect", true);
         id = intent.getStringExtra("id");
         activityId = intent.getStringExtra("activityId");
         ifHanUp();
@@ -240,14 +241,10 @@ public class DetailActivity extends AppCompatActivity {
                 }
                 break;
             case R.id.iv_like://收藏
-                if (collect) {
-                    if (isCollect) {//当前为已收藏，点击更换为未收藏
-                        like.setImageResource(R.drawable.like1);
-                        changeCollect(false);
-                    } else {
-                        like.setImageResource(R.drawable.like);
-                        changeCollect(true);
-                    }
+                if (isCollect) {//当前为已收藏，点击更换为未收藏
+                    changeCollect(false);
+                } else {
+                    changeCollect(true);
                 }
 
                 break;
@@ -345,7 +342,6 @@ public class DetailActivity extends AppCompatActivity {
         FormBody.Builder builder = new FormBody.Builder();
         builder.add("id", id);
         builder.add("activityId", activityId);
-        Log.i("phz", activityId + "," + id);
         FormBody body = builder.build();
         Request request = new Request.Builder()
                 .post(body)

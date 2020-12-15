@@ -43,6 +43,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.CircleCrop;
 import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.signature.ObjectKey;
+import com.example.funactivity.DetailActivity;
 import com.example.funactivity.Main2Activity;
 import com.example.funactivity.My.CollectActivity;
 import com.example.funactivity.My.EditActivity;
@@ -51,6 +52,7 @@ import com.example.funactivity.My.SettingActivity;
 import com.example.funactivity.My.SignUpActivity;
 import com.example.funactivity.My.WatchImgActivity;
 import com.example.funactivity.R;
+import com.example.funactivity.adapter.CollectAdapter;
 import com.example.funactivity.adapter.UpAdapter;
 import com.example.funactivity.entity.User.User;
 import com.example.funactivity.entity.User.UserDetail;
@@ -219,7 +221,6 @@ public class MyFragment extends Fragment {
         srl.setEnableRefresh(false);//禁用下拉刷新
         activityum.setText(user.getUserDetail().getNumOfActivityForUser() + "");
         personalSignature.setText(user.getUserDetail().getPersonalSignature());
-        Log.e("路径",""+Constant.PIC_PATH + user.getHeadPortrait());
         //加载头像glide
         Glide.with(this)
                 .load(Constant.PIC_PATH + user.getHeadPortrait())
@@ -237,7 +238,7 @@ public class MyFragment extends Fragment {
         //设置
         settings.setOnClickListener(v -> getSetting());
         //我的发布
-        upAdapter = new UpAdapter(getActivity(), activities, R.layout.up_list_item);
+        upAdapter = new UpAdapter(getActivity(), activities, R.layout.up_list_item,user.getId()+"");
         release.setAdapter(upAdapter);
         if (pageNum == 1){
             getData();//获取我的发布
@@ -644,31 +645,5 @@ public class MyFragment extends Fragment {
         uCrop.start(getContext(),MyFragment.this);
     }
 
-
-    public void uploadImg(String filePath){
-        File file = new File(filePath);
-        //2.创建请求体对象
-        RequestBody requestBody = RequestBody.create(
-                MediaType.parse("application/octet-stream"),
-                file);
-        //3.创建请求对象
-        Request request = new Request.Builder()
-                .post(requestBody)//使用post请求方法
-                .url(Constant.BASE_URL + "UploadFileServlet")
-                .build();
-        //4.创建Call对象
-        Call call = client.newCall(request);
-        call.enqueue(new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-                e.printStackTrace();
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                Log.e("上传文件结果",response.body().string());
-            }
-        });
-    }
 
 }
