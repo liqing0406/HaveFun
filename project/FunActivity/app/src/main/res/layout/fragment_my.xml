@@ -27,7 +27,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:background="@color/zong"
                 android:paddingTop="20dp"
                 android:text="5t5"
                 android:textSize="30sp" />
@@ -37,14 +36,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:background="@color/zong"
                 android:orientation="horizontal">
 
                 <TextView
                     style="@style/teStyle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="@color/zong"
                     android:text="你已完成"
                     android:textSize="10sp" />
 
@@ -53,14 +50,12 @@
                     style="@style/teStyle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="@color/zong"
                     android:textSize="10sp" />
 
                 <TextView
                     style="@style/teStyle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="@color/zong"
                     android:text="次活动"
                     android:textSize="10sp" />
 
@@ -135,7 +130,7 @@
                         android:layout_width="30dp"
                         android:layout_height="30dp"
                         android:layout_centerHorizontal="true"
-                        android:background="@drawable/handup" />
+                        android:background="@drawable/handup3" />
 
                     <TextView
                         style="@style/teStyle"
@@ -213,13 +208,6 @@
                 android:layout_height="wrap_content"
                 android:columnWidth="120dp"
                 android:numColumns="2" />
-
-            <!--设置上拉加载更多-->
-
-
-            <com.scwang.smartrefresh.layout.footer.ClassicsFooter
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
 
         </LinearLayout>
 

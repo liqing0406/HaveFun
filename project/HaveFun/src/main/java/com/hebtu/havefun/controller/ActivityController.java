@@ -41,7 +41,7 @@ public class ActivityController {
      */
     @RequestMapping("/getActivityList")
     public String getActivityList(Integer activityKind, String city, Integer pageNum, Integer pageSize) {
-        if (activityKind == null || pageNum == null || pageSize == null) {
+        if (activityKind == null || pageNum == null || pageSize == null || city == null) {
             System.out.println("getActivityList Error");
             return "ErrorParameter";
         }

@@ -53,7 +53,7 @@ constant:
   server_url:
     "http://39.105.43.3:8080/"
   upload_path:
-    "/home/HaveFunResources/pictures/activity_pictures/"
+    "/home/HaveFunResources/pictures/"
   server_mapping_path:
     "file:/home/HaveFunResources/pictures/"
   user_id:
@@ -115,11 +115,11 @@ spring:
       on-profile: dev
 constant:
   server_url:
-    "http://10.7.88.52:8080/"
-  upload_path:
-    "D:/HaveFunResources/pictures/"
+    "http://10.7.89.9:8080/"
   server_mapping_path:
     "file:/HaveFunResources/pictures/"
+  upload_path:
+    "D:/HaveFunResources/pictures/"
   user_id:
     10000000
   download_path:

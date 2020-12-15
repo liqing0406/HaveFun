@@ -27,7 +27,7 @@ public class ActivityLocation {
     }
 
     public void setProvince(String province) {
-        province = province;
+        this.province = province;
     }
 
     public String getCity() {
@@ -64,6 +64,6 @@ public class ActivityLocation {
 
     @Override
     public String toString() {
-        return getProvince() != null ? province + "省 " + city + "市 " + county + "县（区）" : city + "市 " + county + "县（区）";
+        return getProvince() != null ? province + "  " + city + "  " + county + " " : city + " " + county;
     }
 }

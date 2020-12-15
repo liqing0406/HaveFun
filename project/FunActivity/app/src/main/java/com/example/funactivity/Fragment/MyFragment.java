@@ -3,6 +3,7 @@ package com.example.funactivity.Fragment;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.ContentResolver;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -19,6 +20,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ImageView;
@@ -30,6 +32,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
@@ -39,8 +42,10 @@ import com.alibaba.fastjson.JSON;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.CircleCrop;
 import com.bumptech.glide.request.RequestOptions;
+import com.bumptech.glide.signature.ObjectKey;
 import com.example.funactivity.Main2Activity;
 import com.example.funactivity.My.CollectActivity;
+import com.example.funactivity.My.EditActivity;
 import com.example.funactivity.My.QianmingActivity;
 import com.example.funactivity.My.SettingActivity;
 import com.example.funactivity.My.SignUpActivity;
@@ -63,13 +68,17 @@ import org.greenrobot.eventbus.ThreadMode;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.FormBody;
 import okhttp3.MediaType;
+import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
@@ -91,6 +100,7 @@ public class MyFragment extends Fragment {
     private User user;
     private UpAdapter upAdapter;
     private List<UserPublishActivity> activities = new ArrayList<>();
+    private int position1=1;
     private PopupWindow popupWindow;//弹窗
     private Uri imageUri;
     private OkHttpClient client;
@@ -99,6 +109,8 @@ public class MyFragment extends Fragment {
     private int pageNum = 1;//当前页
     private int pageSize = 20;//页大小
     private SmartRefreshLayout srl;
+    private Bitmap bitmap;
+    private Main2Activity activity;
     private Handler handler = new Handler(){
         @Override
         public void handleMessage(@NonNull Message msg) {
@@ -109,6 +121,20 @@ public class MyFragment extends Fragment {
                     upAdapter.notifyDataSetChanged();
                     //结束上拉动画
                     srl.finishLoadMore();
+                    break;
+                case 2:
+                    String s = (String)msg.obj;
+                    if (s.equals("true")){
+                        user.setHeadPortrait("user/"+user.getId()+"/head.png");
+                        activity.setUser(user);
+                        img.setImageBitmap(bitmap);
+                    }else {
+                        Toast toast = Toast.makeText(getContext(),
+                                "更换失败",Toast.LENGTH_SHORT);
+                        toast.setGravity(Gravity.CENTER,0,0);
+                        toast.show();
+
+                    }
                     break;
             }
         }
@@ -124,7 +150,7 @@ public class MyFragment extends Fragment {
                     false);
             EventBus.getDefault().register(this);
         }
-        Main2Activity activity = (Main2Activity) getActivity();
+        activity = (Main2Activity) getActivity();
         user = activity.getUser();
         initView();
         return view;
@@ -193,9 +219,11 @@ public class MyFragment extends Fragment {
         srl.setEnableRefresh(false);//禁用下拉刷新
         activityum.setText(user.getUserDetail().getNumOfActivityForUser() + "");
         personalSignature.setText(user.getUserDetail().getPersonalSignature());
+        Log.e("路径",""+Constant.PIC_PATH + user.getHeadPortrait());
         //加载头像glide
         Glide.with(this)
                 .load(Constant.PIC_PATH + user.getHeadPortrait())
+                .signature(new ObjectKey(UUID.randomUUID().toString()))
                 .apply(RequestOptions.bitmapTransform(new CircleCrop()))
                 .into(img);
         //更换头像
@@ -215,6 +243,100 @@ public class MyFragment extends Fragment {
             getData();//获取我的发布
         }
         srl.setOnLoadMoreListener(refreshLayout -> getData());
+
+
+        release.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                position1=position;
+                View popView = LayoutInflater.from(getContext()).inflate(R.layout.popupwindow, null);
+                //创建popupwindow对象 设置宽高
+                popupWindow = new PopupWindow(popView, LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT, true);
+                //设置各个控件的点击响应
+                popupWindow.setContentView(popView);
+                Button edit = popView.findViewById(R.id.btn_edit);
+                Button delete = popView.findViewById(R.id.btn_delete);
+                Button dismiss = popView.findViewById(R.id.btn_dismiss);
+
+                edit.setOnClickListener(v -> {
+                    Intent intent = new Intent();
+                    intent.putExtra("user", user.toString());//用户字符串
+                    intent.putExtra("activityId", activities.get(position).getActivity().getActivityId() + "");//活动id
+//                Log.e("活动id", activities.get(position).getActivityId() + "");
+                    intent.setClass(view.getContext(), EditActivity.class);
+                    startActivity(intent);
+                    popupWindow.dismiss();
+                });
+
+                delete.setOnClickListener(v -> {
+                    showAlertDialog();
+                    popupWindow.dismiss();
+                });
+
+                dismiss.setOnClickListener(v -> {
+                    popupWindow.dismiss();
+                });
+
+                //显示popupWindow
+                View rootView = LayoutInflater.from(getContext()).inflate(R.layout.fragment_my, null);
+                popupWindow.showAtLocation(rootView, Gravity.BOTTOM, 0, 0);
+                return false;
+            }
+        });
+    }
+
+    //显示对话框
+    private void showAlertDialog() {
+        AlertDialog.Builder alertDialog=new AlertDialog.Builder(getContext())
+                .setTitle("删除确认")
+                .setMessage("确认删除这项活动吗?")
+                .setPositiveButton("确认", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        deleteActivity();
+                    }
+                })
+                .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+        alertDialog.show();
+    }
+
+    //删除活动
+    private void deleteActivity() {
+        FormBody.Builder builder = new FormBody.Builder();
+        builder.add("activityId",activities.get(position1).getActivity().getActivityId()+"");
+        FormBody body = builder.build();
+        Request request = new Request.Builder()
+                .post(body)
+                .url(Constant.BASE_URL + "activity/deleteActivity")
+                .build();
+        Call call = client.newCall(request);
+        call.enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                e.printStackTrace();
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                String json=response.body().string();
+                if (json.equals("true")){
+                    activities.remove(position1);
+//                    upAdapter.notifyDataSetChanged();
+                    Message message=new Message();
+                    message.what=1;
+                    handler.sendMessage(message);
+
+                }else {
+                    Toast.makeText(getContext(),"删除失败",Toast.LENGTH_SHORT).show();
+
+                }
+            }
+        });
     }
 
     private void showPopupWindow() {
@@ -256,6 +378,7 @@ public class MyFragment extends Fragment {
     //设置
     private void getSetting() {
         Intent intent5 = new Intent();
+        EventBus.getDefault().postSticky(user);
         intent5.setClass(view.getContext(), SettingActivity.class);
         startActivity(intent5);
     }
@@ -279,23 +402,26 @@ public class MyFragment extends Fragment {
     //设置个性签名
     private void changePersonalSignature() {
         Intent intent2 = new Intent();
-        intent2.putExtra("id",user.getId()+"");
-        intent2.putExtra("personalSignature",user.getUserDetail().getPersonalSignature());
+        EventBus.getDefault().postSticky(user);
         intent2.setClass(view.getContext(), QianmingActivity.class);
         startActivity(intent2);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void updataUI(String msg) {
-
-            Log.e("新签名",msg);
-            UserDetail detail = new UserDetail();
-            detail.setPersonalSignature(msg);
-            user.setUserDetail(detail);
-            personalSignature.setText(msg);
-
+    public void updataUI(User u) {
+        //Log.e("新签名",u.getUserDetail().getPersonalSignature());
+        UserDetail detail = new UserDetail();
+        detail.setPersonalSignature(u.getUserDetail().getPersonalSignature());
+        detail.setSex(u.getUserDetail().getSex());
+        detail.setResidentIdCard(u.getUserDetail().getResidentIdCard());
+        user.setUserDetail(detail);
+        user.setUserName(u.getUserName());
+        user.setPassword(u.getPassword());
+        personalSignature.setText(user.getUserDetail().getPersonalSignature());
+        name.setText(user.getUserName());
 
     }
+
     @Override
     public void onDestroy() {
         super.onDestroy();
@@ -401,7 +527,7 @@ public class MyFragment extends Fragment {
             case UCrop.REQUEST_CROP: // 裁剪后的效果
                 if (resultCode == RESULT_OK) {
                     //获取裁剪完成后图片对应的一个序列化的Uri对象
-                    Uri resultUri = UCrop.getOutput(data);
+                    final Uri resultUri = UCrop.getOutput(data);
 //                    ContentResolver contentResolver = getContext().getContentResolver();
 //                    Cursor cursor = contentResolver.query(resultUri,null,
 //                            null,null,null);
@@ -414,9 +540,37 @@ public class MyFragment extends Fragment {
 //                    }
                     try {
                         //将图片显示在头像上
-                        Bitmap bitmap = BitmapFactory.decodeStream(getContext().getContentResolver().openInputStream(resultUri));
-                        img.setImageBitmap(bitmap);
-                    } catch (FileNotFoundException e) {
+                        bitmap = BitmapFactory.decodeStream(getContext().getContentResolver().openInputStream(resultUri));
+
+                        File file = new File(new URI(resultUri.toString()));
+                        MultipartBody.Builder builder = new MultipartBody.Builder();
+                        //3.构建MultipartBody
+                        builder.setType(MultipartBody.FORM).addFormDataPart("headPortrait", "image.png", RequestBody.create(MediaType.parse("image/png"), file));
+                        builder.addFormDataPart("id",user.getId()+"");
+                        MultipartBody body = builder.build();
+                        //4.构建请求
+                        final Request request = new Request.Builder()
+                                .url(Constant.BASE_URL+"user/modifyUserHeadPortrait")
+                                .post(body)
+                                .build();
+                        client = new OkHttpClient();
+                        //5.发送请求
+                        client.newCall(request).enqueue(new Callback() {
+                            @Override
+                            public void onFailure(Call call, IOException e) {
+                                e.printStackTrace();
+                            }
+
+                            @Override
+                            public void onResponse(Call call, Response response) throws IOException {
+                                String str = response.body().string();
+                                Message message = new Message();
+                                message.what = 2;
+                                message.obj = str;
+                                handler.sendMessage(message);
+                            }
+                        });
+                    } catch (FileNotFoundException | URISyntaxException e) {
                         e.printStackTrace();
                     }
                 }
@@ -489,6 +643,8 @@ public class MyFragment extends Fragment {
         uCrop.withOptions(options);
         uCrop.start(getContext(),MyFragment.this);
     }
+
+
     public void uploadImg(String filePath){
         File file = new File(filePath);
         //2.创建请求体对象

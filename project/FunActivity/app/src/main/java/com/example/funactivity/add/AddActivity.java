@@ -358,6 +358,7 @@ public class AddActivity extends AppCompatActivity implements FinalNumInter, Vie
                         + district.getName() + "(" + district.getId() + ")");
                 //省份province
                 provinces = province.getName();
+                Log.e("provinces","123"+provinces);
                 //城市city
                 citys = city.getName();
                 //地区district

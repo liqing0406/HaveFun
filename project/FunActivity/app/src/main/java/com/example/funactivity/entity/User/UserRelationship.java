@@ -1,9 +1,7 @@
-package com.hebtu.havefun.entity.User;
+package com.example.funactivity.entity.User;
 
 
 
-
-import com.example.funactivity.entity.User.UserPK;
 
 import java.io.Serializable;
 

@@ -9,15 +9,15 @@
         android:orientation="vertical">
 
         <ImageView
-            android:layout_width="100dp"
-            android:layout_height="100dp"
+            android:layout_width="140dp"
+            android:layout_height="140dp"
             android:layout_alignParentRight="true"
             android:layout_marginRight="10dp"
             android:src="@drawable/cloud" />
 
         <TextView
             android:textColor="@color/pink"
-            android:layout_marginTop="110dp"
+            android:layout_marginTop="130dp"
             android:textSize="50dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -50,7 +50,6 @@
             android:layout_width="match_parent"
             android:layout_height="40dp"/>
         <RelativeLayout
-            android:background="@color/pink"
             android:layout_width="match_parent"
             android:layout_height="40dp"
             android:layout_marginTop="100dp"
@@ -118,7 +117,6 @@
         <Button
             android:textSize="25dp"
             android:id="@+id/btn_login"
-            android:background="@color/zong"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="登录"

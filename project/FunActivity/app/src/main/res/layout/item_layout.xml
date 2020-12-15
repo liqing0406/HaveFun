@@ -118,7 +118,7 @@
                 android:layout_gravity="center"
                 android:layout_width="25dp"
                 android:layout_height="25dp"
-                android:src="@drawable/handup1"/>
+                android:src="@drawable/handup"/>
             <TextView
                 android:textColor="@color/white"
                 android:background="@color/zong"

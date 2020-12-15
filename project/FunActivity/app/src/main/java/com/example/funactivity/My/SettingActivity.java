@@ -50,29 +50,13 @@ public class SettingActivity extends AppCompatActivity {
                 out();
             }
         });
-        //switch控件
-        Switch aswitch=findViewById(R.id.sh_set);
-        aswitch.setChecked(true);//默认选中
-       // aswitch.setChecked(false);//默认不选中
-        aswitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked){
-                    //选择时一些操作
-                }else {
-                    //未选择时一些操作
-                }
-            }
-        });
+
 
     }
 
     //左上角箭头返回
     public void back(View view){
-        Intent i=new Intent();
-        i.putExtra("code","200");
-        i.setClass(this, Main2Activity.class);
-        startActivity(i);
+       finish();
     }
 
     //退出登录

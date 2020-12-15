@@ -35,6 +35,8 @@ public class Activity implements Serializable {
     private String activityContact;
     //活动人数
     private Integer personLimit;
+    //活动状态字段
+    private Integer status;
 
     public Integer getActivityId() {
         return activityId;
@@ -78,6 +80,14 @@ public class Activity implements Serializable {
 
     public ActivityLocation getActivityLocation() {
         return activityLocation;
+    }
+
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
     }
 
     public void setActivityLocation(ActivityLocation activityLocation) {
@@ -175,6 +185,8 @@ public class Activity implements Serializable {
                 ", releaseTime=" + releaseTime +
                 ", activityContact='" + activityContact + '\'' +
                 ", personLimit=" + personLimit +
+                ", status=" + status +
                 '}';
     }
+
 }

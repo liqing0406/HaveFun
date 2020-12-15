@@ -31,6 +31,5 @@ class HavefunApplicationTests {
 
     @Test
     void contextLoads() {
-        userService.register("123","123");
     }
 }

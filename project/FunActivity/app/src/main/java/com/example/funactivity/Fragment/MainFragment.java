@@ -28,6 +28,7 @@ import android.widget.Toast;
 import com.alibaba.fastjson.JSON;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.bumptech.glide.signature.ObjectKey;
 import com.example.funactivity.DetailActivity;
 import com.example.funactivity.Main2Activity;
 import com.example.funactivity.R;
@@ -35,12 +36,15 @@ import com.example.funactivity.adapter.ImageAdapter;
 import com.example.funactivity.adapter.RecylerAdapter;
 import com.example.funactivity.entity.DataBean;
 import com.example.funactivity.entity.User.User;
+import com.example.funactivity.entity.User.UserDetail;
 import com.example.funactivity.entity.activity.Activity;
 import com.example.funactivity.util.Constant;
 import com.example.funactivity.util.LocationUtil;
+import com.example.funactivity.view.CaptureActivity;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnLoadMoreListener;
+import com.uuzuche.lib_zxing.activity.CodeUtils;
 import com.youth.banner.Banner;
 import com.youth.banner.indicator.CircleIndicator;
 
@@ -52,6 +56,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -75,6 +80,7 @@ public class MainFragment extends Fragment {
     private RecyclerView recyclerView;
     private RecylerAdapter adapter;
     private OkHttpClient client;
+    private ImageView scan;
     private List<Activity> activities1 = new ArrayList<>();
     private List<Activity> activities2 = new ArrayList<>();
     private int pageNum1 = 1;//热门榜当前页码
@@ -84,6 +90,18 @@ public class MainFragment extends Fragment {
     private Boolean statusHot = true;
     final RequestOptions options = new RequestOptions()
             .circleCrop();
+    private Handler handler = new Handler(){
+        @Override
+        public void handleMessage(@NonNull Message msg) {
+            switch (msg.what) {
+                case 1:
+                    adapter.notifyDataSetChanged();
+                    srl.finishLoadMore();
+                    break;
+            }
+        }
+    };
+
     @SuppressLint("HandlerLeak")
     private Handler myHandler = new Handler() {
         @Override
@@ -94,6 +112,7 @@ public class MainFragment extends Fragment {
                     //根据地址下载头像
                     Glide.with(view)
                             .load(Constant.PIC_PATH + msg.obj)
+                            .signature(new ObjectKey(UUID.randomUUID().toString()))
                             .apply(options)
                             .into(img);
                     break;
@@ -114,6 +133,10 @@ public class MainFragment extends Fragment {
         }
         Main2Activity activity = (Main2Activity) getActivity();
         user = activity.getUser();
+        //动态获取位置的相关权限
+        requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION,
+                        Manifest.permission.ACCESS_FINE_LOCATION,},
+                100);
         initView();
         activitynum.setText(user.getUserDetail().getNumOfActivityForUser() + "");
         username.setText(user.getUserName());
@@ -127,10 +150,7 @@ public class MainFragment extends Fragment {
                 .setBannerGalleryEffect(10, 3) //添加画廊效果
                 .setAdapter(new ImageAdapter(DataBean.getTestData3()))//设置adapter
                 .setIndicator(new CircleIndicator(getContext()));//设置指示器
-        //动态获取位置的相关权限
-        requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION,
-                        Manifest.permission.ACCESS_FINE_LOCATION,},
-                100);
+
         return view;
     }
 
@@ -145,6 +165,7 @@ public class MainFragment extends Fragment {
         recent = view.findViewById(R.id.rb_recent);
         srl = view.findViewById(R.id.srl);
         recyclerView = view.findViewById(R.id.recycle_view);
+        scan = view.findViewById(R.id.iv_scan);
         LinearLayoutManager manager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(manager);
 
@@ -162,7 +183,7 @@ public class MainFragment extends Fragment {
         RadioButton checkbtn = (RadioButton) view.findViewById(checkid);
         //设置字体变化
         hot.setTextSize(25);
-        hot.setTextColor(ContextCompat.getColor(getContext(), R.color.white));
+        hot.setTextColor(ContextCompat.getColor(getContext(), R.color.pink));
         recent.setTextSize(22);
         recent.setTextColor(ContextCompat.getColor(getContext(), R.color.gray));
         if (statusHot) {
@@ -180,6 +201,13 @@ public class MainFragment extends Fragment {
             //处理上拉加载更多
             srl.setOnLoadMoreListener(refreshLayout -> requestData(1, pageNum1, pageSize));
         }
+        scan.setOnClickListener(v ->initActivity());//扫描活动二维码
+    }
+
+    private void initActivity() {
+        Intent intent = new Intent(view.getContext(), CaptureActivity.class);
+        intent.putExtra("id",user.getId()+"");
+        startActivity(intent);
     }
 
     @Override
@@ -198,6 +226,7 @@ public class MainFragment extends Fragment {
         super.onActivityResult(requestCode, resultCode, data);
         if(requestCode == 1000){
             adapter.notifyDataSetChanged();
+
         }
     }
 
@@ -209,13 +238,17 @@ public class MainFragment extends Fragment {
 
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void updataUI(String msg) {
-        if (msg.equals("update")) {
-            //刷新adapter
-            adapter.notifyDataSetChanged();
-            //结束上拉动画
-            srl.finishLoadMore();
-        }
+    public void updataUI(User u) {
+        user.setUserName(u.getUserName());
+        user.setPassword(u.getPassword());
+        UserDetail userDetail=new UserDetail();
+        userDetail=user.getUserDetail();
+        userDetail.setSex(u.getUserDetail().getSex());
+        userDetail.setPersonalSignature(u.getUserDetail().getPersonalSignature());
+        userDetail.setResidentIdCard(u.getUserDetail().getResidentIdCard());
+        user.setUserDetail(userDetail);
+        username.setText(user.getUserName());
+
     }
 
     //获取活动信息
@@ -224,6 +257,7 @@ public class MainFragment extends Fragment {
         builder.add("activityKind", acttype + "");
         builder.add("pageNum", pageNum + "");
         builder.add("pageSize", pageSize + "");
+        builder.add("city",city.getText().toString());
         FormBody body = builder.build();
         Request request = new Request.Builder()
                 .post(body)
@@ -243,18 +277,17 @@ public class MainFragment extends Fragment {
                 if ("".equals(actjson)) {
                     Looper.prepare();
                     Toast.makeText(MainFragment.this.getContext(), "没有更多内容了！", Toast.LENGTH_SHORT).show();
-                    srl.finishLoadMoreWithNoMoreData();
+
                     if (acttype == 1) {
                         statusHot = false;
                     } else if (acttype == 2) {
                         statusRecent = false;
                     }
-                    if (!statusRecent && !statusHot) {
-                        srl.finishLoadMoreWithNoMoreData();
-                    }
+                    srl.finishLoadMoreWithNoMoreData();
                     Looper.loop();
                 } else {
                     List<Activity> activitiesList = JSON.parseArray(actjson, Activity.class);
+
                     if (acttype == 1) {
                         activities1.addAll(activitiesList);//将新获取的数据加入之前的数据集合
                         MainFragment.this.pageNum1++;//设置页码＋1
@@ -263,8 +296,9 @@ public class MainFragment extends Fragment {
                         activities2.addAll(activitiesList);//将新获取的数据加入之前的数据集合
                         MainFragment.this.pageNum2++;//设置页码＋1
                     }
-                    //发布事件
-                    EventBus.getDefault().post("update");
+                    Message message = new Message();
+                    message.what=1;
+                    handler.sendMessage(message);
                 }
             }
         });

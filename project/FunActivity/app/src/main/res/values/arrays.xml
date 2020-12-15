@@ -58,30 +58,30 @@
         <item>31</item>
     </string-array>
     <string-array name="hour">
-    <item>01</item>
-    <item>02</item>
-    <item>03</item>
-    <item>04</item>
-    <item>05</item>
-    <item>06</item>
-    <item>07</item>
-    <item>08</item>
-    <item>09</item>
-    <item>10</item>
-    <item>11</item>
-    <item>12</item>
-    <item>13</item>
-    <item>14</item>
-    <item>15</item>
-    <item>16</item>
-    <item>17</item>
-    <item>18</item>
-    <item>19</item>
-    <item>20</item>
-    <item>21</item>
-    <item>22</item>
-    <item>23</item>
-    <item>24</item>
+        <item>01</item>
+        <item>02</item>
+        <item>03</item>
+        <item>04</item>
+        <item>05</item>
+        <item>06</item>
+        <item>07</item>
+        <item>08</item>
+        <item>09</item>
+        <item>10</item>
+        <item>11</item>
+        <item>12</item>
+        <item>13</item>
+        <item>14</item>
+        <item>15</item>
+        <item>16</item>
+        <item>17</item>
+        <item>18</item>
+        <item>19</item>
+        <item>20</item>
+        <item>21</item>
+        <item>22</item>
+        <item>23</item>
+        <item>24</item>
     </string-array>
     <string-array name="minute">
         <item>00</item>
@@ -144,6 +144,65 @@
         <item>57</item>
         <item>58</item>
         <item>59</item>
+    </string-array>
+    <string-array name="types">
+        <item>骑行运动</item>
+        <item>山地运动</item>
+        <item>球类运动</item>
+        <item>水面运动</item>
+        <item>跑步运动</item>
+        <item>任意</item>
+    </string-array>
+    <string-array name="time">
+        <item>近三天</item>
+        <item>近一周</item>
+        <item>近一个月</item>
+        <item>任意</item>
+    </string-array>
+    <string-array name="price">
+        <item>50以内</item>
+        <item>100以内</item>
+        <item>免费</item>
+        <item>任意</item>
+    </string-array>
+    <string-array name="mountain">
+        <item>登山</item>
+        <item>速降</item>
+        <item>攀岩</item>
+        <item>探洞</item>
+        <item>任意</item>
+    </string-array>
+    <string-array name="ride">
+        <item>单车</item>
+        <item>摩托</item>
+        <item>任意</item>
+    </string-array>
+    <string-array name="run">
+        <item>比赛跑</item>
+        <item>健身跑</item>
+        <item>兴趣跑</item>
+        <item>训练跑</item>
+        <item>任意</item>
+    </string-array>
+    <string-array name="ball">
+        <item>足球</item>
+        <item>篮球</item>
+        <item>排球</item>
+        <item>网球</item>
+        <item>羽毛球</item>
+        <item>乒乓球</item>
+        <item>棒球</item>
+        <item>任意</item>
+    </string-array>
+    <string-array name="swim">
+        <item>游泳</item>
+        <item>冲浪</item>
+        <item>摩托艇</item>
+        <item>漂流</item>
+        <item>任意</item>
+    </string-array>
+    <string-array name="other">
+        <item>任意</item>
     </string-array>
 
 

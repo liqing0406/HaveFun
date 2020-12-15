@@ -23,7 +23,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="50dp"
             android:text="@string/firstname"
-            android:textColor="@color/zong"
+            android:textColor="@color/pink"
             android:textSize="60sp"
             android:textStyle="bold" />
 
@@ -49,8 +49,8 @@
 
     <ImageView
         android:id="@+id/iv_jump"
-        android:layout_width="70dp"
-        android:layout_height="70dp"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
         android:layout_alignParentRight="true"
         android:layout_alignParentBottom="true"
         android:layout_margin="30dp"

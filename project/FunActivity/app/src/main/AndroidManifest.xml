@@ -2,6 +2,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.example.funactivity">
+    <uses-permission android:name="android.permission.FLASHLIGHT" />
+    <uses-feature android:name="android.hardware.camera" />
+    <uses-feature android:name="android.hardware.camera.autofocus" />
     <!-- 获取位置相关权限 -->
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
@@ -18,8 +21,7 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="com.android.launcher.permission.READ_SETTINGS" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
-    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
-    <!--环信所需要的权限-->
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" /> <!-- 环信所需要的权限 -->
     <!-- Required -->
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
@@ -73,6 +75,9 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
+        <activity android:name=".view.CaptureActivity"></activity>
+        <activity android:name=".My.EditActivity" />
+
         <meta-data
             android:name="com.baidu.lbsapi.API_KEY"
             android:value="G7c87NxeUkrHAL6oGTNTao9DAYVYIaLH" />
@@ -81,6 +86,7 @@
             android:resource="@xml/file_paths" />
 
         <activity android:name=".MapActivity" />
+        <activity android:name=".Settings.ChangeSexActivity" />
         <activity android:name=".login.GetBackPasswordNextActivity" />
         <activity android:name=".login.GetBackPasswordActivity" />
         <activity android:name=".login.RegisterNextActivity" />
@@ -101,10 +107,8 @@
         <activity android:name=".DetailActivity" />
         <activity android:name=".add.AddActivity" />
         <activity android:name=".add.SelectPictureActivity" />
-        <activity android:name=".news.ChatRoom" />
         <activity android:name=".My.WatchImgActivity" />
-        <activity android:name=".news.HeOrSheActivity" />
-        <activity android:name=".news.ChatActivity"/>
+        <activity android:name=".news.ChatActivity" />
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -125,8 +129,7 @@
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths" />
-        </provider>
-        <!--百度地图定位服务 process属性表示进程会运行在单独的进程中-->
+        </provider> <!-- 百度地图定位服务 process属性表示进程会运行在单独的进程中 -->
         <service
             android:name="com.baidu.location.f"
             android:enabled="true"
@@ -134,25 +137,21 @@
             <intent-filter>
                 <action android:name="com.baidu.location.service_v5.0.0" />
             </intent-filter>
-        </service>
-
-        <!--环信-->
+        </service> <!-- 环信 -->
         <uses-library
             android:name="org.apache.http.legacy"
             android:required="false" />
 
         <meta-data
             android:name="EASEMOB_APPKEY"
-            android:value="1151201206203382#funactivity" />
-        <!-- 声明SDK所需的service SDK核心功能 -->
+            android:value="1151201206203382#funactivity" /> <!-- 声明SDK所需的service SDK核心功能 -->
         <service
             android:name="com.hyphenate.chat.EMChatService"
             android:exported="true" />
         <service
             android:name="com.hyphenate.chat.EMJobService"
             android:exported="true"
-            android:permission="android.permission.BIND_JOB_SERVICE" />
-        <!--         声明SDK所需的receiver -->
+            android:permission="android.permission.BIND_JOB_SERVICE" /> <!-- 声明SDK所需的receiver -->
         <receiver android:name="com.hyphenate.chat.EMMonitorReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.PACKAGE_REMOVED" />
@@ -166,25 +165,17 @@
             </intent-filter>
         </receiver>
 
-
         <activity android:name="com.hyphenate.easeui.ui.EaseShowBigImageActivity" />
 
         <receiver
             android:name="com.hyphenate.push.platform.vivo.EMVivoMsgReceiver"
             tools:ignore="Instantiatable">
             <intent-filter>
+
                 <!-- 接收 push 消息 -->
                 <action android:name="com.vivo.pushclient.action.RECEIVE" />
             </intent-filter>
         </receiver>
-        <!-- Oppo推送配置 start -->
-        <service
-            android:name="com.coloros.mcssdk.PushService"
-            android:permission="com.coloros.mcs.permission.SEND_MCS_MESSAGE"
-            tools:ignore="MissingClass">
-            <intent-filter>
-                <action android:name="com.coloros.mcs.action.RECEIVE_MCS_MESSAGE" />
-            </intent-filter>
-        </service>
     </application>
+
 </manifest>

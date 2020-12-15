@@ -13,6 +13,10 @@ public class UserDetail implements Serializable {
     private Integer sex;
     //年龄
     private Integer age;
+    //身份证号
+    private String residentIdCard;
+    //姓名
+    private String realName;
     //个性签名
     private String personalSignature;
     //用户参加活动次数
@@ -29,6 +33,14 @@ public class UserDetail implements Serializable {
     private Integer activityCount;
 
     public UserDetail() {
+    }
+
+    public String getResidentIdCard() {
+        return residentIdCard;
+    }
+
+    public void setResidentIdCard(String residentIdCard) {
+        this.residentIdCard = residentIdCard;
     }
 
     public Integer getUserDetailId() {
@@ -101,6 +113,14 @@ public class UserDetail implements Serializable {
 
     public void setMyPublishedActivity(Set<Activity> myPublishedActivity) {
         this.myPublishedActivity = myPublishedActivity;
+    }
+
+    public String getRealName() {
+        return realName;
+    }
+
+    public void setRealName(String realName) {
+        this.realName = realName;
     }
 
     public Integer getActivityCount() {

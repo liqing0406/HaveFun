@@ -14,7 +14,7 @@
 
         <ImageView
             android:id="@+id/iv_icon"
-            android:layout_width="100dp"
+            android:layout_width="130dp"
             android:layout_height="100dp"
             android:layout_gravity="center"
             android:layout_margin="10dp"
@@ -26,7 +26,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:background="@color/zong"
             android:text="活动名称"
             android:textColor="@color/white"
             android:textSize="16sp" />
@@ -36,7 +35,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:background="@color/zong"
             android:text="aaa"
             android:textColor="#fff"
             android:textSize="14dp" />
@@ -48,9 +46,9 @@
 
             <ImageView
                 android:id="@+id/iv_icon1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_marginLeft="10dp"
                 android:src="@drawable/handup" />
 
             <TextView
@@ -60,7 +58,6 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_toRightOf="@id/iv_icon1"
-                android:background="@color/zong"
                 android:textColor="@color/white"
                 android:textSize="16sp" />
 
@@ -70,7 +67,6 @@
                 android:layout_width="20dp"
                 android:layout_height="20dp"
                 android:layout_toLeftOf="@+id/tv_like"
-                android:background="@color/zong"
                 android:src="@drawable/xin" />
 
             <TextView
@@ -81,7 +77,6 @@
                 android:layout_alignParentRight="true"
                 android:layout_gravity="center"
                 android:layout_marginRight="10dp"
-                android:background="@color/zong"
                 android:textColor="@color/white"
                 android:textSize="16sp" />
         </RelativeLayout>

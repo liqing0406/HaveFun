@@ -2,10 +2,16 @@ package com.example.funactivity;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
+import android.provider.MediaStore;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -15,6 +21,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.FileProvider;
 
 import com.alibaba.fastjson.JSON;
 import com.bumptech.glide.Glide;
@@ -22,7 +29,11 @@ import com.example.funactivity.entity.activity.ActivityDetail;
 import com.example.funactivity.news.ChatActivity;
 import com.example.funactivity.util.Constant;
 import com.hyphenate.easeui.EaseConstant;
+import com.uuzuche.lib_zxing.activity.CodeUtils;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -38,7 +49,7 @@ public class DetailActivity extends AppCompatActivity {
     private ImageView back;//返回
     private ImageView img;//图片
     private TextView title;//标题
-    private TextView theme;//主题
+//    private TextView theme;//主题
     private TextView date;//活动时间
     private TextView money;//费用
     private TextView place;//集合地点
@@ -46,6 +57,9 @@ public class DetailActivity extends AppCompatActivity {
     private TextView phone;//联系方式
     private TextView detail;//活动介绍
     private TextView other;//其他信息
+    private TextView theme;//活动类型
+    private ImageView getMap;//定位
+    private ImageView share;//分享
     private ImageView chat;//私聊发布者
     private ImageView like;//收藏
     private TextView collectNum;
@@ -58,6 +72,8 @@ public class DetailActivity extends AppCompatActivity {
     private Boolean collect;//收藏是否可点击
     private ActivityDetail activityDetail;
     private LinearLayout toChat;
+    private File file;
+
     @SuppressLint("HandlerLeak")
     private Handler handler = new Handler() {
         @SuppressLint("SetTextI18n")
@@ -164,16 +180,19 @@ public class DetailActivity extends AppCompatActivity {
         title = findViewById(R.id.tv_title);
         theme = findViewById(R.id.tv_theme);
         date = findViewById(R.id.tv_date);
+        getMap = findViewById(R.id.iv_getmap);
         money = findViewById(R.id.tv_money);
         place = findViewById(R.id.tv_place);
         map = findViewById(R.id.iv_map);
         phone = findViewById(R.id.tv_phone);
+        detail=findViewById(R.id.tv_detail);
         other = findViewById(R.id.tv_other);
         chat = findViewById(R.id.iv_chat);
         like = findViewById(R.id.iv_like);
         collectNum = findViewById(R.id.tv_collectnum);
+        share = findViewById(R.id.iv_share);
         enroll = findViewById(R.id.enroll);
-        toChat = findViewById(R.id.chat);
+//        toChat = findViewById(R.id.chat);
         client = new OkHttpClient();
         final Intent intent = getIntent();
         collect = intent.getBooleanExtra("collect", true);
@@ -186,7 +205,8 @@ public class DetailActivity extends AppCompatActivity {
     private void setData(ActivityDetail activityDetail) {
         @SuppressLint("SimpleDateFormat") DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
         title.setText(activityDetail.getActivity().getActivityTile());
-        theme.setText(activityDetail.getActivity().getTypeOfKind().toString());
+        theme.setText(activityDetail.getActivity().getTypeOfKind().getTypeName());
+        detail.setText(activityDetail.getActivityInfo());
         date.setText(dateFormat.format(activityDetail.getActivity().getActivityTime()));
         money.setText(activityDetail.getActivity().getActivityCost());
         place.setText(activityDetail.getActivity().getActivityLocation().toString());
@@ -205,11 +225,19 @@ public class DetailActivity extends AppCompatActivity {
                 this.finish();
                 break;
             case R.id.iv_chat://私聊
-                Intent intent1 = new Intent(DetailActivity.this, ChatActivity.class);
-                Log.i("用户id",activityDetail.getActivity().getUser().getId()+"");
-                Log.i("用户id",EaseConstant.EXTRA_USER_ID+"");
-                intent1.putExtra(EaseConstant.EXTRA_USER_ID, activityDetail.getActivity().getUser().getPhoneNum()+"");
-                startActivity(intent1);
+                int faBuZheID = activityDetail.getActivity().getUser().getId();
+                Log.e("fabuzhuID:"+faBuZheID,"id:"+id);
+                if((id+"").equals(faBuZheID)){
+                    Toast toast = Toast.makeText(DetailActivity.this,
+                            "自己就是发布者",Toast.LENGTH_SHORT);
+                    toast.setGravity(Gravity.CENTER,0,0);
+                    toast.show();
+                }else {
+                    Intent intent1 = new Intent(DetailActivity.this, ChatActivity.class);
+                    intent1.putExtra(EaseConstant.EXTRA_USER_ID, activityDetail.getActivity().getUser().getPhoneNum()+"");
+                    intent1.putExtra(EaseConstant.EXTRA_CHAT_NAME,activityDetail.getActivity().getUser().getUserName());
+                    startActivity(intent1);
+                }
                 break;
             case R.id.iv_like://收藏
                 if (collect) {
@@ -226,12 +254,61 @@ public class DetailActivity extends AppCompatActivity {
             case R.id.enroll://报名
                 toEnroll();
                 break;
-            case R.id.iv_map://打开地图
+            case R.id.iv_getmap://打开地图
                 Intent intent = new Intent();
                 intent.putExtra("placeStr", place.getText().toString());
                 intent.setClass(this, MapActivity.class);
                 startActivity(intent);
                 break;
+            case R.id.iv_share://分享
+                toShare();
+                break;
+        }
+    }
+
+    private void toShare() {
+        //生成活动二维码
+        Bitmap bitmap = CodeUtils.createImage(activityId+"",400,400, BitmapFactory.decodeResource(this.getResources(),R.drawable.sport));
+        //获取时间戳
+        long time = System.currentTimeMillis();
+        String uri = null;
+        if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)){//判断是否获取SD卡权限
+            String dir = getExternalFilesDir(null).getAbsolutePath()+"/CoolImg";
+            File dirFile = new File(dir);//目录转化为文件夹
+            if (!dirFile.exists()){//文件夹不存在则新建
+                dirFile.mkdirs();
+            }
+            //新建图片，以时间命名
+            file = new File(dir,time+".jpg");
+            //保存图片
+            try {
+                FileOutputStream outputStream = new FileOutputStream(file);
+                bitmap.compress(Bitmap.CompressFormat.JPEG,80,outputStream);
+                outputStream.flush();
+                outputStream.close();
+                //版本大于android7.0临时访问文件
+                FileProvider.getUriForFile(DetailActivity.this.getApplicationContext(),
+                        "net.onest.funactivity.fileprovider",file);
+                //把文件插入系统图库
+                uri = MediaStore.Images.Media.insertImage(getContentResolver(),file.getAbsolutePath(),time+".jpg",null);
+                //通知图库更新
+                DetailActivity.this.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.parse("file://"+dir)));
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            //分享图片
+            Intent intent = new Intent();
+            intent.setAction(Intent.ACTION_SEND);
+            // 可以对发起分享的 Intent 添加临时访问授权
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            intent.putExtra(Intent.EXTRA_STREAM,Uri.parse(uri));
+            intent.setType("image/jpeg");
+            intent.putExtra(Intent.EXTRA_SUBJECT, "111");
+            intent.putExtra(Intent.EXTRA_TEXT, "快来看看这个活动吧~");
+            startActivity(Intent.createChooser(intent,"快来看看这个活动吧~"));
         }
     }
 

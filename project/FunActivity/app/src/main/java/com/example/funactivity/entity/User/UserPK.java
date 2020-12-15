@@ -1,7 +1,5 @@
 package com.example.funactivity.entity.User;
 
-import androidx.annotation.InspectableProperty;
-
 import java.io.Serializable;
 
 /**

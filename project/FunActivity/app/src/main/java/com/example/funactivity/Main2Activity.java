@@ -65,6 +65,7 @@ public class Main2Activity extends AppCompatActivity {
         //获取上个页面传来的user
         Intent intent = getIntent();
         user = JSON.parseObject(intent.getStringExtra("user"), User.class);
+        Log.e("user",""+user.getHeadPortrait());
         code = intent.getStringExtra("code");
         //初始化控件
         initView();
@@ -116,15 +117,15 @@ public class Main2Activity extends AppCompatActivity {
         mineImg = findViewById(R.id.img_mine);
         mineImg.setImageResource(R.drawable.my);
         mainTv = findViewById(R.id.tv_main);
-        mainTv.setTextColor(ContextCompat.getColor(this, R.color.gray));
+        mainTv.setTextColor(ContextCompat.getColor(this, R.color.black));
         allTv = findViewById(R.id.tv_all);
-        allTv.setTextColor(ContextCompat.getColor(this, R.color.gray));
+        allTv.setTextColor(ContextCompat.getColor(this, R.color.black));
         addTv = findViewById(R.id.tv_add);
-        addTv.setTextColor(ContextCompat.getColor(this, R.color.gray));
+        addTv.setTextColor(ContextCompat.getColor(this, R.color.black));
         newsTv = findViewById(R.id.tv_news);
-        newsTv.setTextColor(ContextCompat.getColor(this, R.color.gray));
+        newsTv.setTextColor(ContextCompat.getColor(this, R.color.black));
         mineTv = findViewById(R.id.tv_mime);
-        mineTv.setTextColor(ContextCompat.getColor(this, R.color.gray));
+        mineTv.setTextColor(ContextCompat.getColor(this, R.color.black));
     }
 
     //布局文件设置的Onclick点击事件方法
@@ -199,5 +200,9 @@ public class Main2Activity extends AppCompatActivity {
             //当前页面
             currentFragment = fragment;
         }
+    }
+
+    public void setUser(User user) {
+        this.user=user;
     }
 }

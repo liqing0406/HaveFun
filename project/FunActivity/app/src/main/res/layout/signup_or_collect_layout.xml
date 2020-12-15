@@ -120,8 +120,8 @@
                 android:id="@+id/baoming"
                 android:layout_marginLeft="30dp"
                 android:layout_gravity="center"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
                 android:src="@drawable/handup"/>
             <TextView
                 android:textColor="@color/white"
