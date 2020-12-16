@@ -368,10 +368,15 @@ public class ActivityService {
 
     //根据用户id删除用户下面发布的活动，和所有的活动列表
     public void releaseCache(Integer id) {
+        System.out.println(id);
         Set<String> userPublishActivity = redisTemplate.keys("activity-publish::" + id + "_*");
+        System.out.println(userPublishActivity.size());
         Set<String> activityList = redisTemplate.keys("activities*");
-        if (!CollectionUtils.isEmpty(userPublishActivity) && !CollectionUtils.isEmpty(activityList)) {
+        System.out.println(activityList.size());
+        if (!CollectionUtils.isEmpty(userPublishActivity)) {
             redisTemplate.delete(userPublishActivity);
+        }
+        if (!CollectionUtils.isEmpty(activityList)) {
             redisTemplate.delete(activityList);
         }
     }
