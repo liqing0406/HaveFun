@@ -120,7 +120,7 @@ public class ActivityService {
      * @return 返回ActivityDetail的json串
      * @description 获取活动详细信息
      */
-    @Cacheable(value = "activity", key = "'getActivityDetail'+#activityId")
+    @Cacheable(value = "activity", key = "#activityId+'_getActivityDetail'")
     public String getActivityDetail(Integer activityId) {
         Activity activity = activityDao.getOne(activityId);
         ActivityDetail activityDetail = activityDetailDao.findActivityDetailByActivity(activity);
@@ -346,6 +346,10 @@ public class ActivityService {
         activityDetailDao.save(activityDetail);
         //用户更新了活动信息，随之将和该用户下的关于报名活动的部分和总的活动列表缓存删除
         releaseCache(activity.getUser().getId());
+        Set<String> activityDetailCache = redisTemplate.keys("activity::" + activity.getActivityId() + "_getActivityDetail*");
+        if (!CollectionUtils.isEmpty(activityDetailCache)) {
+            redisTemplate.delete(activityDetailCache);
+        }
         return "true";
     }
 
@@ -368,11 +372,8 @@ public class ActivityService {
 
     //根据用户id删除用户下面发布的活动，和所有的活动列表
     public void releaseCache(Integer id) {
-        System.out.println(id);
         Set<String> userPublishActivity = redisTemplate.keys("activity-publish::" + id + "_*");
-        System.out.println(userPublishActivity.size());
         Set<String> activityList = redisTemplate.keys("activities*");
-        System.out.println(activityList.size());
         if (!CollectionUtils.isEmpty(userPublishActivity)) {
             redisTemplate.delete(userPublishActivity);
         }

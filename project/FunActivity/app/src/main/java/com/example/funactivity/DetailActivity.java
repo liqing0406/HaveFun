@@ -32,7 +32,6 @@ import com.hyphenate.easeui.EaseConstant;
 import com.uuzuche.lib_zxing.activity.CodeUtils;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.DateFormat;
@@ -290,8 +289,6 @@ public class DetailActivity extends AppCompatActivity {
                 uri = MediaStore.Images.Media.insertImage(getContentResolver(),file.getAbsolutePath(),time+".jpg",null);
                 //通知图库更新
                 DetailActivity.this.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.parse("file://"+dir)));
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -421,5 +418,4 @@ public class DetailActivity extends AppCompatActivity {
             }
         });
     }
-
 }
