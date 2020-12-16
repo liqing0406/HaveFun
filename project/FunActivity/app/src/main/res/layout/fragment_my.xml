@@ -131,7 +131,6 @@
                         android:layout_height="30dp"
                         android:layout_centerHorizontal="true"
                         android:background="@drawable/handup3" />
-
                     <TextView
                         style="@style/teStyle"
                         android:layout_width="wrap_content"
@@ -148,11 +147,11 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerHorizontal="true"
-                    android:layout_marginRight="80dp">
+                    android:layout_centerInParent="true">
 
                     <ImageView
                         android:id="@+id/btn_2"
-                        android:layout_width="30dp"
+                        android:layout_width="33dp"
                         android:layout_height="30dp"
                         android:layout_centerHorizontal="true"
                         android:background="@drawable/shoucang" />
@@ -168,15 +167,17 @@
                 </RelativeLayout>
 
                 <RelativeLayout
+                    android:layout_marginTop="5dp"
                     android:id="@+id/btn_settings"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginRight="25dp"
                     android:layout_alignParentRight="true">
 
                     <ImageView
                         android:id="@+id/btn_3"
-                        android:layout_width="30dp"
-                        android:layout_height="30dp"
+                        android:layout_width="25dp"
+                        android:layout_height="25dp"
                         android:layout_centerHorizontal="true"
                         android:background="@drawable/settings" />
 
