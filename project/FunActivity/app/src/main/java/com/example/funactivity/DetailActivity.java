@@ -247,7 +247,6 @@ public class DetailActivity extends AppCompatActivity {
                 } else {
                     changeCollect(true);
                 }
-
                 break;
             case R.id.enroll://报名
                 toEnroll();

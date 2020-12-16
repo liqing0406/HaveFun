@@ -40,8 +40,9 @@ public class EaseUserUtils {
     	EaseUser user = getUserInfo(username);
         if(user != null && user.getAvatar() != null){
             try {
-                int avatarResId = Integer.parseInt(user.getAvatar());
-                Glide.with(context).load(avatarResId).into(imageView);
+//                int avatarResId = Integer.parseInt(user.getAvatar());
+                String url="http://39.105.43.3:8080/localPictures/"+user.getAvatar();
+                Glide.with(context).load(url).into(imageView);
             } catch (Exception e) {
                 //use default avatar
                 Glide.with(context).load(user.getAvatar())
