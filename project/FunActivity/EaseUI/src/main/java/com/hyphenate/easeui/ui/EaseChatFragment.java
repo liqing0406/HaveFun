@@ -263,17 +263,13 @@ public class EaseChatFragment extends EaseBaseFragment implements EMMessageListe
                             beginMsg.setTo(toChatUserId);
                             EMClient.getInstance().chatManager().sendMessage(beginMsg);
                         }
-
                         sendEmptyMessageDelayed(MSG_TYPING_END, TYPING_SHOW_TIME);
                         break;
                     case MSG_TYPING_END:
-
                         if (!turnOnTyping) return;
-
                         // Only support single-chat type conversation.
                         if (chatType != EaseConstant.CHATTYPE_SINGLE)
                             return;
-
                         // remove all pedding msgs to avoid memory leak.
                         removeCallbacksAndMessages(null);
                         // Send TYPING-END cmd msg
