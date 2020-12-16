@@ -65,12 +65,9 @@ public class EditActivity extends AppCompatActivity {
         @Override
         public void handleMessage(@NonNull Message msg) {
             super.handleMessage(msg);
-            switch (msg.what){
-                case 1:
-                    ActivityDetail activityDetail = (ActivityDetail) msg.obj;
-                    setData(activityDetail);
-                    break;
-
+            if (msg.what == 1) {
+                ActivityDetail activityDetail = (ActivityDetail) msg.obj;
+                setData(activityDetail);
             }
         }
     };

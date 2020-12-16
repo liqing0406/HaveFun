@@ -108,9 +108,8 @@ public class LoginActivity extends AppCompatActivity {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == 100) {
             //获取返回的位置信息
-            cityStr = new LocationUtil(LoginActivity.this).getLocality();
-            //city.setText(citystr);
-        }
+//            cityStr = new LocationUtil(LoginActivity.this).getLocality();
+       }
     }
 
     public String getCityStr() {

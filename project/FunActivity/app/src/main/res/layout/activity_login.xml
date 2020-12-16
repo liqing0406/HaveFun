@@ -26,7 +26,7 @@
     </RelativeLayout>
     <RelativeLayout
         android:layout_marginTop="30dp"
-        android:background="@drawable/min_style"
+        android:background="@drawable/login_backgrond"
         android:padding="30dp"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
