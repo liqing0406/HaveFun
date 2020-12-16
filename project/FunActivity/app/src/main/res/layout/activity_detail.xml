@@ -102,10 +102,10 @@
                             android:layout_width="wrap_content"
                             android:layout_height="50dp"
                             android:layout_gravity="left"
-                            android:layout_marginLeft="20dp"
+                            android:layout_marginLeft="15dp"
                             android:layout_toRightOf="@id/iv_theme"
                             android:gravity="center"
-                            android:text="2020年12月8日6点10分" />
+                            android:text="摩托" />
 
                     </RelativeLayout>
 
@@ -124,9 +124,10 @@
 
                         <TextView
                             android:id="@+id/tv_date"
-                            android:layout_width="180dp"
+                            android:layout_width="wrap_content"
                             android:layout_height="50dp"
                             android:layout_gravity="left"
+                            android:layout_marginLeft="20dp"
                             android:layout_toRightOf="@id/iv_time"
                             android:gravity="center"
                             android:text="2020年12月8日6点10分" />
