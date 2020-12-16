@@ -339,4 +339,18 @@ public class UserController {
         }
         return "true".equals(userService.idCardAuthentication(id, residentIdCard, realName)) ? "true" : "false";
     }
+
+    /**
+     * @description 根据电话号码获取用户信息用于聊天页显示
+     * @param phoneNum 电话号码
+     * @return 返回user的json串
+     */
+    @RequestMapping("/getUserInfo")
+    public String getUserInfo(String phoneNum){
+        if (phoneNum == null) {
+            System.out.println("getUserInfo Error");
+            return "ErrorParameter";
+        }
+        return userService.getUserInfo(phoneNum);
+    }
 }

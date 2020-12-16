@@ -111,6 +111,7 @@ public class ActivityService {
                 content = page.getContent();
                 break;
         }
+        System.out.println(content.size());
         return content.size() != 0 ? JSON.toJSONString(content) : "empty";
     }
 

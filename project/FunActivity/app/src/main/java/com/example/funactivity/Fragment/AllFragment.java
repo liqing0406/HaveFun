@@ -120,18 +120,16 @@ public class AllFragment extends Fragment implements View.OnClickListener {
                     activities.clear();
                     List<Activity> activity = (List<Activity>) msg.obj;
                     activities.addAll(activity);
-                    Log.e("wxy", "表示搜索条件有数据");
+                    Log.e("wxy", "表示搜索条件有数据"+activities.size());
                     //刷新adapter
                     adapter.notifyDataSetChanged();
-
                     break;
                 case 3://表示刷新有数据
                     List<Activity> activity1 = (List<Activity>) msg.obj;
                     activities.addAll(activity1);
-                    Log.e("wxy", "表示刷新有数据");
+                    Log.e("wxy", "表示刷新有数据"+activities.size());
                     //刷新adapter
                     adapter.notifyDataSetChanged();
-
                     //结束上拉动画
                     srl.finishLoadMore();
                     break;
@@ -141,7 +139,11 @@ public class AllFragment extends Fragment implements View.OnClickListener {
                     //刷新adapter
                     adapter.notifyDataSetChanged();
                     break;
-
+                case 5:
+                    adapter.notifyDataSetChanged();
+                    srl.finishLoadMore();
+                    Toast.makeText(AllFragment.this.getContext(), "没有更多内容了！", Toast.LENGTH_SHORT).show();
+                    break;
             }
         }
     };
@@ -268,7 +270,11 @@ public class AllFragment extends Fragment implements View.OnClickListener {
         if (typeName.equals("任意")) {
             typeName = "empty";
         }
-        Log.e("wxy", "typeName=" + typeName + ",city=" + city + ",county=" + county + ",pageNum=" + pageNum + ",i=" + i);
+
+        if(i==0){
+            pageNum=1;
+            this.pageNum=1;
+        }
         FormBody.Builder builder = new FormBody.Builder();
         builder.add("typeName", typeName);
         builder.add("lowCost", lowCost + "");
@@ -296,15 +302,14 @@ public class AllFragment extends Fragment implements View.OnClickListener {
                 assert response.body() != null;
                 String actjson = response.body().string();
                 if ("empty".equals(actjson) && i == 1) {//表述刷新没有更多数据
-                    Looper.prepare();
-                    Toast.makeText(AllFragment.this.getContext(), "没有更多内容了！", Toast.LENGTH_SHORT).show();
-                    srl.finishLoadMoreWithNoMoreData();
-                    srl.setNoMoreData(false);
-                    Looper.loop();
+                    Message message = new Message();
+                    message.what=5;
+                    handler.sendMessage(message);
                 }
                 if (!"empty".equals(actjson) && i == 1) {//表示刷新有数据
                     List<Activity> activitiesList = JSON.parseArray(actjson, Activity.class);
                     AllFragment.this.pageNum++;//设置页码＋1
+                    Log.e("加一","dsds");
                     Message message = new Message();
                     message.what = 3;
                     message.obj = activitiesList;
@@ -324,8 +329,6 @@ public class AllFragment extends Fragment implements View.OnClickListener {
                     handler.sendMessage(message);
                     Looper.prepare();
                     Toast.makeText(AllFragment.this.getContext(), "没有活动！", Toast.LENGTH_SHORT).show();
-                    srl.finishLoadMoreWithNoMoreData();
-                    srl.setNoMoreData(false);
                     Looper.loop();
 
                 }
@@ -448,7 +451,6 @@ public class AllFragment extends Fragment implements View.OnClickListener {
                 initRightView(parentName);
             } else if (child == 1) {
                 selectedTime = times.get(parentName);
-                pageNum = 1;
                 tv_time.setText(parentName);
                 requestData(selectedType, 0, selectedPrice, selectedTime, selectedCity, selectedCountry, pageNum, pageSize, 0);
                 popupWindow.dismiss();
@@ -456,7 +458,6 @@ public class AllFragment extends Fragment implements View.OnClickListener {
             } else if (child == 3) {
                 selectedPrice = price.get(parentName);
                 tv_price.setText(parentName);
-                pageNum = 1;
                 requestData(selectedType, 0, selectedPrice, selectedTime, selectedCity, selectedCountry, pageNum, pageSize, 0);
                 popupWindow.dismiss();
                 image2.setBackgroundResource(R.drawable.down);
@@ -493,7 +494,6 @@ public class AllFragment extends Fragment implements View.OnClickListener {
                 android.R.layout.simple_list_item_1, data);
         right.setAdapter(array);
         right.setOnItemClickListener((parent1, view, position, id) -> {
-            pageNum = 1;
             selectedType = parent1.getItemAtPosition(position).toString();
             tv_type.setText(selectedType);
             if (selectedType.equals("任意")) {
@@ -501,7 +501,6 @@ public class AllFragment extends Fragment implements View.OnClickListener {
             } else {
                 requestData(selectedType, 0, selectedPrice, selectedTime, selectedCity, selectedCountry, pageNum, pageSize, 0);
             }
-            getRecyclerView();
             popupWindow.dismiss();
             image1.setBackgroundResource(R.drawable.down);
         });

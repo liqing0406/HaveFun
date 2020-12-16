@@ -467,4 +467,9 @@ public class UserService {
         userDetailDao.save(userDetail);
         return "true";
     }
+
+    @Cacheable(value = "user-login",key = "#phoneNum+'_getUserInfo'")
+    public String getUserInfo(String phoneNum) {
+        return JSON.toJSONString(userDao.findUserByPhoneNum(phoneNum));
+    }
 }

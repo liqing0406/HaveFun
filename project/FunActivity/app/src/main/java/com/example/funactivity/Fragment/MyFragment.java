@@ -103,7 +103,6 @@ public class MyFragment extends Fragment {
     private int pageNum = 1;//当前页
     private SmartRefreshLayout srl;
     private Bitmap bitmap;
-    private  GridView release;
     private Main2Activity activity;
     private Boolean isLongClick = false;
     @SuppressLint("HandlerLeak")
@@ -217,7 +216,7 @@ public class MyFragment extends Fragment {
         //设置
         RelativeLayout settings = view.findViewById(R.id.btn_settings);
         //我的发布
-        release = view.findViewById(R.id.gv_release);
+        GridView release = view.findViewById(R.id.gv_release);
         name.setText(user.getUserName());
         client = new OkHttpClient();
         srl = view.findViewById(R.id.srl);
@@ -256,11 +255,13 @@ public class MyFragment extends Fragment {
                     return;
                 }else {
                     Intent intent = new Intent();
-                    intent.putExtra("id", user.getId() + "");//用户id
-                    intent.putExtra("activityId", activities.get(position).getActivity().getActivityId() + "");//活动id
-                    intent.setClass(view.getContext(), DetailActivity.class);
+                    intent.putExtra("id",user.getId()+"");
+                    intent.putExtra("collect", true);//收藏是否可修改
+                    intent.putExtra("activityId",activities.get(position).getActivity().getActivityId()+"");
+                    intent.setClass(getContext(), DetailActivity.class);
                     startActivity(intent);
                 }
+
             }
         });
         release.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
@@ -415,6 +416,7 @@ public class MyFragment extends Fragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void updataUI(User u) {
+        //Log.e("新签名",u.getUserDetail().getPersonalSignature());
         UserDetail detail = new UserDetail();
         detail.setPersonalSignature(u.getUserDetail().getPersonalSignature());
         detail.setSex(u.getUserDetail().getSex());
@@ -426,21 +428,14 @@ public class MyFragment extends Fragment {
         name.setText(user.getUserName());
 
     }
-    @Subscribe(threadMode = ThreadMode.MAIN)
+    @Subscribe(threadMode =  ThreadMode.MAIN)
     public void updateDate(ActivityDetail detail){
-        List<UserPublishActivity> activities1 = new ArrayList<>();
         for (UserPublishActivity activity:activities){
-            Activity activity1 = detail.getActivity();
-            if (activity.getActivity().getActivityId() == detail.getActivity().getActivityId()){
-                activity.setActivity(activity1);
+            if (detail.getActivity().getActivityId() == activity.getActivity().getActivityId()){
+                activity.setActivity(detail.getActivity());
             }
-            activities1.add(activity);
-            Log.e("新的列表",activity.toString());
+            Log.e("我的发布列表",activity.toString());
         }
-        //我的发布
-        upAdapter = new UpAdapter(getActivity(), activities1, R.layout.up_list_item, user.getId() + "");
-        release.setAdapter(upAdapter);
-        //刷新adapter
         upAdapter.notifyDataSetChanged();
     }
     @Override

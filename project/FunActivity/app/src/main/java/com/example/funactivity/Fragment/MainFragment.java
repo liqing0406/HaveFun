@@ -255,8 +255,8 @@ public class MainFragment extends Fragment {
         builder.add("activityKind", acttype + "");
         builder.add("pageNum", pageNum + "");
         builder.add("pageSize", pageSize + "");
-        Log.e("获取的城市信息", citystr);
         builder.add("city", citystr);
+        Log.e("pageNum"+pageNum,"acttype"+acttype);
         FormBody body = builder.build();
         Request request = new Request.Builder()
                 .post(body)
