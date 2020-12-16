@@ -3,6 +3,7 @@ package com.hyphenate.easeui.utils;
 import android.content.Context;
 import android.os.Handler;
 import android.util.Log;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -51,22 +52,15 @@ public class EaseUserUtils {
         while (user==null){
             user = getUserInfo.getUser();
         }
-
-        Log.e("wdsdsd",Constant.PIC_PATH+user.getHeadPortrait());
-        Log.e("wdsdsd",username+"");
         Glide.with(context).load(Constant.PIC_PATH+user.getHeadPortrait()).into(imageView);
-    }
-
-    public static void timeJump() {
-        TimerTask task = new TimerTask() {
+        imageView.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void run() {
+            public void onClick(View view) {
 
             }
-        };
-        timer.schedule(task, 5000);
-    };
-    
+        });
+    }
+
     /**
      * set user's nickname
      */

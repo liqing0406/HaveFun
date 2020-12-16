@@ -38,7 +38,6 @@ public class GetUserInfo extends AppCompatActivity {
     public void getUser(String phoneNum){
         FormBody.Builder builder = new FormBody.Builder();
         builder.add("phoneNum", phoneNum);
-        Log.e("dada",""+phoneNum);
         FormBody body = builder.build();
         final Request request = new Request.Builder()
                 .post(body)
@@ -48,7 +47,7 @@ public class GetUserInfo extends AppCompatActivity {
         call.enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                Log.e("shibai","~!!!!");
+                e.printStackTrace();
             }
 
             @Override
