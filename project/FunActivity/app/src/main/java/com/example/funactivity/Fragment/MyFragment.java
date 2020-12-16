@@ -12,6 +12,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -39,6 +40,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.CircleCrop;
 import com.bumptech.glide.request.RequestOptions;
 import com.bumptech.glide.signature.ObjectKey;
+import com.example.funactivity.DetailActivity;
 import com.example.funactivity.Main2Activity;
 import com.example.funactivity.My.CollectActivity;
 import com.example.funactivity.My.EditActivity;
@@ -51,6 +53,8 @@ import com.example.funactivity.adapter.UpAdapter;
 import com.example.funactivity.entity.User.User;
 import com.example.funactivity.entity.User.UserDetail;
 import com.example.funactivity.entity.User.UserPublishActivity;
+import com.example.funactivity.entity.activity.Activity;
+import com.example.funactivity.entity.activity.ActivityDetail;
 import com.example.funactivity.util.Constant;
 import com.mikhaellopez.circularimageview.CircularImageView;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
@@ -99,7 +103,9 @@ public class MyFragment extends Fragment {
     private int pageNum = 1;//当前页
     private SmartRefreshLayout srl;
     private Bitmap bitmap;
+    private  GridView release;
     private Main2Activity activity;
+    private Boolean isLongClick = false;
     @SuppressLint("HandlerLeak")
     private Handler handler = new Handler() {
         @Override
@@ -211,7 +217,7 @@ public class MyFragment extends Fragment {
         //设置
         RelativeLayout settings = view.findViewById(R.id.btn_settings);
         //我的发布
-        GridView release = view.findViewById(R.id.gv_release);
+        release = view.findViewById(R.id.gv_release);
         name.setText(user.getUserName());
         client = new OkHttpClient();
         srl = view.findViewById(R.id.srl);
@@ -242,11 +248,26 @@ public class MyFragment extends Fragment {
         }
         srl.setOnLoadMoreListener(refreshLayout -> getData());
 
-
+        release.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                if (isLongClick){
+                    isLongClick = false;
+                    return;
+                }else {
+                    Intent intent = new Intent();
+                    intent.putExtra("id", user.getId() + "");//用户id
+                    intent.putExtra("activityId", activities.get(position).getActivity().getActivityId() + "");//活动id
+                    intent.setClass(view.getContext(), DetailActivity.class);
+                    startActivity(intent);
+                }
+            }
+        });
         release.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
                 position1 = position;
+                isLongClick = true;
                 @SuppressLint("InflateParams") View popView = LayoutInflater.from(getContext()).inflate(R.layout.popupwindow, null);
                 //创建popupwindow对象 设置宽高
                 popupWindow = new PopupWindow(popView, LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT, true);
@@ -394,7 +415,6 @@ public class MyFragment extends Fragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void updataUI(User u) {
-        //Log.e("新签名",u.getUserDetail().getPersonalSignature());
         UserDetail detail = new UserDetail();
         detail.setPersonalSignature(u.getUserDetail().getPersonalSignature());
         detail.setSex(u.getUserDetail().getSex());
@@ -406,7 +426,23 @@ public class MyFragment extends Fragment {
         name.setText(user.getUserName());
 
     }
-
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void updateDate(ActivityDetail detail){
+        List<UserPublishActivity> activities1 = new ArrayList<>();
+        for (UserPublishActivity activity:activities){
+            Activity activity1 = detail.getActivity();
+            if (activity.getActivity().getActivityId() == detail.getActivity().getActivityId()){
+                activity.setActivity(activity1);
+            }
+            activities1.add(activity);
+            Log.e("新的列表",activity.toString());
+        }
+        //我的发布
+        upAdapter = new UpAdapter(getActivity(), activities1, R.layout.up_list_item, user.getId() + "");
+        release.setAdapter(upAdapter);
+        //刷新adapter
+        upAdapter.notifyDataSetChanged();
+    }
     @Override
     public void onDestroy() {
         super.onDestroy();

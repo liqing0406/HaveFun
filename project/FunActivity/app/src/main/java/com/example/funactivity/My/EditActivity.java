@@ -23,8 +23,11 @@ import com.alibaba.fastjson.JSON;
 import com.bumptech.glide.Glide;
 import com.example.funactivity.R;
 import com.example.funactivity.entity.activity.ActivityDetail;
+import com.example.funactivity.entity.activity.TypeOfKind;
 import com.example.funactivity.util.Constant;
 
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.io.IOException;
 import java.text.DateFormat;
@@ -40,6 +43,7 @@ import okhttp3.Response;
 
 public class EditActivity extends AppCompatActivity {
     private ImageView img;
+    private ImageView back;//返回
     private TextView title;//标题
     private EditText theme;//活动主题
     private EditText date;//活动时间
@@ -77,6 +81,7 @@ public class EditActivity extends AppCompatActivity {
 
     private void initView() {
         client = new OkHttpClient();
+        back = findViewById(R.id.iv_back);
         img = findViewById(R.id.iv_img);
         title = findViewById(R.id.tv_title);
         theme = findViewById(R.id.et_theme);
@@ -89,7 +94,7 @@ public class EditActivity extends AppCompatActivity {
         phone = findViewById(R.id.et_phone);
         other = findViewById(R.id.et_other);
         submit = findViewById(R.id.btn_submit);
-
+        back.setOnClickListener( v -> finish());
         Intent intent = getIntent();
         userStr = intent.getStringExtra("user");
         activityId = intent.getStringExtra("activityId");
@@ -102,56 +107,7 @@ public class EditActivity extends AppCompatActivity {
                 //提交修改
                 dataChanged();
                 break;
-//            case R.id.iv_delete:
-//                //删除
-//                showAlertDialog();
-//                break;
         }
-    }
-
-    //显示对话框
-    private void showAlertDialog() {
-        AlertDialog.Builder alertDialog = new AlertDialog.Builder(this)
-                .setTitle("删除确认")
-                .setMessage("确认删除这项活动吗?")
-                .setPositiveButton("确认", (dialog, which) -> deleteActivity())
-                .setNegativeButton("取消", (dialog, which) -> dialog.dismiss());
-        alertDialog.show();
-    }
-
-    //删除活动
-    private void deleteActivity() {
-        FormBody.Builder builder = new FormBody.Builder();
-        builder.add("activityId", activityId);
-        FormBody body = builder.build();
-        Request request = new Request.Builder()
-                .post(body)
-                .url(Constant.BASE_URL + "activity/deleteActivity")
-                .build();
-        Call call = client.newCall(request);
-        call.enqueue(new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-                e.printStackTrace();
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                String json = response.body().string();
-                if (json.equals("true")) {
-//                    Intent i=new Intent(EditActivity.this, Main2Activity.class);
-//                    i.putExtra("user",userStr);
-//                    i.putExtra("code",300+"");
-//                    startActivity(i);
-
-                    finish();
-//                    Toast.makeText(EditActivity.this,"删除成功",Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(EditActivity.this, "删除失败", Toast.LENGTH_SHORT).show();
-
-                }
-            }
-        });
     }
 
     //提交修改
@@ -177,14 +133,10 @@ public class EditActivity extends AppCompatActivity {
                 String json = response.body().string();
                 Log.e("修改结果", json);
                 if (json.equals("true")) {
-//                    Looper.prepare();
-//                    Toast.makeText(EditActivity.this,"修改成功",Toast.LENGTH_SHORT).show();
-//                    Looper.loop();
-//                    Intent i=new Intent(EditActivity.this, Main2Activity.class);
-//                    i.putExtra("user",userStr);
-//                    i.putExtra("code",200+"");
-//                    startActivity(i);
+                    EventBus.getDefault().post(ad);
+                    Log.e("修改之后",ad.toString());
                     finish();
+
                 } else {
                     Toast.makeText(EditActivity.this, "修改失败", Toast.LENGTH_SHORT).show();
                 }
@@ -194,8 +146,9 @@ public class EditActivity extends AppCompatActivity {
 
     private ActivityDetail setDetail() {
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
-//        Activity activity=activityDetail.getActivity();
-//        activityDetail.getActivity().setActivityTile(title.toString());
+        TypeOfKind kind = new TypeOfKind();
+        kind.setTypeName(theme.getText().toString());
+        activityDetail.getActivity().setTypeOfKind(kind);
         activityDetail.getActivity().setActivityCost(money.getText().toString());
         try {
             activityDetail.getActivity().setActivityTime(dateFormat.parse(date.getText().toString()));
@@ -212,7 +165,7 @@ public class EditActivity extends AppCompatActivity {
     }
 
 
-    //获取活动列表
+    //获取活动详情
     public void getData() {
         FormBody.Builder builder = new FormBody.Builder();
         builder.add("activityId", activityId);

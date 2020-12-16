@@ -220,7 +220,7 @@
             android:layout_marginRight="20dp"
             android:background="@drawable/button"
             android:onClick="buttonClicked"
-            android:text="提交修改"
+            android:text=" 提交修改 "
             android:textSize="20sp" />
 
 
