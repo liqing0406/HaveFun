@@ -3,26 +3,27 @@
     android:id="@+id/activity_second"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+
     <Button
         android:id="@+id/iv_back"
         android:layout_width="30dp"
         android:layout_height="30dp"
-        android:background="@drawable/back"
+        android:layout_marginLeft="10dp"
         android:layout_marginTop="10dp"
-        android:layout_marginLeft="10dp"/>
+        android:background="@drawable/back" />
+
     <Button
         android:id="@+id/btn_more"
         android:layout_width="40dp"
         android:layout_height="40dp"
-        android:background="@drawable/album"
         android:layout_gravity="top|right"
         android:layout_marginTop="10dp"
-        android:layout_marginRight="20dp"/>
+        android:layout_marginRight="20dp"
+        android:background="@drawable/album" />
 
     <FrameLayout
         android:id="@+id/fl_my_container"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        ></FrameLayout>
+        android:layout_height="wrap_content"></FrameLayout>
 
 </FrameLayout>

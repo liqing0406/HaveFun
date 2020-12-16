@@ -1,14 +1,5 @@
 package com.example.funactivity.util;
 
-/**
- * @Module :
- * @Comments : FinalNumInter
- * @Author : KnightOneAdmin
- * @CreateDate : 16/9/11
- * @ModifiedBy : KnightOneAdmin
- * @ModifiedDate: 下午3:29
- * @Modified : FinalNumInter
- */
 public interface FinalNumInter {
     // activity中的状态
     int STATE_INIT = -1;

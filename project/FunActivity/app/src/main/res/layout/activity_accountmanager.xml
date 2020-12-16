@@ -1,44 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout android:layout_width="match_parent"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:paddingLeft="30dp"
-    xmlns:android="http://schemas.android.com/apk/res/android" >
+    android:paddingLeft="30dp">
+
     <ImageView
-        android:layout_marginBottom="20dp"
-        android:onClick="back"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/back"/>
+        android:layout_marginBottom="20dp"
+        android:onClick="back"
+        android:src="@drawable/back" />
+
     <TextView
-        android:layout_marginBottom="30dp"
         android:id="@+id/tv_account"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="30dp"
-        android:text="账户管理"/>
+        android:layout_marginBottom="30dp"
+        android:text="账户管理"
+        android:textSize="30dp" />
+
     <com.yanzhenjie.recyclerview.swipe.SwipeMenuRecyclerView
+        android:id="@+id/recycler_view"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/recycler_view"/>
-    <RelativeLayout android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content">
+
         <ImageView
-            android:onClick="add"
-            android:src="@drawable/add"
-            android:layout_marginRight="20dp"
+            android:id="@+id/iv_add"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:id="@+id/iv_add"/>
-        <TextView
+            android:layout_marginRight="20dp"
             android:onClick="add"
-            android:textSize="20dp"
-            android:text="添加账户"
+            android:src="@drawable/add" />
+
+        <TextView
             android:id="@+id/tv_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_toRightOf="@+id/iv_add"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:onClick="add"
+            android:text="添加账户"
+            android:textSize="20dp" />
     </RelativeLayout>
 
 

@@ -1,135 +1,153 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout android:layout_width="match_parent"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:paddingTop="10dp"
     android:paddingLeft="20dp"
-    android:paddingRight="20dp"
-    xmlns:android="http://schemas.android.com/apk/res/android" >
+    android:paddingTop="10dp"
+    android:paddingRight="20dp">
+
     <ImageView
-        android:onClick="back"
         android:id="@+id/iv_back"
-        android:layout_marginBottom="30dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/back"/>
+        android:layout_marginBottom="30dp"
+        android:onClick="back"
+        android:src="@drawable/back" />
+
     <TextView
         android:id="@+id/tv_setting"
-        android:layout_marginBottom="30dp"
-        android:textSize="30dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="设置"/>
+        android:layout_marginBottom="30dp"
+        android:text="设置"
+        android:textSize="30dp" />
+
     <RelativeLayout
-        android:layout_marginBottom="20dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
         android:orientation="horizontal">
+
         <TextView
-            android:onClick="onClick"
-            android:layout_centerVertical="true"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="账号管理"
-            android:textSize="15dp"/>
-        <ImageView
+            android:layout_centerVertical="true"
             android:onClick="onClick"
-            android:layout_alignParentRight="true"
+            android:text="账号管理"
+            android:textSize="15dp" />
+
+        <ImageView
             android:id="@+id/touxaing"
             android:layout_width="40dp"
-            android:layout_height="40dp"/>
-    </RelativeLayout>
-    <RelativeLayout
-        android:layout_marginBottom="20dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-        <TextView
-            android:onClick="onClickTwo"
-            android:layout_centerVertical="true"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="账户与安全"
-            android:textSize="15dp"/>
-        <ImageView
-            android:onClick="onClickTwo"
+            android:layout_height="40dp"
             android:layout_alignParentRight="true"
-            android:src="@drawable/right"
-            android:id="@+id/IdAndSercurity"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
-    </RelativeLayout>
-    <RelativeLayout
-        android:layout_marginBottom="20dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-        <TextView
-            android:onClick="onClickThree"
-            android:layout_centerVertical="true"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="通知设置"
-            android:textSize="15dp"/>
-        <ImageView
-            android:onClick="onClickThree"
-            android:layout_alignParentRight="true"
-            android:src="@drawable/right"
-            android:id="@+id/NotificationSet"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:onClick="onClick" />
     </RelativeLayout>
 
     <RelativeLayout
-        android:layout_marginBottom="20dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
         android:orientation="horizontal">
+
         <TextView
-            android:layout_centerVertical="true"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="清理缓存"
-            android:textSize="15dp"/>
+            android:layout_centerVertical="true"
+            android:onClick="onClickTwo"
+            android:text="账户与安全"
+            android:textSize="15dp" />
+
         <ImageView
+            android:id="@+id/IdAndSercurity"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
-            android:src="@drawable/right"
+            android:onClick="onClickTwo"
+            android:src="@drawable/right" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:onClick="onClickThree"
+            android:text="通知设置"
+            android:textSize="15dp" />
+
+        <ImageView
+            android:id="@+id/NotificationSet"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:onClick="onClickThree"
+            android:src="@drawable/right" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:text="清理缓存"
+            android:textSize="15dp" />
+
+        <ImageView
             android:id="@+id/Clear"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:src="@drawable/right" />
     </RelativeLayout>
+
     <RelativeLayout
-        android:layout_marginBottom="20dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
         android:orientation="horizontal">
+
         <TextView
-            android:onClick="onClickSix"
-            android:layout_centerVertical="true"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="关于我们"
-            android:textSize="15dp"/>
-        <ImageView
+            android:layout_centerVertical="true"
             android:onClick="onClickSix"
-            android:layout_alignParentRight="true"
-            android:src="@drawable/right"
+            android:text="关于我们"
+            android:textSize="15dp" />
+
+        <ImageView
             android:id="@+id/about"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:onClick="onClickSix"
+            android:src="@drawable/right" />
     </RelativeLayout>
+
     <RelativeLayout
-        android:layout_marginBottom="60dp"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_marginBottom="60dp">
+
         <Button
             android:id="@+id/btn_out"
-            android:layout_alignParentBottom="true"
-            android:textSize="20dp"
-            android:text="退出登录"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/pink"/>
+            android:layout_alignParentBottom="true"
+            android:background="@color/pink"
+            android:text="退出登录"
+            android:textSize="20dp" />
     </RelativeLayout>
 
 </LinearLayout>

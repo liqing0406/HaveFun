@@ -7,11 +7,8 @@ import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -20,7 +17,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.funactivity.R;
 import com.example.funactivity.entity.User.UserCollectActivity;
-import com.example.funactivity.entity.activity.Activity;
 import com.example.funactivity.util.Constant;
 
 import java.io.IOException;
@@ -46,7 +42,7 @@ public class CollectAdapter extends RecyclerView.Adapter<CollectAdapter.ViewHold
     private OnMyItemClickListener onMyItemClickListener;
     private onItemClickListener onItemClickListener;
 
-    public CollectAdapter(Context context, int item, List<UserCollectActivity> lists,String myID) {
+    public CollectAdapter(Context context, int item, List<UserCollectActivity> lists, String myID) {
         this.context = context;
         this.item = item;
         this.activities = lists;
@@ -61,22 +57,16 @@ public class CollectAdapter extends RecyclerView.Adapter<CollectAdapter.ViewHold
         inflater = LayoutInflater.from(context).inflate(item, parent, false);
         viewHolder = new ViewHolder(inflater);
         viewHolder.onMyItemClickListener = onMyItemClickListener;
-        viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onItemClickListener.onItemClick(v);
-            }
-        });
+        viewHolder.itemView.setOnClickListener(v -> onItemClickListener.onItemClick(v));
         return viewHolder;
     }
 
-
+    @SuppressLint("SetTextI18n")
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         //收藏时间未获取
         Glide.with(context)
-                //.load(Constant.BASE_URL+"img/img1.jpg")
-                .load(Constant.PIC_PATH+activities.get(position).getActivity().getFrontPicture().getPictureName())
+                .load(Constant.PIC_PATH + activities.get(position).getActivity().getFrontPicture().getPictureName())
                 .into(holder.picture);
         @SuppressLint("SimpleDateFormat") DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
         holder.name.setText(activities.get(position).getActivity().getActivityTile());
@@ -86,17 +76,17 @@ public class CollectAdapter extends RecyclerView.Adapter<CollectAdapter.ViewHold
         holder.apply.setText(activities.get(position).getActivity().getSignUpNum() + "");
         holder.collect.setText(activities.get(position).getActivity().getCollectNum() + "");
         holder.button_cancel.setText("取消收藏");
-        ifHanUp(position,holder.handler);
+        ifHanUp(position, holder.handler);
     }
 
     private void ifHanUp(int position, Handler handler) {
         FormBody.Builder builder = new FormBody.Builder();
-        builder.add("activityId",activities.get(position).getActivity().getActivityId()+"");
-        builder.add("id",myID);
+        builder.add("activityId", activities.get(position).getActivity().getActivityId() + "");
+        builder.add("id", myID);
         FormBody body = builder.build();
         Request request = new Request.Builder()
                 .post(body)
-                .url(Constant.BASE_URL+"activity/judgeEnterActivity")
+                .url(Constant.BASE_URL + "activity/judgeEnterActivity")
                 .build();
         Call call = client.newCall(request);
         call.enqueue(new Callback() {
@@ -119,14 +109,17 @@ public class CollectAdapter extends RecyclerView.Adapter<CollectAdapter.ViewHold
     public interface OnMyItemClickListener {
         void onMyItemClick(View view, int position);
     }
-    public interface onItemClickListener{
+
+    public interface onItemClickListener {
         void onItemClick(View view);
     }
+
     public void setOnItemClickListener(OnMyItemClickListener onItemClickListener) {
         this.onMyItemClickListener = onItemClickListener;
     }
-    public void setOn(onItemClickListener onItemClickListener){
-        this.onItemClickListener=onItemClickListener;
+
+    public void setOn(onItemClickListener onItemClickListener) {
+        this.onItemClickListener = onItemClickListener;
     }
 
     @Override
@@ -146,16 +139,17 @@ public class CollectAdapter extends RecyclerView.Adapter<CollectAdapter.ViewHold
         TextView collect;
         Button button_cancel;
         TextView state;//显示也报名
-        Handler handler = new Handler(){
+        @SuppressLint("HandlerLeak")
+        Handler handler = new Handler() {
             @Override
             public void handleMessage(@NonNull Message msg) {
                 switch (msg.what) {
                     case 1:
-                        String s = (String)msg.obj;
-                        if(s.equals("true")){
+                        String s = (String) msg.obj;
+                        if (s.equals("true")) {
                             state.setText("已报名");
                             state.setBackgroundColor(context.getColor(R.color.colorAccent));
-                        }else{
+                        } else {
                             state.setText("");
                             state.setBackgroundColor(context.getColor(R.color.zong));
                         }
@@ -166,7 +160,7 @@ public class CollectAdapter extends RecyclerView.Adapter<CollectAdapter.ViewHold
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            picture=itemView.findViewById(R.id.iv_picture);//图片
+            picture = itemView.findViewById(R.id.iv_picture);//图片
             timeup = itemView.findViewById(R.id.tv_timeup);//收藏时间
             name = itemView.findViewById(R.id.tv_name);
             time = itemView.findViewById(R.id.tv_time);//活动时间
@@ -186,9 +180,6 @@ public class CollectAdapter extends RecyclerView.Adapter<CollectAdapter.ViewHold
                 onMyItemClickListener.onMyItemClick(v, getAbsoluteAdapterPosition());
             }
         }
-
-
     }
-
 }
 

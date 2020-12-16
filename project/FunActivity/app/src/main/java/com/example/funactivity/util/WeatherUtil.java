@@ -3,9 +3,9 @@ package com.example.funactivity.util;
 import com.example.funactivity.R;
 
 public class WeatherUtil {
-    private int src;
-    public int getImg(String data,String wea){
-        if (data.compareTo("06:00")>=0&&data.compareTo("18:00")<=0) {
+    public int getImg(String data, String wea) {
+        int src;
+        if (data.compareTo("06:00") >= 0 && data.compareTo("18:00") <= 0) {
             switch (wea) {
                 case "晴":
                     src = R.drawable.w1;
@@ -116,7 +116,7 @@ public class WeatherUtil {
                     src = R.drawable.w1;
                     break;
             }
-        }else{
+        } else {
             switch (wea) {
                 case "晴":
                     src = R.drawable.wn1;

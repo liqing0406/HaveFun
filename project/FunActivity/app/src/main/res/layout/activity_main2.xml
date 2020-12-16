@@ -117,8 +117,8 @@
                         android:layout_height="wrap_content"
                         android:layout_below="@id/img_news"
                         android:layout_centerHorizontal="true"
-                        android:textColor="#000"
-                        android:text="消息" />
+                        android:text="消息"
+                        android:textColor="#000" />
                 </RelativeLayout>
 
                 <RelativeLayout

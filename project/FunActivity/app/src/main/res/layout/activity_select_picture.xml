@@ -10,15 +10,16 @@
         android:background="@color/gray">
 
         <ImageView
-            android:background="@color/gray"
             android:id="@+id/btn_back"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
-            android:padding="10dp"
             android:layout_centerVertical="true"
-            android:src="@mipmap/icon_back"
-            android:onClick="back" />
+            android:background="@color/gray"
+            android:onClick="back"
+            android:padding="10dp"
+            android:src="@mipmap/icon_back" />
+
         <TextView
             android:id="@+id/date_title"
             android:layout_width="wrap_content"
@@ -35,8 +36,8 @@
             android:id="@+id/btn_ok"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_alignParentRight="true"
             android:layout_alignParentTop="true"
+            android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:layout_marginRight="10dp"
             android:background="@color/gray"
@@ -80,6 +81,7 @@
                 android:text="所有图片"
                 android:textColor="#fff"
                 android:textSize="14sp" />
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

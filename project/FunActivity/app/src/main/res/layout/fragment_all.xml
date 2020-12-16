@@ -17,9 +17,9 @@
                 android:id="@+id/tv_all"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
+                android:layout_marginLeft="8dp"
                 android:gravity="center"
                 android:text="所有活动"
-                android:layout_marginLeft="8dp"
                 android:textSize="30dp"
                 android:textStyle="bold" />
 
@@ -43,83 +43,94 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:text="北京 朝阳区"/>
+                    android:text="北京 朝阳区" />
             </LinearLayout>
 
         </RelativeLayout>
+
         <TableLayout
             android:id="@+id/tl_parent"
             android:layout_width="match_parent"
             android:layout_height="30dp"
             android:stretchColumns="0,1,2">
+
             <TableRow>
+
                 <RelativeLayout
                     android:id="@+id/rl_type"
-                    android:layout_height="30dp"
-                    android:layout_width="wrap_content">
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp">
+
                     <TextView
                         android:id="@+id/type"
-                        android:layout_marginLeft="10dp"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:layout_centerVertical="true"
-                        android:textSize="15dp"
-                        android:gravity="center"
                         android:layout_centerInParent="true"
-                        android:text="类型"/>
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="10dp"
+                        android:gravity="center"
+                        android:text="类型"
+                        android:textSize="15dp" />
+
                     <ImageView
                         android:id="@+id/iv_img1"
-                        android:layout_toRightOf="@id/type"
-                        android:layout_marginLeft="10dp"
                         android:layout_width="10dp"
                         android:layout_height="10dp"
-                        android:background="@drawable/down"
-                        android:layout_centerVertical="true" />
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="10dp"
+                        android:layout_toRightOf="@id/type"
+                        android:background="@drawable/down" />
                 </RelativeLayout>
+
                 <RelativeLayout
                     android:id="@+id/rl_price"
-                    android:layout_height="30dp"
-                    android:layout_width="wrap_content">
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp">
+
                     <TextView
                         android:id="@+id/price"
-                        android:layout_marginLeft="20dp"
-                        android:layout_height="match_parent"
                         android:layout_width="wrap_content"
-                        android:gravity="center"
+                        android:layout_height="match_parent"
                         android:layout_centerInParent="true"
-                        android:textSize="15dp"
-                        android:text="价格"/>
+                        android:layout_marginLeft="20dp"
+                        android:gravity="center"
+                        android:text="价格"
+                        android:textSize="15dp" />
+
                     <ImageView
                         android:id="@+id/iv_img2"
-                        android:layout_toRightOf="@id/price"
-                        android:layout_marginLeft="10dp"
                         android:layout_width="10dp"
                         android:layout_height="10dp"
-                        android:background="@drawable/down"
-                        android:layout_centerVertical="true" />
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="10dp"
+                        android:layout_toRightOf="@id/price"
+                        android:background="@drawable/down" />
                 </RelativeLayout>
+
                 <RelativeLayout
                     android:id="@+id/rl_time"
-                    android:layout_height="30dp"
-                    android:layout_width="wrap_content">
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp">
+
                     <TextView
                         android:id="@+id/tv_time"
-                        android:layout_marginRight="10dp"
-                        android:layout_marginLeft="20dp"
-                        android:layout_centerInParent="true"
-                        android:layout_height="match_parent"
                         android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_centerInParent="true"
+                        android:layout_marginLeft="20dp"
+                        android:layout_marginRight="10dp"
                         android:gravity="center"
-                        android:textSize="15dp"
-                        android:text="时间"/>
+                        android:text="时间"
+                        android:textSize="15dp" />
+
                     <ImageView
                         android:id="@+id/iv_img3"
-                        android:layout_toRightOf="@id/tv_time"
-                        android:layout_marginLeft="10dp"
                         android:layout_width="10dp"
                         android:layout_height="10dp"
-                        android:background="@drawable/down"
-                        android:layout_centerVertical="true" />
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="10dp"
+                        android:layout_toRightOf="@id/tv_time"
+                        android:background="@drawable/down" />
                 </RelativeLayout>
             </TableRow>
         </TableLayout>

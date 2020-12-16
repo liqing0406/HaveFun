@@ -19,11 +19,11 @@ public class DBManager {
         mInviteTableDao = new InviteTableDao(mDbHelper);
     }
 
-    public ContactTableDao getContactTableDao(){
+    public ContactTableDao getContactTableDao() {
         return mContactTableDao;
     }
 
-    public InviteTableDao getInviteTableDao(){
+    public InviteTableDao getInviteTableDao() {
         return mInviteTableDao;
     }
 

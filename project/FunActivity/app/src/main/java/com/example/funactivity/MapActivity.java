@@ -15,7 +15,6 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.baidu.location.BDAbstractLocationListener;
 import com.baidu.location.BDLocation;
 import com.baidu.location.BDLocationListener;
 import com.baidu.location.LocationClient;
@@ -26,7 +25,6 @@ import com.baidu.mapapi.map.BitmapDescriptorFactory;
 import com.baidu.mapapi.map.MapStatusUpdate;
 import com.baidu.mapapi.map.MapStatusUpdateFactory;
 import com.baidu.mapapi.map.MapView;
-import com.baidu.mapapi.map.Marker;
 import com.baidu.mapapi.map.MarkerOptions;
 import com.baidu.mapapi.map.MyLocationConfiguration;
 import com.baidu.mapapi.map.MyLocationData;
@@ -37,11 +35,11 @@ import java.util.List;
 import java.util.Locale;
 
 public class MapActivity extends AppCompatActivity {
-    private ImageView back;
     private MapView mapView;
     private static BaiduMap baiduMap;
     private LocationClient client;//定位客户端
     private String placeStr;//活动地点
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,12 +51,12 @@ public class MapActivity extends AppCompatActivity {
     }
 
     private void initView() {
-        back = findViewById(R.id.iv_back);
+        ImageView back = findViewById(R.id.iv_back);
         mapView = findViewById(R.id.mv_view);
         back.setOnClickListener(v -> finish());
         //隐藏百度的logo
         View child = mapView.getChildAt(1);
-        if (child != null && (child instanceof ImageView)){
+        if ((child instanceof ImageView)) {
             child.setVisibility(View.GONE);
         }
         //获取百度地图控制器类对象
@@ -71,10 +69,11 @@ public class MapActivity extends AppCompatActivity {
         //用户定位
         client = new LocationClient(getApplicationContext());
         //动态申请权限
-        ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.ACCESS_FINE_LOCATION},100);
-        getGeoPointBystr(this,placeStr);
+        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 100);
+        getGeoPointBystr(this, placeStr);
     }
-    public static Address getGeoPointBystr(Context context, String str) {
+
+    public static void getGeoPointBystr(Context context, String str) {
         Address address_temp = null;
         if (str != null) {
             Geocoder gc = new Geocoder(context, Locale.CHINA);
@@ -85,10 +84,10 @@ public class MapActivity extends AppCompatActivity {
                     address_temp = addressList.get(0);
                     double Latitude = address_temp.getLatitude();
                     double Longitude = address_temp.getLongitude();
-                    Log.d("zxc003",str+" Latitude = "+Latitude+" Longitude = "+Longitude);
+                    Log.d("zxc003", str + " Latitude = " + Latitude + " Longitude = " + Longitude);
                     BitmapDescriptor descriptor = BitmapDescriptorFactory.fromResource(R.drawable.map1);
                     //定义坐标点
-                    LatLng latLng = new LatLng(Latitude,Longitude);
+                    LatLng latLng = new LatLng(Latitude, Longitude);
                     //创建OverlayOption子类对象
                     MarkerOptions options = new MarkerOptions()
                             .position(latLng)
@@ -97,19 +96,19 @@ public class MapActivity extends AppCompatActivity {
                     //将覆盖物显示到地图界面
                     baiduMap.addOverlay(options);
 
-                }else {
-                    Toast.makeText(context,"定位失败",Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(context, "定位失败", Toast.LENGTH_SHORT).show();
                 }
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
-        return address_temp;
     }
+
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == 100&& grantResults[0] == 0){
+        if (requestCode == 100 && grantResults[0] == 0) {
             //创建locationClientOption对象
             LocationClientOption option = new LocationClientOption();
             //打开jps
@@ -127,7 +126,7 @@ public class MapActivity extends AppCompatActivity {
                     double latitude = bdLocation.getLatitude();
                     double longitude = bdLocation.getLongitude();
                     //移动地图界面显示到当前位置
-                    LatLng point = new LatLng(latitude,longitude);
+                    LatLng point = new LatLng(latitude, longitude);
                     MapStatusUpdate update = MapStatusUpdateFactory.newLatLng(point);
                     //移动地图界面
                     baiduMap.animateMapStatus(update);
@@ -146,7 +145,7 @@ public class MapActivity extends AppCompatActivity {
                     //将定位数据设置到地图
                     baiduMap.setMyLocationData(data);
                 }
-            } );
+            });
             client.start();
         }
     }
@@ -157,7 +156,7 @@ public class MapActivity extends AppCompatActivity {
         //开启图层定位
         baiduMap.setMyLocationEnabled(true);
         //判断定位服务被关闭，启动定位
-        if (!client.isStarted()){
+        if (!client.isStarted()) {
             client.start();
         }
     }

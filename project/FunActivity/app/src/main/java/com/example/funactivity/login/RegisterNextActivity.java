@@ -14,7 +14,6 @@ import android.widget.Toast;
 
 import com.example.funactivity.Main2Activity;
 import com.example.funactivity.R;
-import com.example.funactivity.entity.User.User;
 import com.example.funactivity.util.Constant;
 import com.example.funactivity.util.LocationUtil;
 
@@ -73,13 +72,12 @@ public class RegisterNextActivity extends AppCompatActivity {
     public void register() {
         //提交键值对格式数据
         FormBody.Builder builder = new FormBody.Builder();
-        builder.add("phoneNum",num);
+        builder.add("phoneNum", num);
         builder.add("password", password.getText().toString());
         FormBody body = builder.build();
         //创建请求对象
         Request request = new Request.Builder()
                 .post(body)//请求方式为post
-               // .url(Constant.BASE_URL + "LoginServlet")
                 .url(Constant.BASE_URL + "user/register")
                 .build();
         //创建call对象
@@ -100,6 +98,7 @@ public class RegisterNextActivity extends AppCompatActivity {
             }
         });
     }
+
     //向服务端请求登录
     private void login() {
         //提交键值对格式数据
@@ -123,6 +122,7 @@ public class RegisterNextActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 //服务端返回登录成功，发布事件，完成界面跳转
+                assert response.body() != null;
                 String back = response.body().string();
                 if ("".equals(back)) {
                     Looper.prepare();
@@ -130,19 +130,20 @@ public class RegisterNextActivity extends AppCompatActivity {
                     Looper.loop();
                 } else {
                     userJson = back;
-                    Log.e("获取的用户信息",userJson);
+                    Log.e("获取的用户信息", userJson);
                     EventBus.getDefault().post("login");
                 }
             }
         });
     }
+
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void toLogin(String msg) {
         if (msg.equals("login")) {
             Intent intent = new Intent();
             intent.putExtra("user", userJson);
-            intent.putExtra("code",100+"");
-            intent.putExtra("cityStr",cityStr);
+            intent.putExtra("code", 100 + "");
+            intent.putExtra("cityStr", cityStr);
             intent.setClass(this, Main2Activity.class);
             startActivity(intent);
         }

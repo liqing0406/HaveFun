@@ -1,8 +1,8 @@
 package com.example.funactivity.adapter;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,7 +15,6 @@ import com.bumptech.glide.Glide;
 import com.example.funactivity.DetailActivity;
 import com.example.funactivity.R;
 import com.example.funactivity.entity.User.UserPublishActivity;
-import com.example.funactivity.entity.activity.Activity;
 import com.example.funactivity.util.Constant;
 
 import java.text.SimpleDateFormat;
@@ -27,7 +26,7 @@ public class UpAdapter extends BaseAdapter {
     private int itemLayoutRes;
     private String myID;
 
-    public UpAdapter(Context mContext, List<UserPublishActivity> activities, int itemLayoutRes,String myID) {
+    public UpAdapter(Context mContext, List<UserPublishActivity> activities, int itemLayoutRes, String myID) {
         this.mContext = mContext;
         this.activities = activities;
         this.itemLayoutRes = itemLayoutRes;
@@ -36,18 +35,18 @@ public class UpAdapter extends BaseAdapter {
 
     @Override
     public int getCount() {
-        if(null!=activities){
+        if (null != activities) {
             return activities.size();
-        }else {
+        } else {
             return 0;
         }
     }
 
     @Override
     public Object getItem(int position) {
-        if(null!=activities){
+        if (null != activities) {
             return activities.get(position);
-        }else {
+        } else {
             return null;
         }
 
@@ -58,35 +57,33 @@ public class UpAdapter extends BaseAdapter {
         return position;
     }
 
+    @SuppressLint({"ViewHolder", "SimpleDateFormat", "SetTextI18n"})
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        LayoutInflater inflater=LayoutInflater.from(mContext);
-        convertView=inflater.inflate(itemLayoutRes,null);
+        LayoutInflater inflater = LayoutInflater.from(mContext);
+        convertView = inflater.inflate(itemLayoutRes, null);
 
-        ImageView img=convertView.findViewById(R.id.iv_icon);
-        TextView title=convertView.findViewById(R.id.tv_title);
+        ImageView img = convertView.findViewById(R.id.iv_icon);
+        TextView title = convertView.findViewById(R.id.tv_title);
         TextView time = convertView.findViewById(R.id.tv_time);
-        TextView handup=convertView.findViewById(R.id.tv_handup);
-        TextView like=convertView.findViewById(R.id.tv_like);
-        LinearLayout linearLayout=convertView.findViewById(R.id.linearlayout);
+        TextView handup = convertView.findViewById(R.id.tv_handup);
+        TextView like = convertView.findViewById(R.id.tv_like);
+        LinearLayout linearLayout = convertView.findViewById(R.id.linearlayout);
 
         Glide.with(mContext)
                 .load(Constant.PIC_PATH + activities.get(position).getActivity().getFrontPicture().getPictureName())
                 .into(img);
         title.setText(activities.get(position).getActivity().getActivityTile());
         time.setText(new SimpleDateFormat("yyyy-MM-dd HH:mm").format(activities.get(position).getPublishTime()));
-        handup.setText(activities.get(position).getActivity().getSignUpNum()+"");
-        like.setText(activities.get(position).getActivity().getCollectNum()+"");
+        handup.setText(activities.get(position).getActivity().getSignUpNum() + "");
+        like.setText(activities.get(position).getActivity().getCollectNum() + "");
 
-        linearLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent();
-                intent.putExtra("id", myID + "");//用户id
-                intent.putExtra("activityId", activities.get(position).getActivity().getActivityId() + "");//活动id
-                intent.setClass(view.getContext(), DetailActivity.class);
-                mContext.startActivity(intent);
-            }
+        linearLayout.setOnClickListener(view -> {
+            Intent intent = new Intent();
+            intent.putExtra("id", myID + "");//用户id
+            intent.putExtra("activityId", activities.get(position).getActivity().getActivityId() + "");//活动id
+            intent.setClass(view.getContext(), DetailActivity.class);
+            mContext.startActivity(intent);
         });
 
         return convertView;

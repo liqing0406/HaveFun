@@ -1,20 +1,15 @@
 package com.example.funactivity.view;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
 
-import android.Manifest;
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.view.View;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.example.funactivity.DetailActivity;
@@ -25,6 +20,7 @@ import com.uuzuche.lib_zxing.activity.CodeUtils;
 
 public class CaptureActivity extends AppCompatActivity {
     private String userId;//用户id
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,11 +37,11 @@ public class CaptureActivity extends AppCompatActivity {
          */
         getSupportFragmentManager().beginTransaction().replace(R.id.fl_my_container, captureFragment).commit();
         back.setOnClickListener(v -> finish());
-        more.setOnClickListener( v -> {
-                Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-                intent.addCategory(Intent.CATEGORY_OPENABLE);
-                intent.setType("image/*");
-                startActivityForResult(intent, 1);
+        more.setOnClickListener(v -> {
+            Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+            intent.addCategory(Intent.CATEGORY_OPENABLE);
+            intent.setType("image/*");
+            startActivityForResult(intent, 1);
         });
     }
 
@@ -58,11 +54,11 @@ public class CaptureActivity extends AppCompatActivity {
                 ContentResolver cr = getContentResolver();
                 try {
                     Bitmap mBitmap = MediaStore.Images.Media.getBitmap(cr, uri);//显得到bitmap图片
-                    CodeUtils.analyzeBitmap(ImageUtil.getImageAbsolutePath(this,uri), new CodeUtils.AnalyzeCallback() {
+                    CodeUtils.analyzeBitmap(ImageUtil.getImageAbsolutePath(this, uri), new CodeUtils.AnalyzeCallback() {
                         @Override
                         public void onAnalyzeSuccess(Bitmap mBitmap, String result) {
                             Intent intent = new Intent();
-                            intent.putExtra("collect",true);//收藏是否可修改
+                            intent.putExtra("collect", true);//收藏是否可修改
                             intent.putExtra("id", userId);
                             intent.putExtra("activityId", result);//活动id
                             intent.setClass(CaptureActivity.this, DetailActivity.class);

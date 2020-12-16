@@ -6,7 +6,8 @@ public class UserInfo {
     private String nick;
     private String photo;//头像
 
-    public UserInfo(){}
+    public UserInfo() {
+    }
 
     public UserInfo(String name) {
         this.name = name;

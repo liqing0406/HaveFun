@@ -21,25 +21,26 @@ public class AMAdapter extends RecyclerView.Adapter<AMAdapter.ViewHolder> {
     private View inflater;
     private List<String> lists;
     private int item;
-    public AMAdapter(Context context, int item, List<String> lists){
-        this.context=context;
-        this.item=item;
-        this.lists=lists;
+
+    public AMAdapter(Context context, int item, List<String> lists) {
+        this.context = context;
+        this.item = item;
+        this.lists = lists;
     }
+
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        inflater = LayoutInflater.from(context).inflate(item,parent,false);
-        ViewHolder myViewHolder = new ViewHolder(inflater);
-        return myViewHolder;
+        inflater = LayoutInflater.from(context).inflate(item, parent, false);
+        return new ViewHolder(inflater);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         holder.textView.setText(lists.get(position));
-        RequestOptions requestOptions=new RequestOptions()
+        RequestOptions requestOptions = new RequestOptions()
                 .circleCrop();
-       Glide.with(inflater).load(R.drawable.laozhou).apply(requestOptions).into(holder.imageView);
+        Glide.with(inflater).load(R.drawable.laozhou).apply(requestOptions).into(holder.imageView);
     }
 
     @Override
@@ -47,14 +48,15 @@ public class AMAdapter extends RecyclerView.Adapter<AMAdapter.ViewHolder> {
         return lists.size();
     }
 
-    class ViewHolder extends RecyclerView.ViewHolder{
+    static class ViewHolder extends RecyclerView.ViewHolder {
         TextView textView;
         ImageView imageView;
+
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            textView=itemView.findViewById(R.id.tv_name);
+            textView = itemView.findViewById(R.id.tv_name);
             //头像圆形处理
-            imageView=itemView.findViewById(R.id.iv_touxiang);
+            imageView = itemView.findViewById(R.id.iv_touxiang);
 
 
         }

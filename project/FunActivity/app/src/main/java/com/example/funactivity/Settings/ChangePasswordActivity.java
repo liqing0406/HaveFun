@@ -1,5 +1,6 @@
 package com.example.funactivity.Settings;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -31,13 +32,14 @@ import okhttp3.Request;
 import okhttp3.Response;
 
 public class ChangePasswordActivity extends AppCompatActivity {
-   private EditText oldPassword;
-   private EditText newPassword;
-   private String oldtext;
-   private String newtext;
-   private Button btnSave;
+    private EditText oldPassword;
+    private EditText newPassword;
+    private String oldtext;
+    private String newtext;
+    private Button btnSave;
     private OkHttpClient client;
-    private User user=new User();
+    private User user = new User();
+    @SuppressLint("HandlerLeak")
     private Handler handler = new Handler() {
         @Override
         public void handleMessage(@NonNull Message msg) {
@@ -51,53 +53,54 @@ public class ChangePasswordActivity extends AppCompatActivity {
             }
         }
     };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_change_password);
         EventBus.getDefault().register(this);
-        oldPassword=findViewById(R.id.et_old_password);
-        newPassword=findViewById(R.id.et_new_password);
-        btnSave=findViewById(R.id.btn_save);
-        client=new OkHttpClient();
+        oldPassword = findViewById(R.id.et_old_password);
+        newPassword = findViewById(R.id.et_new_password);
+        btnSave = findViewById(R.id.btn_save);
+        client = new OkHttpClient();
         btnSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.e("旧密码",oldtext);
-                if (oldPassword.getText().toString().equals("")!=true&&newPassword.getText().toString().equals("")!=true){
-                newtext=newPassword.getText().toString();
-                if(oldPassword.getText().toString().equals(oldtext)!=true&&newPassword.getText().toString().equals(oldtext)!=true){
-                    Toast.makeText(ChangePasswordActivity.this, "旧密码输入错误！", Toast.LENGTH_SHORT).show();
-                }
-                else if (newPassword.getText().toString().equals(oldtext)&&oldPassword.getText().toString().equals(oldtext)){
-                    Toast.makeText(ChangePasswordActivity.this, "旧密码和新密码不得相同！", Toast.LENGTH_SHORT).show();
-                }
-                else if (oldPassword.getText().toString().equals(oldtext)!=true&&newPassword.getText().toString().equals(oldtext)){
-                    Toast.makeText(ChangePasswordActivity.this, "旧密码和新密码错误！", Toast.LENGTH_SHORT).show();
-                }else if(oldPassword.getText().toString().equals(oldtext)&&newPassword.getText().toString().equals(oldtext)!=true){
-                    changepassword();
-                }
-                }else {
+                Log.e("旧密码", oldtext);
+                if (!oldPassword.getText().toString().equals("") && !newPassword.getText().toString().equals("")) {
+                    newtext = newPassword.getText().toString();
+                    if (!oldPassword.getText().toString().equals(oldtext) && !newPassword.getText().toString().equals(oldtext)) {
+                        Toast.makeText(ChangePasswordActivity.this, "旧密码输入错误！", Toast.LENGTH_SHORT).show();
+                    } else if (newPassword.getText().toString().equals(oldtext) && oldPassword.getText().toString().equals(oldtext)) {
+                        Toast.makeText(ChangePasswordActivity.this, "旧密码和新密码不得相同！", Toast.LENGTH_SHORT).show();
+                    } else if (!oldPassword.getText().toString().equals(oldtext) && newPassword.getText().toString().equals(oldtext)) {
+                        Toast.makeText(ChangePasswordActivity.this, "旧密码和新密码错误！", Toast.LENGTH_SHORT).show();
+                    } else if (oldPassword.getText().toString().equals(oldtext) && !newPassword.getText().toString().equals(oldtext)) {
+                        changepassword();
+                    }
+                } else {
                     Toast.makeText(ChangePasswordActivity.this, "旧密码,新密码不能为空！", Toast.LENGTH_SHORT).show();
                 }
 
             }
         });
     }
-    @Subscribe(threadMode = ThreadMode.MAIN ,sticky = true)
-    public void updata(User u){
-       oldtext=u.getPassword();
-       user=u;
+
+    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
+    public void updata(User u) {
+        oldtext = u.getPassword();
+        user = u;
 
     }
-    public void back(View view){
+
+    public void back(View view) {
         finish();
     }
 
-    public void changepassword(){
+    public void changepassword() {
         FormBody.Builder builder = new FormBody.Builder();
-        builder.add("phoneNum", user.getPhoneNum()+"");
-        builder.add("password",newtext);
+        builder.add("phoneNum", user.getPhoneNum() + "");
+        builder.add("password", newtext);
         FormBody body = builder.build();
         Request request = new Request.Builder()
                 .post(body)
@@ -113,8 +116,9 @@ public class ChangePasswordActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 //获取修改结果
+                assert response.body() != null;
                 String json = response.body().string();
-                Log.e("修改结果",json);
+                Log.e("修改结果", json);
                 if (json.equals("true")) {
                     Message message = new Message();
                     message.what = 1;

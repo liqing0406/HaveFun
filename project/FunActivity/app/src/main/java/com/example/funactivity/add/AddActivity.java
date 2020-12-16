@@ -1,6 +1,7 @@
 package com.example.funactivity.add;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.database.Cursor;
@@ -49,7 +50,6 @@ import com.lljjcoder.style.citypickerview.CityPickerView;
 
 import java.io.File;
 import java.io.IOException;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -88,7 +88,7 @@ public class AddActivity extends AppCompatActivity implements FinalNumInter, Vie
     @BindView(R.id.price)
     EditText etPrice;//价格
     @BindView(R.id.et_max)//人数
-    EditText etmaxNum;
+            EditText etmaxNum;
     @BindView(R.id.btn_city)
     Button btn_city;//省市县
     @BindView(R.id.iscity)
@@ -113,39 +113,38 @@ public class AddActivity extends AppCompatActivity implements FinalNumInter, Vie
     private String imagePath;
     private OkHttpClient client;
     //地址
-    private String provinces ;//省
+    private String provinces;//省
     private String citys;//市
     private String countys;//县/区
     //申明对象,城市选择器
-    CityPickerView mPicker=new CityPickerView();
+    CityPickerView mPicker = new CityPickerView();
     private static final String TAG = "Sample";
     private static final String TAG_DATETIME_FRAGMENT = "TAG_DATETIME_FRAGMENT";
     private static final String STATE_TEXTVIEW = "STATE_TEXTVIEW";
     private SwitchDateTimeDialogFragment dateTimeFragment;
     private Calendar calendar;
-    private String timeStr;//时间字符串
     private Date datestr;//时间
-    Handler handler = new Handler(){
+    @SuppressLint("HandlerLeak")
+    Handler handler = new Handler() {
         @Override
         public void handleMessage(@NonNull Message msg) {
-            switch (msg.what){
-                case 1:
-                    String str = (String) msg.obj;
-                    if (str.equals("true")){
-                      new SweetAlertDialog(AddActivity.this,SweetAlertDialog.SUCCESS_TYPE)
-                              .setTitleText("发布成功")
-                              .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
-                                  @Override
-                                  public void onClick(SweetAlertDialog sweetAlertDialog) {
-                                      finish();
-                                  }
-                              })
-                              .show();
-                    }
-                    break;
+            if (msg.what == 1) {
+                String str = (String) msg.obj;
+                if (str.equals("true")) {
+                    new SweetAlertDialog(AddActivity.this, SweetAlertDialog.SUCCESS_TYPE)
+                            .setTitleText("发布成功")
+                            .setConfirmClickListener(new SweetAlertDialog.OnSweetClickListener() {
+                                @Override
+                                public void onClick(SweetAlertDialog sweetAlertDialog) {
+                                    finish();
+                                }
+                            })
+                            .show();
+                }
             }
         }
     };
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -159,7 +158,7 @@ public class AddActivity extends AppCompatActivity implements FinalNumInter, Vie
         //获取上个界面的类型
         Intent intent = getIntent();
         lastType = intent.getStringExtra("type");
-        user=(User)intent.getSerializableExtra("user");
+        user = (User) intent.getSerializableExtra("user");
         //设置活动类型的下拉框
         setSpinner();
         //初始化加载图片
@@ -176,49 +175,38 @@ public class AddActivity extends AppCompatActivity implements FinalNumInter, Vie
     }
 
     private void getTime() {
-        // Construct SwitchDateTimePicker
         dateTimeFragment = (SwitchDateTimeDialogFragment) getSupportFragmentManager().findFragmentByTag(TAG_DATETIME_FRAGMENT);
-        if(dateTimeFragment == null) {
+        if (dateTimeFragment == null) {
             dateTimeFragment = SwitchDateTimeDialogFragment.newInstance(
                     getString(R.string.label_datetime_dialog),
                     getString(android.R.string.ok),
                     getString(android.R.string.cancel)
-//                    , getString(R.string.clean) // Optional
             );
         }
 
-        // Optionally define a timezone
         dateTimeFragment.setTimeZone(TimeZone.getDefault());
 
-        // Init format
         final SimpleDateFormat myDateFormat = new SimpleDateFormat("yyyy年MM月dd日HH:mm", Locale.getDefault());
-        // Assign unmodifiable values
         dateTimeFragment.set24HoursMode(true);
         dateTimeFragment.setHighlightAMPMSelection(false);
         calendar = Calendar.getInstance();
-        //calendar.setTimeZone(TimeZone.getTimeZone("GMT+8:00"));//设置为当前时区
         //设置当前时间为最小时间
         dateTimeFragment.setMinimumDateTime(new GregorianCalendar(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DATE)).getTime());
         //设置最大时间
         dateTimeFragment.setMaximumDateTime(new GregorianCalendar(2025, Calendar.DECEMBER, 31).getTime());
 
-        // Define new day and month format
         try {
             dateTimeFragment.setSimpleDateMonthAndDayFormat(new SimpleDateFormat("MMMM dd", Locale.getDefault()));
         } catch (SwitchDateTimeDialogFragment.SimpleDateMonthAndDayFormatException e) {
             Log.e(TAG, e.getMessage());
         }
 
-        // Set listener for date
-        // Or use dateTimeFragment.setOnButtonClickListener(new SwitchDateTimeDialogFragment.OnButtonClickListener() {
         //点击确定按钮
         dateTimeFragment.setOnButtonClickListener(new SwitchDateTimeDialogFragment.OnButtonWithNeutralClickListener() {
             @Override
             public void onPositiveButtonClick(Date date) {
                 time.setText(myDateFormat.format(date));
-                //timeStr = myDateFormat.format(date);
                 datestr = date;
-//                Log.e("时间",timeStr);
             }
 
             @Override
@@ -228,19 +216,14 @@ public class AddActivity extends AppCompatActivity implements FinalNumInter, Vie
 
             @Override
             public void onNeutralButtonClick(Date date) {
-                // Optional if neutral button does'nt exists
                 time.setText("");
             }
         });
 
-        getTime.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                // Re-init each time
-                dateTimeFragment.startAtCalendarView();
-                dateTimeFragment.setDefaultDateTime(new GregorianCalendar(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DATE), calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE)).getTime());
-                dateTimeFragment.show(getSupportFragmentManager(), TAG_DATETIME_FRAGMENT);
-            }
+        getTime.setOnClickListener(view -> {
+            dateTimeFragment.startAtCalendarView();
+            dateTimeFragment.setDefaultDateTime(new GregorianCalendar(calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DATE), calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE)).getTime());
+            dateTimeFragment.show(getSupportFragmentManager(), TAG_DATETIME_FRAGMENT);
         });
     }
 
@@ -251,6 +234,7 @@ public class AddActivity extends AppCompatActivity implements FinalNumInter, Vie
         title.setTypeface(typeface);
 
     }
+
     public void setSpinner() {
         List<String> types = new ArrayList<>();
         switch (lastType) {
@@ -305,6 +289,7 @@ public class AddActivity extends AppCompatActivity implements FinalNumInter, Vie
                 break;
         }
     }
+
     //活动类型的Spinner
     public void setActivitySpinnerStyle(List<String> types) {
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, types);
@@ -351,6 +336,7 @@ public class AddActivity extends AppCompatActivity implements FinalNumInter, Vie
 
         //监听选择点击事件及返回结果
         mPicker.setOnCityItemClickListener(new OnCityItemClickListener() {
+            @SuppressLint("SetTextI18n")
             @Override
             public void onSelected(ProvinceBean province, CityBean city, DistrictBean district) {
                 Log.e("城市选择结果：\n", province.getName() + "(" + province.getId() + ")\n"
@@ -358,13 +344,13 @@ public class AddActivity extends AppCompatActivity implements FinalNumInter, Vie
                         + district.getName() + "(" + district.getId() + ")");
                 //省份province
                 provinces = province.getName();
-                Log.e("provinces","123"+provinces);
+                Log.e("provinces", "123" + provinces);
                 //城市city
                 citys = city.getName();
                 //地区district
                 countys = district.getName();
                 btn_city.setText("点击修改");
-                iscity.setText(provinces+citys+countys);
+                iscity.setText(provinces + citys + countys);
             }
 
             @Override
@@ -374,14 +360,15 @@ public class AddActivity extends AppCompatActivity implements FinalNumInter, Vie
         });
 
         //显示
-        mPicker.showCityPicker( );
+        mPicker.showCityPicker();
     }
 
-    public void addPic(){
+    public void addPic() {
         ActivityCompat.requestPermissions(AddActivity.this,
                 new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
                 100);
     }
+
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -392,15 +379,20 @@ public class AddActivity extends AppCompatActivity implements FinalNumInter, Vie
             intent.setType("image/*");
             startActivityForResult(intent, 200);
         }
-    }@Override
+    }
+
+    @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         //从图库界面返回以后，获取到图片的路径
         if (requestCode == 200 && resultCode == RESULT_OK) {
             ContentResolver contentResolver = getContentResolver();
+            assert data != null;
             Uri uri = data.getData();
-            Cursor cursor = contentResolver.query(uri, null,
+            assert uri != null;
+            @SuppressLint("Recycle") Cursor cursor = contentResolver.query(uri, null,
                     null, null, null);
+            assert cursor != null;
             if (cursor.moveToFirst()) {
                 imagePath = cursor.getString(cursor.getColumnIndex("_data"));
                 Glide.with(this)
@@ -410,20 +402,11 @@ public class AddActivity extends AppCompatActivity implements FinalNumInter, Vie
         }
     }
 
+    @SuppressLint("UseCompatLoadingForDrawables")
     public void submit() {
         //将所有数据提交
         String activityTheme = theme.getText().toString();//主题
-        String contact=et_contact.getText().toString();
-
-//    将时间转化为Date类型
-//        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy年MM月dd日HH:mm", Locale.CHINESE);
-        //Date date = null;
-//        try {
-//            date = dateFormat.parse(timeStr);
-//            Log.e("date", date + "");
-//        } catch (ParseException e) {
-//            e.printStackTrace();
-//        }
+        String contact = et_contact.getText().toString();
         //价格
         String price = etPrice.getText().toString();
         //人数
@@ -439,9 +422,7 @@ public class AddActivity extends AppCompatActivity implements FinalNumInter, Vie
                 detail.isEmpty() || introduce.isEmpty() || remark.isEmpty()) {
             Toast toast = Toast.makeText(this, "请将内容填写完整", Toast.LENGTH_SHORT);
             toast.setGravity(Gravity.CENTER, 0, 0);
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                toast.getView().setBackground(getResources().getDrawable(R.drawable.btn_background));
-            }
+            toast.getView().setBackground(getResources().getDrawable(R.drawable.btn_background));
             toast.show();
         } else {
 //        将所有数据整合
@@ -472,7 +453,7 @@ public class AddActivity extends AppCompatActivity implements FinalNumInter, Vie
             activityDetail.setOtherInfo(remark);
             activityDetail.setActivity(activity);
             String json = JSON.toJSONString(activityDetail);
-            Log.e("json",json);
+            Log.e("json", json);
 //            图片
             File file = new File(imagePath);
             MultipartBody.Builder builder = new MultipartBody.Builder();
@@ -482,7 +463,7 @@ public class AddActivity extends AppCompatActivity implements FinalNumInter, Vie
             MultipartBody body = builder.build();
             //4.构建请求
             final Request request = new Request.Builder()
-                    .url(Constant.BASE_URL+"activity/addActivity")
+                    .url(Constant.BASE_URL + "activity/addActivity")
                     .post(body)
                     .build();
             client = new OkHttpClient();
@@ -495,6 +476,7 @@ public class AddActivity extends AppCompatActivity implements FinalNumInter, Vie
 
                 @Override
                 public void onResponse(Call call, Response response) throws IOException {
+                    assert response.body() != null;
                     String str = response.body().string();
                     Message message = new Message();
                     message.what = 1;
@@ -504,6 +486,4 @@ public class AddActivity extends AppCompatActivity implements FinalNumInter, Vie
             });
         }
     }
-
-
 }

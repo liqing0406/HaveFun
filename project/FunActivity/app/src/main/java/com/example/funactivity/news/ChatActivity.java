@@ -1,13 +1,8 @@
 package com.example.funactivity.news;
 
 import android.Manifest;
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -18,20 +13,15 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.example.funactivity.R;
-import com.example.funactivity.util.Constant;
-import com.hyphenate.chat.EMMessage;
 import com.hyphenate.easeui.EaseConstant;
 import com.hyphenate.easeui.ui.EaseChatFragment;
-import com.hyphenate.easeui.widget.chatrow.EaseCustomChatRowProvider;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class ChatActivity extends AppCompatActivity {
 
-    private String mMHxid;
-    private int mChatType;
-    private EaseChatFragment mEaseChatFragment;
     //相机,位置,相册
     List<String> notpermissed = new ArrayList<>();
     String[] permissions = {Manifest.permission.CAMERA,
@@ -40,7 +30,6 @@ public class ChatActivity extends AppCompatActivity {
             Manifest.permission.RECORD_AUDIO,
             Manifest.permission.ACCESS_COARSE_LOCATION
     };
-    private LocalBroadcastManager mManager;
 
 
     @Override
@@ -54,9 +43,9 @@ public class ChatActivity extends AppCompatActivity {
     private void initPermission(String[] permissions) {
 
         notpermissed.clear();
-        for (int i = 0; i < permissions.length; i++) {
-            if (ContextCompat.checkSelfPermission(this, permissions[i]) != PackageManager.PERMISSION_GRANTED) {
-                notpermissed.add(permissions[i]);
+        for (String permission : permissions) {
+            if (ContextCompat.checkSelfPermission(this, permission) != PackageManager.PERMISSION_GRANTED) {
+                notpermissed.add(permission);
             }
         }
 
@@ -73,6 +62,7 @@ public class ChatActivity extends AppCompatActivity {
             for (int i = 0; i < permissions.length; i++) {
                 if (grantResults[i] == -1) {
                     permissed = true;
+                    break;
                 }
             }
 
@@ -88,15 +78,15 @@ public class ChatActivity extends AppCompatActivity {
 
     private void initData() {
         //ease会话的fragment
-        mEaseChatFragment = new EaseChatFragment();
-        mMHxid = getIntent().getStringExtra(EaseConstant.EXTRA_USER_ID);
+        EaseChatFragment mEaseChatFragment = new EaseChatFragment();
+        String mMHxid = getIntent().getStringExtra(EaseConstant.EXTRA_USER_ID);
         //获取聊天类型
-        mChatType = getIntent().getExtras().getInt(EaseConstant.EXTRA_CHAT_TYPE);
+        int mChatType = Objects.requireNonNull(getIntent().getExtras()).getInt(EaseConstant.EXTRA_CHAT_TYPE);
         mEaseChatFragment.setArguments(getIntent().getExtras());
         //替换fragment
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.fl_chat, mEaseChatFragment).commit();
         //注册一个发送广播的管理者
-        mManager = LocalBroadcastManager.getInstance(this);
+        LocalBroadcastManager mManager = LocalBroadcastManager.getInstance(this);
     }
 }

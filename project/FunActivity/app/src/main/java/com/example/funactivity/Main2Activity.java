@@ -1,6 +1,5 @@
 package com.example.funactivity;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
@@ -8,7 +7,6 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
-import android.Manifest;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -23,7 +21,6 @@ import com.example.funactivity.Fragment.MainFragment;
 import com.example.funactivity.Fragment.MyFragment;
 import com.example.funactivity.Fragment.NewsFragment;
 import com.example.funactivity.entity.User.User;
-import com.example.funactivity.util.LocationUtil;
 
 public class Main2Activity extends AppCompatActivity {
     private User user;
@@ -70,7 +67,7 @@ public class Main2Activity extends AppCompatActivity {
         Intent intent = getIntent();
         user = JSON.parseObject(intent.getStringExtra("user"), User.class);
         cityStr = intent.getStringExtra("cityStr");
-        Log.e("user",""+user.getHeadPortrait());
+        Log.e("user", "" + user.getHeadPortrait());
         code = intent.getStringExtra("code");
         //初始化控件
         initView();
@@ -216,6 +213,6 @@ public class Main2Activity extends AppCompatActivity {
     }
 
     public void setUser(User user) {
-        this.user=user;
+        this.user = user;
     }
 }

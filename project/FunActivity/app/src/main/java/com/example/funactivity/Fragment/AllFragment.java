@@ -7,9 +7,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.Manifest;
 import android.annotation.SuppressLint;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
@@ -22,19 +20,15 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
-import android.widget.TableLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.TypeReference;
 import com.example.funactivity.DetailActivity;
 import com.example.funactivity.Main2Activity;
 import com.example.funactivity.R;
@@ -42,7 +36,6 @@ import com.example.funactivity.adapter.RecylerAdapter;
 import com.example.funactivity.entity.User.User;
 import com.example.funactivity.entity.activity.Activity;
 import com.example.funactivity.util.Constant;
-import com.example.funactivity.util.LocationUtil;
 import com.example.funactivity.util.WeatherUtil;
 import com.lljjcoder.Interface.OnCityItemClickListener;
 import com.lljjcoder.bean.CityBean;
@@ -52,7 +45,6 @@ import com.lljjcoder.style.cityjd.JDCityConfig;
 import com.lljjcoder.style.cityjd.JDCityPicker;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 
-import org.greenrobot.eventbus.EventBus;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -67,6 +59,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -77,10 +70,8 @@ import okhttp3.Response;
 
 public class AllFragment extends Fragment implements View.OnClickListener {
     private View view;
-    private TextView all;//所有活动标题
     private ImageView weather;//天气
     private TextView city;//定位
-    private RecyclerView recyclerView;
     private RecylerAdapter adapter;
     private List<Activity> activities = new ArrayList<>();
     ;
@@ -113,6 +104,7 @@ public class AllFragment extends Fragment implements View.OnClickListener {
     private String cityStr;//市+区
 
 
+    @SuppressLint("HandlerLeak")
     private Handler handler = new Handler() {
         @Override
         public void handleMessage(@NonNull Message msg) {
@@ -163,6 +155,7 @@ public class AllFragment extends Fragment implements View.OnClickListener {
                     false);
         }
         Main2Activity activity = (Main2Activity) getActivity();
+        assert activity != null;
         user = activity.getUser();
         cityStr = activity.getCityStr();
         initMap();
@@ -202,7 +195,8 @@ public class AllFragment extends Fragment implements View.OnClickListener {
         tv_price = view.findViewById(R.id.price);
         tv_time = view.findViewById(R.id.tv_time);
         tv_type = view.findViewById(R.id.type);
-        all = view.findViewById(R.id.tv_all);
+        //所有活动标题
+        TextView all = view.findViewById(R.id.tv_all);
         weather = view.findViewById(R.id.iv_weather);
         city = view.findViewById(R.id.tv_city);
         city.setText(cityStr);
@@ -214,7 +208,7 @@ public class AllFragment extends Fragment implements View.OnClickListener {
         selectedCity = str[0];
         selectedCountry = str[1];
 
-        Typeface typeface = Typeface.createFromAsset(getContext().getAssets(), "FZGongYHJW.TTF");
+        Typeface typeface = Typeface.createFromAsset(Objects.requireNonNull(getContext()).getAssets(), "FZGongYHJW.TTF");
         all.setTypeface(typeface);
         city.setTypeface(typeface);
         client = new OkHttpClient();
@@ -226,6 +220,7 @@ public class AllFragment extends Fragment implements View.OnClickListener {
             cityPicker.init(v.getContext());
             cityPicker.setConfig(jdCityConfig);
             cityPicker.setOnCityItemClickListener(new OnCityItemClickListener() {
+                @SuppressLint("SetTextI18n")
                 @Override
                 public void onSelected(ProvinceBean province, CityBean c, DistrictBean district) {
                     city.setText(c.getName() + " " + district.getName());//修改城市
@@ -245,7 +240,7 @@ public class AllFragment extends Fragment implements View.OnClickListener {
     }
 
     public void getRecyclerView() {
-        recyclerView = view.findViewById(R.id.recycle_view);
+        RecyclerView recyclerView = view.findViewById(R.id.recycle_view);
         LinearLayoutManager manager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(manager);
         srl = view.findViewById(R.id.srl);
@@ -276,7 +271,7 @@ public class AllFragment extends Fragment implements View.OnClickListener {
         Log.e("wxy", "typeName=" + typeName + ",city=" + city + ",county=" + county + ",pageNum=" + pageNum + ",i=" + i);
         FormBody.Builder builder = new FormBody.Builder();
         builder.add("typeName", typeName);
-        builder.add("lowCost", 0 + "");
+        builder.add("lowCost", lowCost + "");
         builder.add("highCost", highCost + "");
         builder.add("howManyDays", days + "");
         builder.add("city", city);
@@ -298,6 +293,7 @@ public class AllFragment extends Fragment implements View.OnClickListener {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 //获取活动列表数据
+                assert response.body() != null;
                 String actjson = response.body().string();
                 if ("empty".equals(actjson) && i == 1) {//表述刷新没有更多数据
                     Looper.prepare();
@@ -365,11 +361,7 @@ public class AllFragment extends Fragment implements View.OnClickListener {
                         message.what = 1;
                         message.obj = updateTime + "~" + weather;
                         handler.sendMessage(message);
-                    } catch (MalformedURLException e) {
-                        e.printStackTrace();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    } catch (JSONException e) {
+                    } catch (IOException | JSONException e) {
                         e.printStackTrace();
                     }
 
@@ -421,23 +413,23 @@ public class AllFragment extends Fragment implements View.OnClickListener {
         popupWindow.setOnDismissListener(new PopupOnDismissListener());
     }
 
-    class PopupOnDismissListener implements PopupWindow.OnDismissListener {
+    static class PopupOnDismissListener implements PopupWindow.OnDismissListener {
 
         @Override
         public void onDismiss() {
         }
     }
 
+    @SuppressLint("InflateParams")
     public View initView(String choice, String[] data, int child) {
         //初始化布局
-//        LayoutInflater layoutInflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        LayoutInflater layoutInflater = getActivity().getLayoutInflater();
+        LayoutInflater layoutInflater = Objects.requireNonNull(getActivity()).getLayoutInflater();
         popView = layoutInflater.inflate(R.layout.pop_view, null);
         final ListView left = popView.findViewById(R.id.lv_left);
         //左边的分类，包括时间：近一周、近三天、近一个月
         //类型 ：大类
         //费用：免费、50以内、100以内
-        ArrayAdapter<String> array = new ArrayAdapter<>(getContext(),
+        ArrayAdapter<String> array = new ArrayAdapter<>(Objects.requireNonNull(getContext()),
                 android.R.layout.simple_list_item_1, data);
         left.setAdapter(array);
         left.setOnItemClickListener((parent, view, position, id) -> {
@@ -496,7 +488,8 @@ public class AllFragment extends Fragment implements View.OnClickListener {
                 data = getResources().getStringArray(R.array.other);
                 break;
         }
-        ArrayAdapter<String> array = new ArrayAdapter<>(getContext(),
+        assert data != null;
+        ArrayAdapter<String> array = new ArrayAdapter<>(Objects.requireNonNull(getContext()),
                 android.R.layout.simple_list_item_1, data);
         right.setAdapter(array);
         right.setOnItemClickListener((parent1, view, position, id) -> {

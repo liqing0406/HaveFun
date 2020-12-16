@@ -39,12 +39,8 @@ import com.example.funactivity.entity.User.User;
 import com.example.funactivity.entity.User.UserDetail;
 import com.example.funactivity.entity.activity.Activity;
 import com.example.funactivity.util.Constant;
-import com.example.funactivity.util.LocationUtil;
 import com.example.funactivity.view.CaptureActivity;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
-import com.scwang.smartrefresh.layout.api.RefreshLayout;
-import com.scwang.smartrefresh.layout.listener.OnLoadMoreListener;
-import com.uuzuche.lib_zxing.activity.CodeUtils;
 import com.youth.banner.Banner;
 import com.youth.banner.indicator.CircleIndicator;
 
@@ -71,16 +67,13 @@ public class MainFragment extends Fragment {
     private ImageView img;
     private TextView username;
     private TextView activitynum;
-    private TextView city;
     private Banner banner;
-    private RadioGroup all;
     private RadioButton hot;
     private RadioButton recent;
     private SmartRefreshLayout srl;
     private RecyclerView recyclerView;
     private RecylerAdapter adapter;
     private OkHttpClient client;
-    private ImageView scan;
     private List<Activity> activities1 = new ArrayList<>();
     private List<Activity> activities2 = new ArrayList<>();
     private int pageNum1 = 1;//热门榜当前页码
@@ -91,7 +84,8 @@ public class MainFragment extends Fragment {
     private String cityStr;//城市
     final RequestOptions options = new RequestOptions()
             .circleCrop();
-    private Handler handler = new Handler(){
+    @SuppressLint("HandlerLeak")
+    private Handler handler = new Handler() {
         @Override
         public void handleMessage(@NonNull Message msg) {
             switch (msg.what) {
@@ -108,15 +102,12 @@ public class MainFragment extends Fragment {
         @Override
         public void handleMessage(@NonNull Message msg) {
             super.handleMessage(msg);
-            switch (msg.what) {
-                case 1:
-                    //根据地址下载头像
-                    Glide.with(view)
-                            .load(Constant.PIC_PATH + msg.obj)
-                            .signature(new ObjectKey(UUID.randomUUID().toString()))
-                            .apply(options)
-                            .into(img);
-                    break;
+            if (msg.what == 1) {//根据地址下载头像
+                Glide.with(view)
+                        .load(Constant.PIC_PATH + msg.obj)
+                        .signature(new ObjectKey(UUID.randomUUID().toString()))
+                        .apply(options)
+                        .into(img);
             }
         }
     };
@@ -133,12 +124,13 @@ public class MainFragment extends Fragment {
             EventBus.getDefault().register(this);
         }
         Main2Activity activity = (Main2Activity) getActivity();
+        assert activity != null;
         user = activity.getUser();
         String str = activity.getCityStr();
-        Log.e("定位信息",str);
+        Log.e("定位信息", str);
         String[] strings = str.split(" ");
         cityStr = strings[0];
-        Log.e("城市名",cityStr);
+        Log.e("城市名", cityStr);
         initView();
         activitynum.setText(user.getUserDetail().getNumOfActivityForUser() + "");
         username.setText(user.getUserName());
@@ -160,15 +152,15 @@ public class MainFragment extends Fragment {
         img = view.findViewById(R.id.iv_img);
         username = view.findViewById(R.id.tv_username);
         activitynum = view.findViewById(R.id.tv_activitynum);
-        city = view.findViewById(R.id.tv_city);
+        TextView city = view.findViewById(R.id.tv_city);
         city.setText(cityStr);
         banner = view.findViewById(R.id.banner);
-        all = view.findViewById(R.id.rg_all);
+        RadioGroup all = view.findViewById(R.id.rg_all);
         hot = view.findViewById(R.id.rb_hot);
         recent = view.findViewById(R.id.rb_recent);
         srl = view.findViewById(R.id.srl);
         recyclerView = view.findViewById(R.id.recycle_view);
-        scan = view.findViewById(R.id.iv_scan);
+        ImageView scan = view.findViewById(R.id.iv_scan);
         LinearLayoutManager manager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(manager);
 
@@ -176,7 +168,7 @@ public class MainFragment extends Fragment {
 
         client = new OkHttpClient();
         //单选按钮设置字体
-        Typeface typeface = Typeface.createFromAsset(getContext().getAssets(), "FZGongYHJW.TTF");
+        Typeface typeface = Typeface.createFromAsset(Objects.requireNonNull(getContext()).getAssets(), "FZGongYHJW.TTF");
         hot.setTypeface(typeface);
         recent.setTypeface(typeface);
         //单选按钮点击事件
@@ -190,34 +182,34 @@ public class MainFragment extends Fragment {
         recent.setTextSize(22);
         recent.setTextColor(ContextCompat.getColor(getContext(), R.color.gray));
         if (statusHot) {
-            requestData(1, pageNum1, pageSize,cityStr);
-            adapter = new RecylerAdapter(getContext(), R.layout.item_layout, activities1,user.getId());
+            requestData(1, pageNum1, pageSize, cityStr);
+            adapter = new RecylerAdapter(getContext(), R.layout.item_layout, activities1, user.getId());
             recyclerView.setAdapter(adapter);
             adapter.setItemClickListener((view, position) -> {
                 Intent intent = new Intent();
-                intent.putExtra("collect",true);//收藏是否可修改
+                intent.putExtra("collect", true);//收藏是否可修改
                 intent.putExtra("id", user.getId() + "");//用户id
                 intent.putExtra("activityId", activities1.get(position).getActivityId() + "");//活动id
                 intent.setClass(view.getContext(), DetailActivity.class);
-                startActivityForResult(intent,1000);
+                startActivityForResult(intent, 1000);
             });
             //处理上拉加载更多
-            srl.setOnLoadMoreListener(refreshLayout -> requestData(1, pageNum1, pageSize,cityStr));
+            srl.setOnLoadMoreListener(refreshLayout -> requestData(1, pageNum1, pageSize, cityStr));
         }
-        scan.setOnClickListener(v ->requestPermissions(new String[]{Manifest.permission.CAMERA},100));//扫描活动二维码
+        scan.setOnClickListener(v -> requestPermissions(new String[]{Manifest.permission.CAMERA}, 100));//扫描活动二维码
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == 100){
+        if (requestCode == 100) {
             initActivity();
         }
     }
 
     private void initActivity() {
         Intent intent = new Intent(view.getContext(), CaptureActivity.class);
-        intent.putExtra("id",user.getId()+"");
+        intent.putExtra("id", user.getId() + "");
         startActivity(intent);
     }
 
@@ -225,7 +217,7 @@ public class MainFragment extends Fragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode == 1000){
+        if (requestCode == 1000) {
             adapter.notifyDataSetChanged();
 
         }
@@ -247,8 +239,8 @@ public class MainFragment extends Fragment {
     public void updataUI(User u) {
         user.setUserName(u.getUserName());
         user.setPassword(u.getPassword());
-        UserDetail userDetail=new UserDetail();
-        userDetail=user.getUserDetail();
+        UserDetail userDetail;
+        userDetail = user.getUserDetail();
         userDetail.setSex(u.getUserDetail().getSex());
         userDetail.setPersonalSignature(u.getUserDetail().getPersonalSignature());
         userDetail.setResidentIdCard(u.getUserDetail().getResidentIdCard());
@@ -258,13 +250,13 @@ public class MainFragment extends Fragment {
     }
 
     //获取活动信息
-    private void requestData(final int acttype, final int pageNum, int pageSize,String citystr) {
+    private void requestData(final int acttype, final int pageNum, int pageSize, String citystr) {
         FormBody.Builder builder = new FormBody.Builder();
         builder.add("activityKind", acttype + "");
         builder.add("pageNum", pageNum + "");
         builder.add("pageSize", pageSize + "");
-        Log.e("获取的城市信息",citystr);
-        builder.add("city",citystr);
+        Log.e("获取的城市信息", citystr);
+        builder.add("city", citystr);
         FormBody body = builder.build();
         Request request = new Request.Builder()
                 .post(body)
@@ -304,7 +296,7 @@ public class MainFragment extends Fragment {
                         MainFragment.this.pageNum2++;//设置页码＋1
                     }
                     Message message = new Message();
-                    message.what=1;
+                    message.what = 1;
                     handler.sendMessage(message);
                 }
             }
@@ -330,14 +322,14 @@ public class MainFragment extends Fragment {
                     recent.setTextSize(22);
                     recent.setTextColor(ContextCompat.getColor(getContext(), R.color.gray));
                     //处理上拉加载更多
-                    srl.setOnLoadMoreListener(refreshLayout -> requestData(1, pageNum1, pageSize,cityStr));
-                    adapter = new RecylerAdapter(getContext(), R.layout.item_layout, activities1,user.getId());
+                    srl.setOnLoadMoreListener(refreshLayout -> requestData(1, pageNum1, pageSize, cityStr));
+                    adapter = new RecylerAdapter(getContext(), R.layout.item_layout, activities1, user.getId());
                     recyclerView.setAdapter(adapter);
                     adapter.setItemClickListener((view, position) -> {
                         Intent intent = new Intent();
-                        intent.putExtra("collect",true);//收藏是否可修改
+                        intent.putExtra("collect", true);//收藏是否可修改
                         intent.putExtra("id", user.getId() + "");
-                        intent.putExtra("activityId", activities1.get(position).getActivityId()+"");//活动id
+                        intent.putExtra("activityId", activities1.get(position).getActivityId() + "");//活动id
                         intent.setClass(view.getContext(), DetailActivity.class);
                         startActivity(intent);
                     });
@@ -348,17 +340,17 @@ public class MainFragment extends Fragment {
                     recent.setTextSize(25);
                     recent.setTextColor(ContextCompat.getColor(getContext(), R.color.pink));
                     if (pageNum2 == 1) {
-                        requestData(2, pageNum2, pageSize,cityStr);
+                        requestData(2, pageNum2, pageSize, cityStr);
                     }
                     //处理上拉加载更多
-                    srl.setOnLoadMoreListener(refreshLayout -> requestData(2, pageNum2, pageSize,cityStr));
-                    adapter = new RecylerAdapter(getContext(), R.layout.item_layout, activities2,user.getId());
+                    srl.setOnLoadMoreListener(refreshLayout -> requestData(2, pageNum2, pageSize, cityStr));
+                    adapter = new RecylerAdapter(getContext(), R.layout.item_layout, activities2, user.getId());
                     recyclerView.setAdapter(adapter);
                     adapter.setItemClickListener((view, position) -> {
                         Intent intent = new Intent();
-                        intent.putExtra("collect",true);//收藏是否可修改
+                        intent.putExtra("collect", true);//收藏是否可修改
                         intent.putExtra("id", user.getId() + "");
-                        intent.putExtra("activityId", activities2.get(position).getActivityId()+"");//活动id
+                        intent.putExtra("activityId", activities2.get(position).getActivityId() + "");//活动id
                         intent.setClass(view.getContext(), DetailActivity.class);
                         startActivity(intent);
                     });

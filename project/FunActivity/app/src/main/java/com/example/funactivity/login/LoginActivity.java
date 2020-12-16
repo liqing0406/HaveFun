@@ -10,25 +10,20 @@ import android.os.Looper;
 import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
 import android.util.Log;
-import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.alibaba.fastjson.JSON;
 import com.example.funactivity.Main2Activity;
-import com.example.funactivity.MainActivity;
 import com.example.funactivity.R;
-import com.example.funactivity.entity.User.User;
 import com.example.funactivity.model.Model;
 import com.example.funactivity.model.bean.UserInfo;
 import com.example.funactivity.util.Constant;
 import com.example.funactivity.util.LocationUtil;
 import com.hyphenate.EMCallBack;
 import com.hyphenate.chat.EMClient;
-import com.hyphenate.easeui.EaseConstant;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -47,8 +42,6 @@ public class LoginActivity extends AppCompatActivity {
     private EditText num;
     private EditText password;
     private ImageView visible;
-    private CheckBox remember;
-    private CheckBox autologin;
     private Button find;
     private Button login;
     private Button register;
@@ -103,29 +96,20 @@ public class LoginActivity extends AppCompatActivity {
             startActivity(intent);
         });
     }
+
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == 100) {
             //获取返回的位置信息
-//            cityStr = new LocationUtil(LoginActivity.this).getLocality();
-       }
-    }
-
-    public String getCityStr() {
-        return cityStr;
-    }
-
-    public void setCityStr(String cityStr) {
-        this.cityStr = cityStr;
+            cityStr = new LocationUtil(LoginActivity.this).getLocality();
+        }
     }
 
     private void initView() {
         num = findViewById(R.id.et_num);
         password = findViewById(R.id.et_password);
         find = findViewById(R.id.btn_find);
-        remember = findViewById(R.id.cb_remember);
-        autologin = findViewById(R.id.cb_auto_login);
         visible = findViewById(R.id.iv_visible);
         login = findViewById(R.id.btn_login);
         register = findViewById(R.id.btn_register);
@@ -155,6 +139,7 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 //服务端返回登录成功，发布事件，完成界面跳转
+                assert response.body() != null;
                 String back = response.body().string();
                 if ("".equals(back)) {
                     Looper.prepare();
@@ -201,7 +186,7 @@ public class LoginActivity extends AppCompatActivity {
             Intent intent = new Intent();
             intent.putExtra("user", userJson);
             intent.putExtra("code", 100 + "");
-            intent.putExtra("cityStr",cityStr);
+            intent.putExtra("cityStr", cityStr);
             intent.setClass(this, Main2Activity.class);
             startActivity(intent);
         }

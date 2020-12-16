@@ -1,96 +1,107 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout android:layout_width="match_parent"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    xmlns:android="http://schemas.android.com/apk/res/android" >
-    <RelativeLayout android:layout_width="match_parent"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingLeft="30dp"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:paddingStart="30dp">
+
         <ImageView
-            android:textStyle="bold"
             android:id="@+id/iv_back"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginVertical="15dp"
             android:src="@drawable/back"
-            android:layout_marginVertical="15dp"/>
+            android:textStyle="bold" />
+
         <ImageView
-            android:layout_alignParentRight="true"
             android:layout_width="140dp"
             android:layout_height="140dp"
-            android:src="@drawable/cloud"/>
+            android:layout_alignParentEnd="true"
+            android:src="@drawable/cloud" />
+
         <TextView
-            android:textStyle="bold"
-            android:layout_marginTop="110dp"
-            android:textSize="50dp"
-            android:textColor="@color/pink"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="WELCOME"/>
+            android:layout_marginTop="110dp"
+            android:text="WELCOME"
+            android:textColor="@color/pink"
+            android:textSize="50sp"
+            android:textStyle="bold" />
 
     </RelativeLayout>
+
     <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:layout_marginTop="30dp"
         android:background="@drawable/login_backgrond"
-        android:padding="30dp"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:padding="30dp">
+
         <TextView
-            android:textStyle="bold"
-            android:background="@null"
             android:id="@+id/text1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:background="@null"
             android:text="请注册"
             android:textColor="@android:color/black"
-            android:textSize="20dp"/>
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
         <EditText
-            android:textStyle="bold"
             android:id="@+id/et_num"
-            android:textColor="@android:color/black"
-            android:layout_marginTop="60dp"
-            android:textColorHint="@android:color/darker_gray"
-            android:background="@drawable/editext_style"
-            android:inputType="number"
-            android:hint="请输入手机号"
             android:layout_width="match_parent"
-            android:layout_height="40dp"/>
+            android:layout_height="40dp"
+            android:layout_marginTop="60dp"
+            android:background="@drawable/editext_style"
+            android:hint="请输入手机号"
+            android:inputType="number"
+            android:textColor="@android:color/black"
+            android:textColorHint="@android:color/darker_gray"
+            android:textStyle="bold" />
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="40dp"
             android:layout_marginTop="120dp">
+
             <EditText
-                android:textStyle="bold"
                 android:id="@+id/et_code"
-                android:textColor="@android:color/black"
-                android:textColorHint="@android:color/darker_gray"
-                android:background="@drawable/editext_style"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
+                android:background="@drawable/editext_style"
+                android:hint="请输入验证码"
                 android:inputType="numberPassword"
-                android:hint="请输入验证码"/>
+                android:textColor="@android:color/black"
+                android:textColorHint="@android:color/darker_gray"
+                android:textStyle="bold" />
+
             <Button
-                android:textStyle="bold"
                 android:id="@+id/btn_getnum"
-                android:background="@color/bgWhite"
-                android:textColor="@color/smssdk_common_black"
                 android:layout_width="wrap_content"
                 android:layout_height="35dp"
+                android:layout_alignParentEnd="true"
                 android:layout_centerVertical="true"
-                android:layout_marginRight="5dp"
-                android:layout_alignParentRight="true"
-                android:text="获取验证码"/>
+                android:layout_marginEnd="5dp"
+                android:background="@color/bgWhite"
+                android:text="获取验证码"
+                android:textColor="@color/smssdk_common_black"
+                android:textStyle="bold" />
         </RelativeLayout>
+
         <Button
-            android:textSize="25dp"
-            android:textStyle="bold"
             android:id="@+id/btn_submit"
-            android:background="@drawable/btn_selector"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="250dp"
+            android:background="@drawable/btn_selector"
             android:text="确定"
-            android:layout_marginTop="250dp"/>
+            android:textSize="25sp"
+            android:textStyle="bold" />
 
     </RelativeLayout>
 

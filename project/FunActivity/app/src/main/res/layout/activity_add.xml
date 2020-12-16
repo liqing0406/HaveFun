@@ -111,19 +111,19 @@
             android:orientation="horizontal">
 
             <TextView
-                android:layout_centerVertical="true"
                 android:id="@+id/activity_kind"
                 style="@style/TextStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
+                android:layout_centerVertical="true"
                 android:gravity="center"
                 android:text="活动类型" />
 
             <Spinner
-                android:layout_centerVertical="true"
                 android:id="@+id/sp_type"
                 android:layout_width="100dp"
                 android:layout_height="40dp"
+                android:layout_centerVertical="true"
                 android:layout_marginStart="10dp"
                 android:layout_toEndOf="@id/activity_kind"
                 android:background="@drawable/shape_spinner_style"
@@ -271,12 +271,12 @@
 
         <TextView
             android:id="@+id/iscity"
-            android:hint="请选择地址"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
             android:layout_marginTop="5dp"
-            android:layout_weight="1" />
+            android:layout_weight="1"
+            android:hint="请选择地址" />
 
         <LinearLayout
             android:id="@+id/ll_detail"
@@ -305,7 +305,8 @@
                 android:hint="详细地址"
                 android:paddingStart="10dp"
                 android:textColor="@android:color/black"
-                android:textColorHint="@color/gray" />
+                android:textColorHint="@color/gray"
+                tools:ignore="RtlSymmetry" />
         </LinearLayout>
 
         <LinearLayout

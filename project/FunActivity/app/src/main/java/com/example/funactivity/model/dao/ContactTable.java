@@ -10,11 +10,11 @@ public class ContactTable {
     public static final String COL_IS_CONTACT = "is_contact";
 
     public static final String CREATE_TAB = "create table "
-            +TAB_NAME+" ("
-            +COL_HXID+" text primary key,"
-            +COL_NAME+" text,"
-            +COL_NICK+" text,"
-            +COL_PHOTO+" text,"
-            +COL_IS_CONTACT+" integer);";
+            + TAB_NAME + " ("
+            + COL_HXID + " text primary key,"
+            + COL_NAME + " text,"
+            + COL_NICK + " text,"
+            + COL_PHOTO + " text,"
+            + COL_IS_CONTACT + " integer);";
 
 }

@@ -18,13 +18,14 @@ public class NotificationSetActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_notification_set);
         //改变设置字体
-        TextView setting=findViewById(R.id.tv_text);
-        Typeface typeface= Typeface.createFromAsset(getAssets(),"FZGongYHJW.TTF");
+        TextView setting = findViewById(R.id.tv_text);
+        Typeface typeface = Typeface.createFromAsset(getAssets(), "FZGongYHJW.TTF");
         setting.setTypeface(typeface);
     }
+
     //返回
-    public void back(View view){
-        Intent i=new Intent(this, SettingActivity.class);
+    public void back(View view) {
+        Intent i = new Intent(this, SettingActivity.class);
         startActivity(i);
     }
 }

@@ -1,5 +1,6 @@
 package com.example.funactivity.My;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -41,17 +42,18 @@ public class QianmingActivity extends AppCompatActivity {
     private String name;
     private String sex;
     private OkHttpClient client;
-    private User user=new User();
+    private User user = new User();
+    @SuppressLint("HandlerLeak")
     private Handler handler = new Handler() {
         @Override
         public void handleMessage(@NonNull Message msg) {
             super.handleMessage(msg);
             switch (msg.what) {
                 case 1:
-                   UserDetail userDetail=new UserDetail();
-                   userDetail=user.getUserDetail();
-                   userDetail.setPersonalSignature(personalSignature.getText().toString());
-                   user.setUserDetail(userDetail);
+                    UserDetail userDetail = new UserDetail();
+                    userDetail = user.getUserDetail();
+                    userDetail.setPersonalSignature(personalSignature.getText().toString());
+                    user.setUserDetail(userDetail);
                     EventBus.getDefault().post(user);
                     finish();
                     break;
@@ -82,14 +84,16 @@ public class QianmingActivity extends AppCompatActivity {
         //提交修改
         edit.setOnClickListener(v -> changePersonalSignature());
     }
-    @Subscribe(threadMode = ThreadMode.MAIN ,sticky = true)
-    public void updata(User u){
-        text=u.getUserDetail().getPersonalSignature();
-        user=u;
+
+    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
+    public void updata(User u) {
+        text = u.getUserDetail().getPersonalSignature();
+        user = u;
     }
+
     private void changePersonalSignature() {
         FormBody.Builder builder = new FormBody.Builder();
-        builder.add("id", user.getId()+"");
+        builder.add("id", user.getId() + "");
         builder.add("personalSignature", personalSignature.getText().toString());
         FormBody body = builder.build();
         Request request = new Request.Builder()
@@ -107,7 +111,7 @@ public class QianmingActivity extends AppCompatActivity {
             public void onResponse(Call call, Response response) throws IOException {
                 //获取修改结果
                 String json = response.body().string();
-                Log.e("修改结果",json);
+                Log.e("修改结果", json);
                 if (json.equals("true")) {
                     Message message = new Message();
                     message.what = 1;

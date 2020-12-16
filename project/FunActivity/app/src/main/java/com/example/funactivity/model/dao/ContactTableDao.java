@@ -102,18 +102,18 @@ public class ContactTableDao {
         }
 
         for (UserInfo userInfo : userInfos) {
-            saveContact(userInfo,isMyContact);
+            saveContact(userInfo, isMyContact);
         }
     }
 
     //删除联系人信息
     public void delContactByHxid(String hxid) {
-        if (hxid == null){
+        if (hxid == null) {
             return;
         }
 
         SQLiteDatabase db = mDBHelper.getReadableDatabase();
-        db.delete(ContactTable.TAB_NAME,ContactTable.COL_HXID+"=?",new String[]{hxid});
+        db.delete(ContactTable.TAB_NAME, ContactTable.COL_HXID + "=?", new String[]{hxid});
     }
 
 }

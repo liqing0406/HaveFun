@@ -1,5 +1,6 @@
 package com.example.funactivity.add;
 
+import android.annotation.SuppressLint;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
@@ -37,16 +38,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-/**
- * @Module :
- * @Comments : SelectPictureActivity
- * @Author : KnightOneAdmin
- * @CreateDate : 16/9/11
- * @ModifiedBy : KnightOneAdmin
- * @ModifiedDate: 下午3:45
- * @Modified : SelectPictureActivity
- */
-public class SelectPictureActivity extends AppCompatActivity implements FinalNumInter,View.OnClickListener{
+public class SelectPictureActivity extends AppCompatActivity implements FinalNumInter, View.OnClickListener {
     /**
      * 最多选择图片的个数
      */
@@ -81,8 +73,6 @@ public class SelectPictureActivity extends AppCompatActivity implements FinalNum
      * 已选择的图片
      */
     private ArrayList<String> selectedPicture = new ArrayList<String>();
-    private static ArrayList<String> mySelectedPicture=new ArrayList<>();
-    private String cameraPath = null;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -101,6 +91,7 @@ public class SelectPictureActivity extends AppCompatActivity implements FinalNum
         btn_back.setOnClickListener(this);
     }
 
+    @SuppressLint("DefaultLocale")
     private void initData() {
         MAX_NUM = MAX_NUM_IMAGE - getIntent().getIntExtra(INTENT_MAX_NUM, 0);
         context = this;
@@ -109,32 +100,26 @@ public class SelectPictureActivity extends AppCompatActivity implements FinalNum
         imageAll.setDir("/所有图片");
         currentImageFolder = imageAll;
         mDirPaths.add(imageAll);
-        btn_ok = (Button) findViewById(R.id.btn_ok);
-        btn_select = (Button) findViewById(R.id.btn_select);
+        btn_ok = findViewById(R.id.btn_ok);
+        btn_select = findViewById(R.id.btn_select);
         btn_ok.setText(String.format("完成0/%d", MAX_NUM));
         ((TextView) findViewById(R.id.date_title)).setText("预览");
-        gridview = (GridView) findViewById(R.id.gridview);
+        gridview = findViewById(R.id.gridview);
         adapter = new PictureAdapter();
         gridview.setAdapter(adapter);
-        gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                if (position == 0) {
-                    goCamare();
-                }
+        gridview.setOnItemClickListener((parent, view, position, id) -> {
+            if (position == 0) {
+                goCamare();
             }
         });
-        listview = (ListView) findViewById(R.id.listview);
+        listview = findViewById(R.id.listview);
         folderAdapter = new FolderAdapter();
         listview.setAdapter(folderAdapter);
-        listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                currentImageFolder = mDirPaths.get(position);
-                hideListAnimation();
-                adapter.notifyDataSetChanged();
-                btn_select.setText(currentImageFolder.getName());
-            }
+        listview.setOnItemClickListener((parent, view, position, id) -> {
+            currentImageFolder = mDirPaths.get(position);
+            hideListAnimation();
+            adapter.notifyDataSetChanged();
+            btn_select.setText(currentImageFolder.getName());
         });
         getThumbnail();
     }
@@ -201,7 +186,7 @@ public class SelectPictureActivity extends AppCompatActivity implements FinalNum
         Intent openCameraIntent = new Intent("android.media.action.IMAGE_CAPTURE");
         String fileName = System.currentTimeMillis() + ".jpg";
         picture = FileUtil.getFile(fileName);
-        imageUri= FileProvider.getUriForFile(SelectPictureActivity.this,"net.onest.funactivity.fileprovider",picture);
+        imageUri = FileProvider.getUriForFile(SelectPictureActivity.this, "net.onest.funactivity.fileprovider", picture);
         openCameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
         openCameraIntent.putExtra(MediaStore.Images.Media.ORIENTATION, 0);
         startActivityForResult(openCameraIntent, TAKE_PICTURE);
@@ -226,19 +211,16 @@ public class SelectPictureActivity extends AppCompatActivity implements FinalNum
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-         super.onActivityResult(requestCode, resultCode, data);
+        super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == PHOTO_RESOULT) {
             selectedPicture.add(picture.getAbsolutePath());
             Intent data2 = new Intent();
             data2.putExtra(INTENT_SELECTED_PICTURE, selectedPicture);
             setResult(RESULT_OK, data2);
             this.finish();
-            return;
         } else if (requestCode == TAKE_PICTURE) {
             // 设置文件保存路径
-//            startPhotoZoom(Uri.fromFile(picture));
             startPhotoZoom(imageUri);//照相完毕裁剪处理
-            return;
         }
     }
 
@@ -246,7 +228,6 @@ public class SelectPictureActivity extends AppCompatActivity implements FinalNum
         Intent intent = new Intent("com.android.camera.action.CROP");// 调用Android系统自带的一个图片剪裁页面,
         intent.setDataAndType(uri, FinalNumInter.IMAGE_UNSPECIFIED);
         intent.putExtra("crop", "true");// 进行修剪
-        // aspectX aspectY 是宽高的比例
         intent.putExtra("aspectX", 1);
         intent.putExtra("aspectY", 1);
         // // outputX outputY 是裁剪图片宽高
@@ -277,12 +258,13 @@ public class SelectPictureActivity extends AppCompatActivity implements FinalNum
             return 0;
         }
 
+        @SuppressLint("DefaultLocale")
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
 
             ViewHolder holder;
             if (convertView == null) {
-                convertView = View.inflate(context,R.layout.grid_item_picture, null);
+                convertView = View.inflate(context, R.layout.grid_item_picture, null);
                 holder = new ViewHolder();
                 holder.iv = (ImageView) convertView.findViewById(R.id.iv);
                 holder.checkBox = (Button) convertView.findViewById(R.id.check);
@@ -306,24 +288,21 @@ public class SelectPictureActivity extends AppCompatActivity implements FinalNum
                 } else {
                     holder.checkBox.setSelected(false);
                     holder.checkBox.setEnabled(true);
-                    holder.checkBox.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            if (!v.isSelected() && selectedPicture.size() + 1 > MAX_NUM) {
-                                Toast.makeText(context, "最多选择" + MAX_NUM + "张", Toast.LENGTH_SHORT).show();
-                                return;
-                            }
-                            if (selectedPicture.contains(item.path)) {
-                                selectedPicture.remove(item.path);
-                            } else {
-                                selectedPicture.add(item.path);
-                                Log.e("selected",selectedPicture.toString());
-                            }
-//                            Log.e("selected",selectedPicture.toString());
-                            btn_ok.setEnabled(selectedPicture.size() > 0);
-                            btn_ok.setText(String.format("完成%d/%d", selectedPicture.size(), MAX_NUM));
-                            v.setSelected(selectedPicture.contains(item.path));
+                    holder.checkBox.setOnClickListener(v -> {
+                        if (!v.isSelected() && selectedPicture.size() + 1 > MAX_NUM) {
+                            Toast.makeText(context, "最多选择" + MAX_NUM + "张", Toast.LENGTH_SHORT).show();
+                            return;
                         }
+                        if (selectedPicture.contains(item.path)) {
+                            selectedPicture.remove(item.path);
+                        } else {
+                            selectedPicture.add(item.path);
+                            Log.e("selected", selectedPicture.toString());
+                        }
+//                            Log.e("selected",selectedPicture.toString());
+                        btn_ok.setEnabled(selectedPicture.size() > 0);
+                        btn_ok.setText(String.format("完成%d/%d", selectedPicture.size(), MAX_NUM));
+                        v.setSelected(selectedPicture.contains(item.path));
                     });
                 }
 
@@ -333,7 +312,7 @@ public class SelectPictureActivity extends AppCompatActivity implements FinalNum
         }
     }
 
-    class FolderViewHolder {
+    static class FolderViewHolder {
         ImageView id_dir_item_image;
         ImageView choose;
         TextView id_dir_item_name;
@@ -347,6 +326,7 @@ public class SelectPictureActivity extends AppCompatActivity implements FinalNum
         Cursor mCursor = mContentResolver.query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
                 new String[]{MediaStore.Images.ImageColumns.DATA}, "", null,
                 MediaStore.MediaColumns.DATE_ADDED + " DESC");
+        assert mCursor != null;
         if (mCursor.moveToFirst()) {
             int _date = mCursor.getColumnIndex(MediaStore.Images.Media.DATA);
             do {
@@ -378,7 +358,7 @@ public class SelectPictureActivity extends AppCompatActivity implements FinalNum
         tmpDir = null;
     }
 
-    class ViewHolder {
+    static class ViewHolder {
         ImageView iv;
         Button checkBox;
     }
@@ -400,6 +380,7 @@ public class SelectPictureActivity extends AppCompatActivity implements FinalNum
             return 0;
         }
 
+        @SuppressLint("DefaultLocale")
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
             FolderViewHolder holder;
@@ -423,7 +404,7 @@ public class SelectPictureActivity extends AppCompatActivity implements FinalNum
         }
     }
 
-    class ImageFloder {
+    static class ImageFloder {
         /**
          * 图片的文件夹路径
          */
@@ -464,8 +445,9 @@ public class SelectPictureActivity extends AppCompatActivity implements FinalNum
 
     }
 
-    class ImageItem {
+    static class ImageItem {
         String path;
+
         public ImageItem(String p) {
             this.path = p;
         }

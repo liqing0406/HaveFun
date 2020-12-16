@@ -9,7 +9,6 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.funactivity.My.SettingActivity;
 import com.example.funactivity.R;
 import com.example.funactivity.entity.User.User;
 
@@ -24,56 +23,62 @@ public class IdAndSercurityActivity extends AppCompatActivity {
     private TextView user_id;
     private TextView shenfenzheng;
     private String shenfenzhenghao;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_id_and_sercurity);
         EventBus.getDefault().register(this);
         //改变设置字体
-        TextView setting=findViewById(R.id.tv_text);
-        Typeface typeface= Typeface.createFromAsset(getAssets(),"FZGongYHJW.TTF");
+        TextView setting = findViewById(R.id.tv_text);
+        Typeface typeface = Typeface.createFromAsset(getAssets(), "FZGongYHJW.TTF");
         setting.setTypeface(typeface);
-        phonenum=findViewById(R.id.tv_number);
-        user_id=findViewById(R.id.tv_userid);
-        shenfenzheng=findViewById(R.id.tv_shenfenzhenghao);
+        phonenum = findViewById(R.id.tv_number);
+        user_id = findViewById(R.id.tv_userid);
+        shenfenzheng = findViewById(R.id.tv_shenfenzhenghao);
         phonenum.setText(num);
         user_id.setText(id);
-        if (shenfenzhenghao.equals("未认证")){
+        if (shenfenzhenghao.equals("未认证")) {
             shenfenzheng.setText("未认证");
-        }
-        else{
+        } else {
             shenfenzheng.setText("已认证");
         }
 
 
     }
-    @Subscribe(threadMode = ThreadMode.MAIN ,sticky = true)
-    public void updata(User u){
-        num=u.getPhoneNum();
-        id=u.getUserId()+"";
-        Log.e("身份证",u.getUserDetail().getResidentIdCard());
-        shenfenzhenghao=u.getUserDetail().getResidentIdCard();
-        Log.e("获取到的身份证号",shenfenzhenghao);
+
+    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
+    public void updata(User u) {
+        num = u.getPhoneNum();
+        id = u.getUserId() + "";
+        Log.e("身份证", u.getUserDetail().getResidentIdCard());
+        shenfenzhenghao = u.getUserDetail().getResidentIdCard();
+        Log.e("获取到的身份证号", shenfenzhenghao);
 
     }
+
     //返回
-    public void back(View view){
+    public void back(View view) {
         finish();
     }
+
     //点击>修改昵称
-    public void changeName(View view){
-        Intent i=new Intent(this,ChangeNameActivity.class);
+    public void changeName(View view) {
+        Intent i = new Intent(this, ChangeNameActivity.class);
         startActivity(i);
     }
+
     //点击修改密码
-    public void changePassword(View view){
-        Intent i=new Intent(this,ChangePasswordActivity.class);
+    public void changePassword(View view) {
+        Intent i = new Intent(this, ChangePasswordActivity.class);
         startActivity(i);
     }
-    public void changeSex(View view){
-        Intent i=new Intent(this,ChangeSexActivity.class);
+
+    public void changeSex(View view) {
+        Intent i = new Intent(this, ChangeSexActivity.class);
         startActivity(i);
     }
+
     @Override
     protected void onDestroy() {
         super.onDestroy();

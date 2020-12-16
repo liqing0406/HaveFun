@@ -33,9 +33,8 @@ public class ImageAdapter extends BannerAdapter<DataBean, ImageAdapter.BannerVie
 
     @Override
     public void onBindView(BannerViewHolder holder, DataBean data, int position, int size) {
-        Glide.with(holder.imageView.getContext()).load((String)data.imageUrl).into(holder.imageView);
+        Glide.with(holder.imageView.getContext()).load(data.imageUrl).into(holder.imageView);
     }
-
 
     static class BannerViewHolder extends RecyclerView.ViewHolder {
         ImageView imageView;

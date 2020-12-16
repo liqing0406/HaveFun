@@ -1,58 +1,66 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout android:layout_width="match_parent"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    xmlns:android="http://schemas.android.com/apk/res/android" >
-    <RelativeLayout android:layout_width="match_parent"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingLeft="30dp"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:paddingLeft="30dp">
+
         <ImageView
-            android:layout_alignParentRight="true"
             android:layout_width="140dp"
             android:layout_height="140dp"
-            android:src="@drawable/cloud"/>
+            android:layout_alignParentRight="true"
+            android:src="@drawable/cloud" />
+
         <TextView
-            android:layout_marginTop="150dp"
-            android:textSize="50dp"
-            android:textColor="@color/pink"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="WELCOME"/>
+            android:layout_marginTop="150dp"
+            android:text="WELCOME"
+            android:textColor="@color/pink"
+            android:textSize="50dp" />
 
     </RelativeLayout>
+
     <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:layout_marginTop="100dp"
         android:background="@drawable/login_backgrond"
-        android:padding="30dp"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:padding="30dp">
+
         <TextView
-            android:background="@null"
             android:id="@+id/text1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:background="@null"
             android:text="请输入密码"
             android:textColor="@android:color/black"
-            android:textSize="20dp"/>
+            android:textSize="20dp" />
+
         <EditText
             android:id="@+id/et_password"
-            android:textColor="@android:color/black"
-            android:textColorHint="@android:color/darker_gray"
-            android:background="@drawable/editext_style"
             android:layout_width="match_parent"
             android:layout_height="40dp"
             android:layout_marginTop="80dp"
+            android:background="@drawable/editext_style"
+            android:hint="请输入密码"
             android:inputType="textPassword"
-            android:hint="请输入密码"/>
+            android:textColor="@android:color/black"
+            android:textColorHint="@android:color/darker_gray" />
+
         <Button
-            android:textSize="25dp"
             android:id="@+id/btn_login"
-            android:background="@drawable/btn_selector"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="250dp"
+            android:background="@drawable/btn_selector"
             android:text="一键登录"
-            android:layout_marginTop="250dp"/>
+            android:textSize="25dp" />
 
     </RelativeLayout>
 

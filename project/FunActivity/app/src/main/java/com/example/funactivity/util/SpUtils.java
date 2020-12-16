@@ -6,11 +6,6 @@ import android.content.SharedPreferences;
 import com.example.funactivity.view.Application;
 
 
-/**
- * @author Tian
- * @description sp保存和获取数据
- * @date :2020/5/26 17:08
- */
 public class SpUtils {
     public static final String IS_NEW_INVITE = "is_new_invite";
     private static SpUtils sSpUtils = new SpUtils();
@@ -26,13 +21,13 @@ public class SpUtils {
         return sSpUtils;
     }
 
-    public void save(String key,Object value){
-        if (value instanceof String){
+    public void save(String key, Object value) {
+        if (value instanceof String) {
             sMSp.edit().putString(key, String.valueOf((value))).apply();
-        }else if (value instanceof Boolean){
-            sMSp.edit().putBoolean(key,(Boolean) value).apply();
-        }else if (value instanceof Integer){
-            sMSp.edit().putInt(key,(Integer)value).apply();
+        } else if (value instanceof Boolean) {
+            sMSp.edit().putBoolean(key, (Boolean) value).apply();
+        } else if (value instanceof Integer) {
+            sMSp.edit().putInt(key, (Integer) value).apply();
         }
     }
 

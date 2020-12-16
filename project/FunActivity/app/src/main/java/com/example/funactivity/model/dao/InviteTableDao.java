@@ -132,24 +132,24 @@ public class InviteTableDao {
 
     //拒绝某人的邀请
     public void removeInvitation(String hxid) {
-        if (hxid == null){
+        if (hxid == null) {
             return;
         }
         SQLiteDatabase db = mDBHelper.getReadableDatabase();
-        db.delete(InviteTable.TAB_NAME,InviteTable.COL_USER_HXID+"=?",new String[]{hxid});
+        db.delete(InviteTable.TAB_NAME, InviteTable.COL_USER_HXID + "=?", new String[]{hxid});
     }
 
     //更新邀请状态
     public void updateInvitationStatus(InvitationInfo.InvitationStatus status, String hxid) {
-        if (hxid == null){
+        if (hxid == null) {
             return;
         }
         SQLiteDatabase db = mDBHelper.getReadableDatabase();
 
         ContentValues values = new ContentValues();
-        values.put(InviteTable.COL_STATUS,status.ordinal());
+        values.put(InviteTable.COL_STATUS, status.ordinal());
 
-        db.update(InviteTable.TAB_NAME,values,InviteTable.COL_USER_HXID+"=?",new String[]{hxid});
+        db.update(InviteTable.TAB_NAME, values, InviteTable.COL_USER_HXID + "=?", new String[]{hxid});
     }
 
 

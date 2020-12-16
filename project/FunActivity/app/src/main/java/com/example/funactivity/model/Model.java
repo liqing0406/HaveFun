@@ -1,5 +1,6 @@
 package com.example.funactivity.model;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 
 
@@ -20,6 +21,7 @@ public class Model {
     private Model() {
     }
 
+    @SuppressLint("StaticFieldLeak")
     private static Model sInstance = null;
 
     public static Model getInstance() {
@@ -39,8 +41,7 @@ public class Model {
         mUserAccountDao = new UserAccountDao(context);
 
         //开启全局监听
-        EventListener eventListener = new EventListener(mContext);
-        
+
     }
 
     //获取全局线程池
@@ -60,7 +61,7 @@ public class Model {
         mDbManager = new DBManager(mContext, userInfo.getHxid());
     }
 
-    public DBManager getDbManager(){
+    public DBManager getDbManager() {
         return mDbManager;
     }
 

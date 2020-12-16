@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -20,13 +21,9 @@ import android.widget.Toast;
 
 import com.alibaba.fastjson.JSON;
 import com.example.funactivity.DetailActivity;
-import com.example.funactivity.Fragment.MyFragment;
 import com.example.funactivity.R;
-import com.example.funactivity.adapter.CollectAdapter;
 import com.example.funactivity.adapter.SignUpAdapter;
 import com.example.funactivity.entity.User.UserEnterActivity;
-import com.example.funactivity.entity.User.UserPublishActivity;
-import com.example.funactivity.entity.activity.Activity;
 import com.example.funactivity.util.Constant;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
@@ -59,7 +56,8 @@ public class SignUpActivity extends AppCompatActivity {
     private int pageNum = 1;//当前页码
     private int pageSize = 20;//每页数据条数
     private int cancelPosition;//点击取消报名的活动处于list的位置
-    private Handler handler = new Handler(){
+    @SuppressLint("HandlerLeak")
+    private Handler handler = new Handler() {
         @Override
         public void handleMessage(@NonNull Message msg) {
             switch (msg.what) {
@@ -69,8 +67,8 @@ public class SignUpActivity extends AppCompatActivity {
                     //在界面移除
                     signUpAdapter.notifyDataSetChanged();
                     Toast toast = Toast.makeText(SignUpActivity.this,
-                            "取消成功",Toast.LENGTH_LONG);
-                    toast.setGravity(Gravity.CENTER,0,0);
+                            "取消成功", Toast.LENGTH_LONG);
+                    toast.setGravity(Gravity.CENTER, 0, 0);
                     toast.show();
                     break;
             }
@@ -98,44 +96,31 @@ public class SignUpActivity extends AppCompatActivity {
         //点击事件
         signUpAdapter.setOnItemClickListener(onMyItemClickListener);
         recyclerView.setAdapter(signUpAdapter);
-        signUpAdapter.setOn(new SignUpAdapter.onItemClickListener() {
-            @Override
-            public void onItemClick(View view) {
-                int position=recyclerView.getChildAdapterPosition(view);
-                Intent intent = new Intent();
-                intent.putExtra("id", id + "");//用户id
-                intent.putExtra("activityId", list.get(position).getActivity().getActivityId() + "");//活动id
-                Log.e("id",list.get(position).getId() + "");
-                intent.setClass(view.getContext(), DetailActivity.class);
-                startActivity(intent);
-            }
+        signUpAdapter.setOn(view -> {
+            int position = recyclerView.getChildAdapterPosition(view);
+            Intent intent = new Intent();
+            intent.putExtra("id", id + "");//用户id
+            intent.putExtra("activityId", list.get(position).getActivity().getActivityId() + "");//活动id
+            Log.e("id", list.get(position).getId() + "");
+            intent.setClass(view.getContext(), DetailActivity.class);
+            startActivity(intent);
         });
     }
 
     private void initView() {
-        back =  findViewById(R.id.iv_back);
-        back.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
+        back = findViewById(R.id.iv_back);
+        back.setOnClickListener(v -> finish());
         //改变收藏的字体
         setting = findViewById(R.id.tv_text);
         Typeface typeface = Typeface.createFromAsset(getAssets(), "FZGongYHJW.TTF");
         setting.setTypeface(typeface);
-        srl=findViewById(R.id.srl);
+        srl = findViewById(R.id.srl);
         client = new OkHttpClient();
         srl.setEnableRefresh(false);
-        requestData(1,pageSize);
-        srl.setOnLoadMoreListener(new OnLoadMoreListener() {
-            @Override
-            public void onLoadMore(@NonNull RefreshLayout refreshLayout) {
-                requestData(pageNum, pageSize);
-            }
-        });
+        requestData(1, pageSize);
+        srl.setOnLoadMoreListener(refreshLayout -> requestData(pageNum, pageSize));
         recyclerView = findViewById(R.id.recycle_view);
-        signUpAdapter = new SignUpAdapter(this, R.layout.signup_or_collect_layout,list);
+        signUpAdapter = new SignUpAdapter(this, R.layout.signup_or_collect_layout, list);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(linearLayoutManager);
@@ -143,6 +128,7 @@ public class SignUpActivity extends AppCompatActivity {
         signUpAdapter.setOnItemClickListener(onMyItemClickListener);
         recyclerView.setAdapter(signUpAdapter);
     }
+
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void updataUI(String msg) {
         if (msg.equals("update")) {
@@ -168,9 +154,9 @@ public class SignUpActivity extends AppCompatActivity {
     };
 
     //取消报名
-    private void cancelEnrollActivity(){
+    private void cancelEnrollActivity() {
         FormBody.Builder builder = new FormBody.Builder();
-        builder.add("activityId", list.get(cancelPosition).getActivity().getActivityId()+"");
+        builder.add("activityId", list.get(cancelPosition).getActivity().getActivityId() + "");
         builder.add("id", id);
         FormBody body = builder.build();
         final Request request = new Request.Builder()
@@ -187,16 +173,17 @@ public class SignUpActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 //返回取消修改报名的结果
+                assert response.body() != null;
                 boolean result = Boolean.parseBoolean(response.body().string());
-                if(result){
+                if (result) {
                     Message message = new Message();
                     message.what = 1;
                     handler.sendMessage(message);
-                }else {
+                } else {
                     Looper.prepare();
                     Toast toast = Toast.makeText(SignUpActivity.this,
-                            "取消失败",Toast.LENGTH_SHORT);
-                    toast.setGravity(Gravity.CENTER,0,0);
+                            "取消失败", Toast.LENGTH_SHORT);
+                    toast.setGravity(Gravity.CENTER, 0, 0);
                     toast.show();
                     Looper.loop();
                 }
@@ -207,7 +194,7 @@ public class SignUpActivity extends AppCompatActivity {
     //从服务端获取数据
     private void requestData(int pageNum, int pageSize) {
         FormBody.Builder builder = new FormBody.Builder();
-        builder.add("id",id+"");
+        builder.add("id", id + "");
         builder.add("pageNum", pageNum + "");
         builder.add("pageSize", pageSize + "");
         FormBody body = builder.build();
@@ -239,7 +226,6 @@ public class SignUpActivity extends AppCompatActivity {
             }
         });
     }
-
 
 
 }

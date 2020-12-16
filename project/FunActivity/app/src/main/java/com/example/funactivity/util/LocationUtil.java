@@ -17,6 +17,7 @@ import androidx.core.app.ActivityCompat;
 import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
+
 //获取位置信息
 public class LocationUtil {
     private Context context;
@@ -50,19 +51,22 @@ public class LocationUtil {
             return null;
         }
         //获取到了位置
+        assert provider != null;
         Location location = locationManager.getLastKnownLocation(provider);
         //开启地理位置监听定位类型、毫秒、米、监听时间
         locationManager.requestLocationUpdates(provider, 3000, 1, new listener());
         //将经纬度转为地址
-        Log.e("经纬度",location.getLatitude()+"  "+location.getLongitude());
-        getAddress(location.getLatitude(),location.getLongitude());
-        return locality+" "+subLocality;
+        assert location != null;
+        Log.e("经纬度", location.getLatitude() + "  " + location.getLongitude());
+        getAddress(location.getLatitude(), location.getLongitude());
+        return locality + " " + subLocality;
     }
+
     public class listener implements LocationListener {
         @Override
         public void onLocationChanged(Location location) {
             //位置变化，获取最新的位置
-            getAddress(location.getLatitude(),location.getLongitude());
+            getAddress(location.getLatitude(), location.getLongitude());
         }
 
         @Override
@@ -77,6 +81,7 @@ public class LocationUtil {
         public void onProviderDisabled(String provider) {
         }
     }
+
     //通过经纬度获取具体位置信息
     private void getAddress(double latitude, double longitude) {
         //Geocoder通过经纬度获取具体信息

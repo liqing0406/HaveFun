@@ -48,12 +48,7 @@ public class GetBackPasswordNextActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         num = intent.getStringExtra("num");
-        login.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                modifyPassword();
-            }
-        });
+        login.setOnClickListener(v -> modifyPassword());
     }
 
     private void initView() {
@@ -62,18 +57,10 @@ public class GetBackPasswordNextActivity extends AppCompatActivity {
         client = new OkHttpClient();
     }
 
-    public String getCityStr() {
-        return cityStr;
-    }
-
-    public void setCityStr(String cityStr) {
-        this.cityStr = cityStr;
-    }
-
     public void modifyPassword() {
         //提交键值对格式数据
         FormBody.Builder builder = new FormBody.Builder();
-        builder.add("phoneNum",num);
+        builder.add("phoneNum", num);
         builder.add("password", password.getText().toString());
         FormBody body = builder.build();
         //创建请求对象
@@ -99,6 +86,7 @@ public class GetBackPasswordNextActivity extends AppCompatActivity {
             }
         });
     }
+
     //向服务端请求登录
     private void login() {
         //提交键值对格式数据
@@ -129,19 +117,20 @@ public class GetBackPasswordNextActivity extends AppCompatActivity {
                     Looper.loop();
                 } else {
                     userJson = back;
-                    Log.e("获取的用户信息",userJson);
+                    Log.e("获取的用户信息", userJson);
                     EventBus.getDefault().post("login");
                 }
             }
         });
     }
+
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void toLogin(String msg) {
         if (msg.equals("login")) {
             Intent intent = new Intent();
             intent.putExtra("user", userJson);
-            intent.putExtra("code",100+"");
-            intent.putExtra("cityStr",cityStr);
+            intent.putExtra("code", 100 + "");
+            intent.putExtra("cityStr", cityStr);
             intent.setClass(this, Main2Activity.class);
             startActivity(intent);
         }

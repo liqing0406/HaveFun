@@ -1,5 +1,6 @@
 package com.example.funactivity.Settings;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -36,7 +37,8 @@ public class ChangeNameActivity extends AppCompatActivity {
     private String oldname;
     private String newname;
     private OkHttpClient client;
-    private User user=new User();
+    private User user = new User();
+    @SuppressLint("HandlerLeak")
     private Handler handler = new Handler() {
         @Override
         public void handleMessage(@NonNull Message msg) {
@@ -50,39 +52,40 @@ public class ChangeNameActivity extends AppCompatActivity {
             }
         }
     };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_change_name);
 
-        save=findViewById(R.id.btn_save);
-        name=findViewById(R.id.et_name);
-        client=new OkHttpClient();
+        save = findViewById(R.id.btn_save);
+        name = findViewById(R.id.et_name);
+        client = new OkHttpClient();
         EventBus.getDefault().register(this);
         name.setText(oldname);
-        save.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                newname=name.getText().toString();
-                Log.e("new",name.getText().toString());//得到修改后的名字
-                changename();
-            }
+        save.setOnClickListener(v -> {
+            newname = name.getText().toString();
+            Log.e("new", name.getText().toString());//得到修改后的名字
+            changename();
         });
     }
-    @Subscribe(threadMode = ThreadMode.MAIN ,sticky = true)
-    public void updata(User u){
-        oldname=u.getUserName();
-        Log.e("获取的用户名",oldname);
-        if (u.getUserName() != null){
-            user=u;
+
+    @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
+    public void updata(User u) {
+        oldname = u.getUserName();
+        Log.e("获取的用户名", oldname);
+        if (u.getUserName() != null) {
+            user = u;
         }
     }
-    public void back(View view){
+
+    public void back(View view) {
         finish();
     }
-    public void changename(){
+
+    public void changename() {
         FormBody.Builder builder = new FormBody.Builder();
-        builder.add("id", user.getId()+"");
+        builder.add("id", user.getId() + "");
         builder.add("userName", name.getText().toString());
         FormBody body = builder.build();
         Request request = new Request.Builder()
@@ -100,7 +103,7 @@ public class ChangeNameActivity extends AppCompatActivity {
             public void onResponse(Call call, Response response) throws IOException {
                 //获取修改结果
                 String json = response.body().string();
-                Log.e("修改结果",json);
+                Log.e("修改结果", json);
                 if (json.equals("true")) {
                     Message message = new Message();
                     message.what = 1;

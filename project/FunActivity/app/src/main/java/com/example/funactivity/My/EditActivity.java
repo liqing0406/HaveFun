@@ -21,21 +21,16 @@ import android.widget.Toast;
 
 import com.alibaba.fastjson.JSON;
 import com.bumptech.glide.Glide;
-import com.example.funactivity.Main2Activity;
 import com.example.funactivity.R;
-import com.example.funactivity.entity.activity.Activity;
 import com.example.funactivity.entity.activity.ActivityDetail;
 import com.example.funactivity.util.Constant;
 
-import org.greenrobot.eventbus.EventBus;
 
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
 
-import github.chenupt.multiplemodel.IViewHolder;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.FormBody;
@@ -61,7 +56,7 @@ public class EditActivity extends AppCompatActivity {
     private OkHttpClient client;
     private ActivityDetail activityDetail;
     @SuppressLint("HandlerLeak")
-    private Handler handler=new Handler(){
+    private Handler handler = new Handler() {
         @Override
         public void handleMessage(@NonNull Message msg) {
             super.handleMessage(msg);
@@ -82,27 +77,27 @@ public class EditActivity extends AppCompatActivity {
 
     private void initView() {
         client = new OkHttpClient();
-        img=findViewById(R.id.iv_img);
-        title=findViewById(R.id.tv_title);
-        theme=findViewById(R.id.et_theme);
-        date=findViewById(R.id.et_date);
-        money=findViewById(R.id.et_money);
-        province=findViewById(R.id.et_province);
-        city=findViewById(R.id.et_city);
-        county=findViewById(R.id.et_county);
-        detail=findViewById(R.id.et_detail);
-        phone=findViewById(R.id.et_phone);
-        other=findViewById(R.id.et_other);
-        submit=findViewById(R.id.btn_submit);
+        img = findViewById(R.id.iv_img);
+        title = findViewById(R.id.tv_title);
+        theme = findViewById(R.id.et_theme);
+        date = findViewById(R.id.et_date);
+        money = findViewById(R.id.et_money);
+        province = findViewById(R.id.et_province);
+        city = findViewById(R.id.et_city);
+        county = findViewById(R.id.et_county);
+        detail = findViewById(R.id.et_detail);
+        phone = findViewById(R.id.et_phone);
+        other = findViewById(R.id.et_other);
+        submit = findViewById(R.id.btn_submit);
 
-        Intent intent=getIntent();
+        Intent intent = getIntent();
         userStr = intent.getStringExtra("user");
         activityId = intent.getStringExtra("activityId");
     }
 
     //提交按钮
     public void buttonClicked(View view) {
-        switch (view.getId()){
+        switch (view.getId()) {
             case R.id.btn_submit:
                 //提交修改
                 dataChanged();
@@ -116,7 +111,7 @@ public class EditActivity extends AppCompatActivity {
 
     //显示对话框
     private void showAlertDialog() {
-        AlertDialog.Builder alertDialog=new AlertDialog.Builder(this)
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(this)
                 .setTitle("删除确认")
                 .setMessage("确认删除这项活动吗?")
                 .setPositiveButton("确认", (dialog, which) -> deleteActivity())
@@ -127,7 +122,7 @@ public class EditActivity extends AppCompatActivity {
     //删除活动
     private void deleteActivity() {
         FormBody.Builder builder = new FormBody.Builder();
-        builder.add("activityId",activityId);
+        builder.add("activityId", activityId);
         FormBody body = builder.build();
         Request request = new Request.Builder()
                 .post(body)
@@ -142,8 +137,8 @@ public class EditActivity extends AppCompatActivity {
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
-                String json=response.body().string();
-                if (json.equals("true")){
+                String json = response.body().string();
+                if (json.equals("true")) {
 //                    Intent i=new Intent(EditActivity.this, Main2Activity.class);
 //                    i.putExtra("user",userStr);
 //                    i.putExtra("code",300+"");
@@ -151,8 +146,8 @@ public class EditActivity extends AppCompatActivity {
 
                     finish();
 //                    Toast.makeText(EditActivity.this,"删除成功",Toast.LENGTH_SHORT).show();
-                }else {
-                    Toast.makeText(EditActivity.this,"删除失败",Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(EditActivity.this, "删除失败", Toast.LENGTH_SHORT).show();
 
                 }
             }
@@ -162,8 +157,8 @@ public class EditActivity extends AppCompatActivity {
     //提交修改
     private void dataChanged() {
         FormBody.Builder builder = new FormBody.Builder();
-        ActivityDetail ad=setDetail();
-        builder.add("activityDetailJson",JSON.toJSONString(ad));
+        ActivityDetail ad = setDetail();
+        builder.add("activityDetailJson", JSON.toJSONString(ad));
         FormBody body = builder.build();
         Request request = new Request.Builder()
                 .post(body)
@@ -180,7 +175,7 @@ public class EditActivity extends AppCompatActivity {
             public void onResponse(Call call, Response response) throws IOException {
                 //获取修改结果
                 String json = response.body().string();
-                Log.e("修改结果",json);
+                Log.e("修改结果", json);
                 if (json.equals("true")) {
 //                    Looper.prepare();
 //                    Toast.makeText(EditActivity.this,"修改成功",Toast.LENGTH_SHORT).show();
@@ -190,14 +185,14 @@ public class EditActivity extends AppCompatActivity {
 //                    i.putExtra("code",200+"");
 //                    startActivity(i);
                     finish();
-                }else {
-                    Toast.makeText(EditActivity.this,"修改失败",Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(EditActivity.this, "修改失败", Toast.LENGTH_SHORT).show();
                 }
             }
         });
     }
 
-    private ActivityDetail setDetail(){
+    private ActivityDetail setDetail() {
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
 //        Activity activity=activityDetail.getActivity();
 //        activityDetail.getActivity().setActivityTile(title.toString());
@@ -215,8 +210,6 @@ public class EditActivity extends AppCompatActivity {
         activityDetail.setOtherInfo(other.getText().toString());
         return activityDetail;
     }
-
-
 
 
     //获取活动列表
@@ -239,7 +232,7 @@ public class EditActivity extends AppCompatActivity {
             public void onResponse(Call call, Response response) throws IOException {
                 //获取活动列表数据
                 String jsonStr = response.body().string();
-                Log.e("json",jsonStr);
+                Log.e("json", jsonStr);
                 activityDetail = JSON.parseObject(jsonStr, ActivityDetail.class);
                 Message message = new Message();
                 message.what = 1;
@@ -262,7 +255,7 @@ public class EditActivity extends AppCompatActivity {
         detail.setText(activityDetail.getActivity().getActivityLocation().getDetailedAddress());
         phone.setText(activityDetail.getActivity().getActivityContact());
         other.setText(activityDetail.getOtherInfo());
-        Log.e("省份",activityDetail.getActivity().getActivityLocation().getProvince()+activityDetail.getActivity().getActivityLocation().getCity());
+        Log.e("省份", activityDetail.getActivity().getActivityLocation().getProvince() + activityDetail.getActivity().getActivityLocation().getCity());
         Glide.with(this)
                 .load(Constant.PIC_PATH + activityDetail.getActivity().getFrontPicture().getPictureName())
                 .into(img);

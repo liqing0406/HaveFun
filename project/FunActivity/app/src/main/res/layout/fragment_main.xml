@@ -55,8 +55,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="你已完成"
-                        />
+                        android:text="你已完成" />
 
                     <TextView
                         android:id="@+id/tv_activitynum"
@@ -69,14 +68,15 @@
                         android:text="次活动" />
                 </LinearLayout>
             </LinearLayout>
+
             <ImageView
                 android:id="@+id/iv_scan"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
+                android:layout_alignParentRight="true"
                 android:layout_marginTop="5dp"
                 android:layout_marginRight="10dp"
-                android:layout_alignParentRight="true"
-                android:src="@drawable/scan"/>
+                android:src="@drawable/scan" />
 
         </RelativeLayout>
 
@@ -94,52 +94,54 @@
                     android:layout_width="match_parent"
                     android:layout_height="150dp"
                     android:layout_marginTop="20px" />
+
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
+
                     <RadioGroup
-                    android:id="@+id/rg_all"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginVertical="10dp"
-                    android:orientation="horizontal">
+                        android:id="@+id/rg_all"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginVertical="10dp"
+                        android:orientation="horizontal">
 
-                    <RadioButton
-                        android:id="@+id/rb_hot"
+                        <RadioButton
+                            android:id="@+id/rb_hot"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_marginHorizontal="5dp"
+                            android:button="@null"
+                            android:checked="true"
+                            android:text="热门"
+                            android:textColor="#000000"
+                            android:textSize="25sp" />
+
+                        <RadioButton
+                            android:id="@+id/rb_recent"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_marginHorizontal="5dp"
+                            android:button="@null"
+                            android:text="近期"
+                            android:textColor="@color/gray"
+                            android:textSize="22sp" />
+                    </RadioGroup>
+
+                    <TextView
+                        android:id="@+id/tv_city"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:layout_marginHorizontal="5dp"
-                        android:button="@null"
-                        android:checked="true"
-                        android:text="热门"
-                        android:textSize="25sp"
-                        android:textColor="#000000"/>
-
-                    <RadioButton
-                        android:id="@+id/rb_recent"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:layout_marginHorizontal="5dp"
-                        android:button="@null"
-                        android:text="近期"
-                        android:textColor="@color/gray"
-                        android:textSize="22sp" />
-                </RadioGroup>
-                 <TextView
-                    android:id="@+id/tv_city"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_alignParentRight="true"
-                    android:layout_marginRight="3dp"
-                     android:layout_marginTop="15dp"
-                    android:drawableLeft="@drawable/position"
-                    android:gravity="center"
-                    android:textStyle="bold" />
+                        android:layout_alignParentRight="true"
+                        android:layout_marginTop="15dp"
+                        android:layout_marginRight="3dp"
+                        android:drawableLeft="@drawable/position"
+                        android:gravity="center"
+                        android:textStyle="bold" />
                 </RelativeLayout>
 
 
-                <androidx.recyclerview.widget.RecyclerView
-                    xmlns:android="http://schemas.android.com/apk/res/android"
+                <androidx.recyclerview.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
                     android:id="@+id/recycle_view"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />

@@ -1,5 +1,6 @@
 package com.example.funactivity.adapter;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Message;
@@ -29,7 +30,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
-public class RecylerAdapter extends RecyclerView.Adapter<RecylerAdapter.ViewHolder>{
+public class RecylerAdapter extends RecyclerView.Adapter<RecylerAdapter.ViewHolder> {
     private Context context;
     private View inflater;
     private List<Activity> activities;
@@ -37,17 +38,20 @@ public class RecylerAdapter extends RecyclerView.Adapter<RecylerAdapter.ViewHold
     private int item;
     private OkHttpClient client;
     private Integer myID;
-    public RecylerAdapter(Context context, int item, List<Activity> lists,Integer myID){
-        this.context=context;
-        this.item=item;
-        this.activities=lists;
-        this.myID=myID;
+
+    public RecylerAdapter(Context context, int item, List<Activity> lists, Integer myID) {
+        this.context = context;
+        this.item = item;
+        this.activities = lists;
+        this.myID = myID;
         client = new OkHttpClient();
     }
+
     //设置回调接口
-    public interface OnItemClickListener{
-        void onItemClick(View view,int position);
+    public interface OnItemClickListener {
+        void onItemClick(View view, int position);
     }
+
     //提供set方法
     public void setItemClickListener(OnItemClickListener itemClickListener) {
         this.itemClickListener = itemClickListener;
@@ -56,19 +60,12 @@ public class RecylerAdapter extends RecyclerView.Adapter<RecylerAdapter.ViewHold
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        inflater = LayoutInflater.from(context).inflate(item,parent,false);
+        inflater = LayoutInflater.from(context).inflate(item, parent, false);
         ViewHolder myViewHolder = new ViewHolder(inflater);
-        //inflater.setOnClickListener(this);
         return myViewHolder;
     }
 
-    public void onClick(View v) {
-        if (itemClickListener!=null){
-//            itemClickListener.onItemClick((Integer) v.getTag());
-        }
-    }
-
-
+    @SuppressLint({"SimpleDateFormat", "SetTextI18n"})
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, final int position) {
         //数据和控件绑定
@@ -81,15 +78,10 @@ public class RecylerAdapter extends RecyclerView.Adapter<RecylerAdapter.ViewHold
         holder.money.setText(activities.get(position).getActivityCost() + "");
         holder.apply.setText(activities.get(position).getActivityContact() + "");
         holder.collect.setText(activities.get(position).getCollectNum() + "");
-        ifHanUp(position,holder.handler);
+        ifHanUp(position, holder.handler);
         //通过为条目设置点击事件触发回调
-        if (itemClickListener != null){
-            holder.item.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    itemClickListener.onItemClick(v,position);
-                }
-            });
+        if (itemClickListener != null) {
+            holder.item.setOnClickListener(v -> itemClickListener.onItemClick(v, position));
         }
     }
 
@@ -101,12 +93,12 @@ public class RecylerAdapter extends RecyclerView.Adapter<RecylerAdapter.ViewHold
 
     private void ifHanUp(int position, Handler handler) {
         FormBody.Builder builder = new FormBody.Builder();
-        builder.add("activityId",activities.get(position).getActivityId()+"");
-        builder.add("id",myID+"");
+        builder.add("activityId", activities.get(position).getActivityId() + "");
+        builder.add("id", myID + "");
         FormBody body = builder.build();
         Request request = new Request.Builder()
                 .post(body)
-                .url(Constant.BASE_URL+"activity/judgeEnterActivity")
+                .url(Constant.BASE_URL + "activity/judgeEnterActivity")
                 .build();
         Call call = client.newCall(request);
         call.enqueue(new Callback() {
@@ -126,7 +118,7 @@ public class RecylerAdapter extends RecyclerView.Adapter<RecylerAdapter.ViewHold
         });
     }
 
-    class ViewHolder extends RecyclerView.ViewHolder{
+    class ViewHolder extends RecyclerView.ViewHolder {
         ImageView picture;
         TextView name;
         TextView time;
@@ -136,16 +128,17 @@ public class RecylerAdapter extends RecyclerView.Adapter<RecylerAdapter.ViewHold
         TextView collect;
         TextView state;
         RelativeLayout item;
-        Handler handler = new Handler(){
+        @SuppressLint("HandlerLeak")
+        Handler handler = new Handler() {
             @Override
             public void handleMessage(@NonNull Message msg) {
                 switch (msg.what) {
                     case 1:
-                        String s = (String)msg.obj;
-                        if(s.equals("true")){
+                        String s = (String) msg.obj;
+                        if (s.equals("true")) {
                             state.setText("已报名");
                             state.setBackgroundColor(context.getColor(R.color.colorAccent));
-                        }else{
+                        } else {
                             state.setText("");
                             state.setBackgroundColor(context.getColor(R.color.zong));
                         }
@@ -157,7 +150,7 @@ public class RecylerAdapter extends RecyclerView.Adapter<RecylerAdapter.ViewHold
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             picture = itemView.findViewById(R.id.iv_picture);
-            name=itemView.findViewById(R.id.tv_name);
+            name = itemView.findViewById(R.id.tv_name);
             time = itemView.findViewById(R.id.tv_time);
             address = itemView.findViewById(R.id.tv_address);
             money = itemView.findViewById(R.id.tv_money);

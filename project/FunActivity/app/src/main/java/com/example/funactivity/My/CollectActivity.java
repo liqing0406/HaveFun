@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -50,7 +51,7 @@ import okhttp3.Response;
 
 public class CollectActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
-    private List<UserCollectActivity> activities= new ArrayList<>();
+    private List<UserCollectActivity> activities = new ArrayList<>();
     private CollectAdapter collectAdapter;
     private ImageView back;
     private OkHttpClient client;
@@ -61,20 +62,18 @@ public class CollectActivity extends AppCompatActivity {
     private String id;
     private int calcelPosition;
 
-    private Handler handler = new Handler(){
+    @SuppressLint("HandlerLeak")
+    private Handler handler = new Handler() {
         @Override
         public void handleMessage(@NonNull Message msg) {
-            switch (msg.what) {
-                case 1:
-                    //在list列表移除
-                    activities.remove(calcelPosition);
-                    //在界面移除
-                    collectAdapter.notifyDataSetChanged();
-                    Toast toast = Toast.makeText(CollectActivity.this,
-                            "取消成功",Toast.LENGTH_LONG);
-                    toast.setGravity(Gravity.CENTER,0,0);
-                    toast.show();
-                    break;
+            if (msg.what == 1) {//在list列表移除
+                activities.remove(calcelPosition);
+                //在界面移除
+                collectAdapter.notifyDataSetChanged();
+                Toast toast = Toast.makeText(CollectActivity.this,
+                        "取消成功", Toast.LENGTH_LONG);
+                toast.setGravity(Gravity.CENTER, 0, 0);
+                toast.show();
             }
         }
     };
@@ -88,7 +87,7 @@ public class CollectActivity extends AppCompatActivity {
         initView();
 
         recyclerView = findViewById(R.id.recycle_view);
-        collectAdapter = new CollectAdapter(this, R.layout.signup_or_collect_layout, activities,id);
+        collectAdapter = new CollectAdapter(this, R.layout.signup_or_collect_layout, activities, id);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(linearLayoutManager);
@@ -98,11 +97,11 @@ public class CollectActivity extends AppCompatActivity {
         collectAdapter.setOn(new CollectAdapter.onItemClickListener() {
             @Override
             public void onItemClick(View view) {
-                int position=recyclerView.getChildAdapterPosition(view);
+                int position = recyclerView.getChildAdapterPosition(view);
                 Intent intent = new Intent();
                 intent.putExtra("id", id + "");//用户id
                 intent.putExtra("activityId", activities.get(position).getActivity().getActivityId() + "");//活动id
-                Log.e("id",activities.get(position).getId() + "");
+                Log.e("id", activities.get(position).getId() + "");
                 intent.setClass(view.getContext(), DetailActivity.class);
                 startActivity(intent);
             }
@@ -110,7 +109,7 @@ public class CollectActivity extends AppCompatActivity {
     }
 
     private void initView() {
-        back =  findViewById(R.id.iv_back);
+        back = findViewById(R.id.iv_back);
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -125,7 +124,7 @@ public class CollectActivity extends AppCompatActivity {
         srl = findViewById(R.id.srl);
         client = new OkHttpClient();
         srl.setEnableRefresh(false);
-        requestData(1,pageSize);
+        requestData(1, pageSize);
         srl.setOnLoadMoreListener(new OnLoadMoreListener() {
             @Override
             public void onLoadMore(@NonNull RefreshLayout refreshLayout) {
@@ -133,7 +132,7 @@ public class CollectActivity extends AppCompatActivity {
             }
         });
         recyclerView = findViewById(R.id.recycle_view);
-        collectAdapter = new CollectAdapter(this, R.layout.signup_or_collect_layout, activities,id);
+        collectAdapter = new CollectAdapter(this, R.layout.signup_or_collect_layout, activities, id);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(linearLayoutManager);
@@ -155,7 +154,7 @@ public class CollectActivity extends AppCompatActivity {
     //从服务端获取数据
     private void requestData(int pageNum, int pageSize) {
         FormBody.Builder builder = new FormBody.Builder();
-        builder.add("id",id+"");
+        builder.add("id", id + "");
         builder.add("pageNum", pageNum + "");
         builder.add("pageSize", pageSize + "");
         FormBody body = builder.build();
@@ -172,6 +171,7 @@ public class CollectActivity extends AppCompatActivity {
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
+                assert response.body() != null;
                 String actjson = response.body().string();
                 if ("empty".equals(actjson)) {
                     Looper.prepare();
@@ -191,19 +191,17 @@ public class CollectActivity extends AppCompatActivity {
     private CollectAdapter.OnMyItemClickListener onItemClickListener = new CollectAdapter.OnMyItemClickListener() {
         @Override
         public void onMyItemClick(View view, int position) {
-            switch (view.getId()) {
-                case R.id.btn_cancel:
-                    calcelPosition = position;
-                    //从数据库移除
-                    changeCollect(false,position);
-                    break;
+            if (view.getId() == R.id.btn_cancel) {
+                calcelPosition = position;
+                //从数据库移除
+                changeCollect(false, position);
             }
         }
     };
 
-    public void changeCollect(Boolean collect,int position) {
+    public void changeCollect(Boolean collect, int position) {
         FormBody.Builder builder = new FormBody.Builder();
-        builder.add("activityId", activities.get(position).getActivity().getActivityId()+"");
+        builder.add("activityId", activities.get(position).getActivity().getActivityId() + "");
         builder.add("id", id);
         builder.add("collect", collect + "");
         FormBody body = builder.build();
@@ -221,16 +219,17 @@ public class CollectActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 //返回修改收藏的结果（修改成功或修改失败）
+                assert response.body() != null;
                 boolean result = Boolean.parseBoolean(response.body().string());
-                if(result){
+                if (result) {
                     Message message = new Message();
                     message.what = 1;
                     handler.sendMessage(message);
-                }else {
+                } else {
                     Looper.prepare();
                     Toast toast = Toast.makeText(CollectActivity.this,
-                            "取消失败",Toast.LENGTH_SHORT);
-                    toast.setGravity(Gravity.CENTER,0,0);
+                            "取消失败", Toast.LENGTH_SHORT);
+                    toast.setGravity(Gravity.CENTER, 0, 0);
                     toast.show();
                     Looper.loop();
                 }
