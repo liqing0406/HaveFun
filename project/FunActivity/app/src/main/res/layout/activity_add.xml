@@ -1,19 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
+
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:background="@drawable/add_background"
         android:orientation="vertical">
+
         <RelativeLayout
             android:id="@+id/rl_head"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="8dp"
-            android:layout_marginTop="10dp">
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="10dp"
+            android:layout_weight="2">
 
             <ImageView
                 android:id="@+id/goBack"
@@ -28,18 +32,19 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/goBack"
-                android:layout_marginLeft="20dp"
+                android:layout_marginStart="20dp"
                 android:layout_marginTop="10dp"
                 android:text="发布活动"
-                android:textSize="30dp" />
+                android:textSize="30sp" />
 
             <ImageView
                 android:id="@+id/img"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
-                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
                 android:src="@drawable/cloud" />
         </RelativeLayout>
+
         <LinearLayout
             android:id="@+id/rl_add"
             android:layout_width="match_parent"
@@ -47,7 +52,9 @@
             android:layout_marginLeft="20dp"
             android:layout_marginTop="10dp"
             android:layout_marginRight="20dp"
+            android:layout_weight="1"
             android:orientation="horizontal">
+
             <TextView
                 android:id="@+id/tv_add"
                 style="@style/TextStyle"
@@ -58,18 +65,19 @@
 
             <ImageView
                 android:id="@+id/iv_add"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_marginLeft="10dp"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginStart="10dp"
                 android:layout_marginBottom="0dp"
                 android:src="@drawable/img" />
         </LinearLayout>
+
         <LinearLayout
             android:id="@+id/ll_title"
             style="@style/addStyle"
             android:layout_width="match_parent"
             android:layout_height="40dp"
-            android:layout_below="@+id/rl_add"
+            android:layout_weight="2"
             android:orientation="horizontal">
 
             <TextView
@@ -84,24 +92,27 @@
                 style="@style/EditTextStyle"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginLeft="10dp"
+                android:layout_marginStart="10dp"
                 android:background="@drawable/text_backgroung"
                 android:hint="主题"
+                android:paddingStart="10dp"
                 android:textColor="@android:color/black"
-                android:textColorHint="@color/gray"
-                android:paddingLeft="10dp" />
+                android:textColorHint="@color/gray" />
         </LinearLayout>
 
 
-        <LinearLayout
+        <RelativeLayout
             android:id="@+id/ll_type"
             style="@style/addStyle"
             android:layout_width="match_parent"
             android:layout_height="40dp"
             android:layout_below="@+id/ll_title"
+            android:layout_weight="1"
             android:orientation="horizontal">
 
             <TextView
+                android:layout_centerVertical="true"
+                android:id="@+id/activity_kind"
                 style="@style/TextStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
@@ -109,45 +120,50 @@
                 android:text="活动类型" />
 
             <Spinner
+                android:layout_centerVertical="true"
                 android:id="@+id/sp_type"
                 android:layout_width="100dp"
                 android:layout_height="40dp"
-                android:layout_marginLeft="10dp"
+                android:layout_marginStart="10dp"
+                android:layout_toEndOf="@id/activity_kind"
+                android:background="@drawable/shape_spinner_style"
                 android:textColor="@android:color/black"
-                android:textColorHint="@color/gray"
-                android:background="@drawable/shape_spinner_style" />
-        </LinearLayout>
+                android:textColorHint="@color/gray" />
+        </RelativeLayout>
 
         <RelativeLayout
             android:id="@+id/ll_start"
             style="@style/addStyle"
             android:layout_width="match_parent"
-            android:layout_height="80dp"
-            android:layout_below="@+id/ll_type"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:orientation="vertical">
 
             <TextView
                 android:id="@+id/tv1"
                 style="@style/TextStyle"
                 android:layout_width="wrap_content"
-                android:layout_height="40dp"
-                android:gravity="center"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
                 android:text="集合时间" />
 
             <Button
                 android:id="@+id/btn_gettime"
-                android:layout_toRightOf="@+id/tv1"
-                android:layout_marginHorizontal="20dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="获取时间"/>
+                android:layout_centerVertical="true"
+                android:layout_marginHorizontal="20dp"
+                android:layout_toEndOf="@+id/tv1"
+                android:text="获取时间" />
+
             <TextView
                 android:id="@+id/tv_time"
-                android:layout_below="@+id/tv1"
-                android:layout_marginTop="5dp"
-                android:layout_marginHorizontal="20dp"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/tv1"
+                android:layout_centerVertical="true"
+                android:layout_marginHorizontal="20dp"
+                android:layout_marginTop="5dp" />
 
         </RelativeLayout>
 
@@ -155,14 +171,14 @@
             android:id="@+id/ll_endTime"
             style="@style/addStyle"
             android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:layout_below="@+id/ll_start"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:orientation="horizontal">
 
             <TextView
                 style="@style/TextStyle"
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:gravity="center"
                 android:text="活动费用" />
 
@@ -170,15 +186,16 @@
                 android:id="@+id/price"
                 style="@style/EditTextStyle"
                 android:layout_width="100dp"
-                android:layout_height="match_parent"
-                android:layout_marginLeft="10dp"
+                android:layout_height="20dp"
+                android:layout_marginStart="10dp"
                 android:background="@drawable/text_backgroung"
                 android:gravity="center"
                 android:hint="0"
                 android:inputType="number"
-                android:paddingLeft="10dp"
+                android:paddingStart="10dp"
                 android:textColor="@android:color/black"
-                android:textColorHint="@color/gray" />
+                android:textColorHint="@color/gray"
+                tools:ignore="RtlSymmetry" />
 
             <TextView
                 style="@style/TextStyle"
@@ -192,8 +209,9 @@
             android:id="@+id/ll_num"
             style="@style/addStyle"
             android:layout_width="match_parent"
-            android:layout_height="40dp"
+            android:layout_height="wrap_content"
             android:layout_below="@+id/ll_endTime"
+            android:layout_weight="1"
             android:orientation="horizontal">
 
             <TextView
@@ -207,21 +225,21 @@
                 android:id="@+id/et_max"
                 style="@style/EditTextStyle"
                 android:layout_width="100dp"
-                android:layout_height="match_parent"
-                android:layout_marginLeft="10dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
                 android:background="@drawable/text_backgroung"
                 android:gravity="center"
                 android:hint="0"
                 android:inputType="number"
+                android:paddingStart="10dp"
                 android:textColor="@android:color/black"
-                android:textColorHint="@color/gray"
-                android:paddingLeft="10dp" />
+                android:textColorHint="@color/gray" />
 
             <TextView
                 style="@style/TextStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:layout_marginLeft="10dp"
+                android:layout_marginStart="10dp"
                 android:gravity="center"
                 android:text="人" />
         </LinearLayout>
@@ -230,8 +248,8 @@
             android:id="@+id/address"
             style="@style/addStyle"
             android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:layout_below="@id/ll_num"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:orientation="horizontal">
 
             <TextView
@@ -245,23 +263,27 @@
                 android:id="@+id/btn_city"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="获取地址"
-                android:layout_marginLeft="30dp"
-                android:padding="5dp"/>
+                android:layout_marginStart="30dp"
+                android:padding="5dp"
+                android:text="获取地址" />
 
         </LinearLayout>
+
         <TextView
             android:id="@+id/iscity"
+            android:hint="请选择地址"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
             android:layout_marginTop="5dp"
-            android:layout_marginLeft="20dp" />
+            android:layout_weight="1" />
+
         <LinearLayout
             android:id="@+id/ll_detail"
             style="@style/addStyle"
             android:layout_width="match_parent"
             android:layout_height="40dp"
-            android:layout_below="@+id/address"
+            android:layout_weight="2"
             android:orientation="horizontal">
 
             <TextView
@@ -269,55 +291,59 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:gravity="center"
+                android:text="详细地址"
                 android:textColor="@android:color/black"
-                android:textColorHint="@color/gray"
-                android:text="详细地址" />
+                android:textColorHint="@color/gray" />
 
             <EditText
                 android:id="@+id/detail"
                 style="@style/EditTextStyle"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginLeft="10dp"
+                android:layout_marginStart="10dp"
                 android:background="@drawable/text_backgroung"
                 android:hint="详细地址"
+                android:paddingStart="10dp"
                 android:textColor="@android:color/black"
-                android:textColorHint="@color/gray"
-                android:paddingLeft="10dp" />
+                android:textColorHint="@color/gray" />
         </LinearLayout>
+
         <LinearLayout
             android:id="@+id/ll_contact"
             style="@style/addStyle"
             android:layout_width="match_parent"
             android:layout_height="40dp"
+            android:layout_weight="2"
             android:orientation="horizontal">
+
             <TextView
                 style="@style/TextStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:gravity="center"
+                android:text="联系方式"
                 android:textColor="@android:color/black"
-                android:textColorHint="@color/gray"
-                android:text="联系方式" />
+                android:textColorHint="@color/gray" />
 
             <EditText
                 android:id="@+id/contact"
                 style="@style/EditTextStyle"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginLeft="10dp"
+                android:layout_marginStart="10dp"
                 android:background="@drawable/text_backgroung"
                 android:hint="联系方式"
+                android:paddingStart="10dp"
                 android:textColor="@android:color/black"
-                android:textColorHint="@color/gray"
-                android:paddingLeft="10dp" />
+                android:textColorHint="@color/gray" />
         </LinearLayout>
+
         <LinearLayout
             android:id="@+id/ll_introduce"
             style="@style/addStyle"
             android:layout_width="match_parent"
             android:layout_height="150dp"
-            android:layout_below="@+id/ll_detail"
+            android:layout_weight="2"
             android:orientation="vertical">
 
             <TextView
@@ -332,25 +358,27 @@
                 style="@style/EditTextStyle"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginLeft="10dp"
+                android:layout_marginStart="10dp"
                 android:layout_marginTop="5dp"
                 android:background="@drawable/text_backgroung"
                 android:gravity="top"
                 android:hint="目的地介绍"
                 android:maxLines="3"
                 android:minLines="1"
-                android:paddingLeft="10dp"
+                android:paddingStart="10dp"
+                android:scrollbars="vertical"
                 android:textColor="@android:color/black"
-                android:textColorHint="@color/gray"
-                android:scrollbars="vertical" />
+                android:textColorHint="@color/gray" />
         </LinearLayout>
+
         <LinearLayout
             android:id="@+id/ll_remark"
             style="@style/addStyle"
             android:layout_width="match_parent"
             android:layout_height="150dp"
-            android:layout_below="@id/ll_introduce"
+            android:layout_weight="2"
             android:orientation="vertical">
+
             <TextView
                 style="@style/TextStyle"
                 android:layout_width="wrap_content"
@@ -363,26 +391,28 @@
                 style="@style/EditTextStyle"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginLeft="10dp"
+                android:layout_marginStart="10dp"
                 android:layout_marginTop="5dp"
                 android:background="@drawable/text_backgroung"
                 android:gravity="top"
                 android:hint="备注信息"
                 android:maxLines="3"
                 android:minLines="1"
-                android:paddingLeft="10dp"
+                android:paddingStart="10dp"
+                android:scrollbars="vertical"
                 android:textColor="@android:color/black"
                 android:textColorHint="@color/gray"
-                android:scrollbars="vertical" />
+                tools:ignore="RtlSymmetry" />
         </LinearLayout>
+
         <Button
             android:id="@+id/bt_submit"
             style="@style/BtnStyle"
+            android:layout_height="30dp"
             android:layout_gravity="center"
-            android:layout_below="@id/ll_remark"
-            android:layout_centerHorizontal="true"
             android:layout_marginTop="20dp"
             android:layout_marginBottom="10dp"
+            android:layout_weight="0.5"
             android:background="@drawable/btn_background"
             android:text="提交" />
     </LinearLayout>
