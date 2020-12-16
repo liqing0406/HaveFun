@@ -1,12 +1,16 @@
 package com.example.funactivity.news;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -17,15 +21,26 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
+import com.alibaba.fastjson.JSON;
+import com.example.funactivity.DetailActivity;
 import com.example.funactivity.R;
+import com.example.funactivity.entity.User.User;
 import com.example.funactivity.util.Constant;
 import com.hyphenate.chat.EMMessage;
 import com.hyphenate.easeui.EaseConstant;
 import com.hyphenate.easeui.ui.EaseChatFragment;
 import com.hyphenate.easeui.widget.chatrow.EaseCustomChatRowProvider;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.FormBody;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
 public class ChatActivity extends AppCompatActivity {
 
@@ -49,6 +64,7 @@ public class ChatActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat);
+
         initPermission(permissions);
         initData();
     }
@@ -93,14 +109,43 @@ public class ChatActivity extends AppCompatActivity {
         mEaseChatFragment = new EaseChatFragment();
         mMHxid = getIntent().getStringExtra(EaseConstant.EXTRA_USER_ID);
         nickname=getIntent().getStringExtra(EaseConstant.EXTRA_CHAT_NAME);
+        Log.e("nicknam3131e",nickname);
         head=getIntent().getStringExtra(EaseConstant.EXTRA_USER_HEAD);
         //获取聊天类型
         mChatType = getIntent().getExtras().getInt(EaseConstant.EXTRA_CHAT_TYPE);
+
         mEaseChatFragment.setArguments(getIntent().getExtras());
+
         //替换fragment
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.fl_chat, mEaseChatFragment).commit();
         //注册一个发送广播的管理者
         mManager = LocalBroadcastManager.getInstance(this);
     }
+//    public void Connection() {
+//        OkHttpClient client=new OkHttpClient();
+//        FormBody.Builder builder = new FormBody.Builder();
+//        builder.add("phoneNum", mMHxid);
+//        FormBody body = builder.build();
+//        Request request = new Request.Builder()
+//                .post(body)
+//                .url(Constant.BASE_URL + "user/getUserInfo")
+//                .build();
+//        Call call = client.newCall(request);
+//        call.enqueue(new Callback() {
+//            @Override
+//            public void onFailure(Call call, IOException e) {
+//                e.printStackTrace();
+//            }
+//
+//            @Override
+//            public void onResponse(Call call, Response response) throws IOException {
+//                //返回报名结果
+//                String result=response.body().string();
+//                User user=JSON.parseObject(result,User.class);
+//                nickname=user.getUserName();
+//                head=user.getHeadPortrait();
+//            }
+//        });
+//    }
 }

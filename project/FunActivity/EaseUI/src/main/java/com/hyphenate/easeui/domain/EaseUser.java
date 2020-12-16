@@ -27,9 +27,8 @@ public class EaseUser extends EMContact {
 	 */
 	protected String avatar;
 	
-	public EaseUser(String username,String nickname){
+	public EaseUser(String username){
 	    this.username = username;
-	    this.nick=nickname;
 	}
 
 	public String getInitialLetter() {
@@ -46,7 +45,7 @@ public class EaseUser extends EMContact {
 
 	public String getAvatar() {
         return avatar;
-    }//头像
+    }
 
     public void setAvatar(String avatar) {
         this.avatar = avatar;
