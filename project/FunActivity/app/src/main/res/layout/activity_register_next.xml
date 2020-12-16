@@ -23,7 +23,7 @@
     </RelativeLayout>
     <RelativeLayout
         android:layout_marginTop="100dp"
-        android:background="@drawable/min_style"
+        android:background="@drawable/login_backgrond"
         android:padding="30dp"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -48,7 +48,7 @@
         <Button
             android:textSize="25dp"
             android:id="@+id/btn_login"
-            android:background="@color/background"
+            android:background="@drawable/btn_selector"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="一键登录"
