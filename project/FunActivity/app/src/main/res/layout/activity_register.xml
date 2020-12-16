@@ -8,6 +8,7 @@
         android:paddingLeft="30dp"
         android:orientation="vertical">
         <ImageView
+            android:textStyle="bold"
             android:id="@+id/iv_back"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -19,6 +20,7 @@
             android:layout_height="140dp"
             android:src="@drawable/cloud"/>
         <TextView
+            android:textStyle="bold"
             android:layout_marginTop="110dp"
             android:textSize="50dp"
             android:textColor="@color/pink"
@@ -29,11 +31,12 @@
     </RelativeLayout>
     <RelativeLayout
         android:layout_marginTop="30dp"
-        android:background="@drawable/min_style"
+        android:background="@drawable/login_backgrond"
         android:padding="30dp"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
         <TextView
+            android:textStyle="bold"
             android:background="@null"
             android:id="@+id/text1"
             android:layout_width="wrap_content"
@@ -42,6 +45,7 @@
             android:textColor="@android:color/black"
             android:textSize="20dp"/>
         <EditText
+            android:textStyle="bold"
             android:id="@+id/et_num"
             android:textColor="@android:color/black"
             android:layout_marginTop="60dp"
@@ -57,6 +61,7 @@
             android:layout_height="40dp"
             android:layout_marginTop="120dp">
             <EditText
+                android:textStyle="bold"
                 android:id="@+id/et_code"
                 android:textColor="@android:color/black"
                 android:textColorHint="@android:color/darker_gray"
@@ -66,6 +71,7 @@
                 android:inputType="numberPassword"
                 android:hint="请输入验证码"/>
             <Button
+                android:textStyle="bold"
                 android:id="@+id/btn_getnum"
                 android:background="@color/bgWhite"
                 android:textColor="@color/smssdk_common_black"
@@ -78,8 +84,9 @@
         </RelativeLayout>
         <Button
             android:textSize="25dp"
+            android:textStyle="bold"
             android:id="@+id/btn_submit"
-            android:background="@color/noaction"
+            android:background="@drawable/btn_selector"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="确定"

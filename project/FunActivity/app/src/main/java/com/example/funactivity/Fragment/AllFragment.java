@@ -75,14 +75,15 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
-public class AllFragment extends Fragment implements View.OnClickListener{
+public class AllFragment extends Fragment implements View.OnClickListener {
     private View view;
     private TextView all;//所有活动标题
     private ImageView weather;//天气
     private TextView city;//定位
     private RecyclerView recyclerView;
     private RecylerAdapter adapter;
-    private  List<Activity> activities=new ArrayList<>();;
+    private List<Activity> activities = new ArrayList<>();
+    ;
     private SmartRefreshLayout srl;//刷新
     private int pageNum = 1;//当前页码
     private int pageSize = 4;//每页数据条数
@@ -94,12 +95,12 @@ public class AllFragment extends Fragment implements View.OnClickListener{
     private RelativeLayout rl_type;
     private RelativeLayout rl_price;
     private RelativeLayout rl_time;
-    private ImageView  image1;
+    private ImageView image1;
     private ImageView image2;
     private ImageView image3;
     private PopupWindow popupWindow;
     //筛选的内容
-    private  String selectedType;
+    private String selectedType;
     private int selectedTime;
     private int selectedPrice;
     private String selectedCity;
@@ -107,35 +108,35 @@ public class AllFragment extends Fragment implements View.OnClickListener{
     private TextView tv_type;
     private TextView tv_time;
     private TextView tv_price;
-    private Map<String,Integer> times=new HashMap<>();
-    private Map<String,Integer> price=new HashMap<>();
+    private Map<String, Integer> times = new HashMap<>();
+    private Map<String, Integer> price = new HashMap<>();
     private String cityStr;//市+区
 
 
-    private Handler handler = new Handler(){
+    private Handler handler = new Handler() {
         @Override
         public void handleMessage(@NonNull Message msg) {
             super.handleMessage(msg);
-            switch (msg.what){
+            switch (msg.what) {
                 case 1:
                     String str = (String) msg.obj;
                     String[] all = str.split("~");
-                    int wea = new WeatherUtil().getImg(all[0],all[1]);
+                    int wea = new WeatherUtil().getImg(all[0], all[1]);
                     weather.setImageResource(wea);
                     break;
                 case 2://表示搜索条件有数据
                     activities.clear();
-                    List<Activity> activity=(List<Activity>)msg.obj;
+                    List<Activity> activity = (List<Activity>) msg.obj;
                     activities.addAll(activity);
-                    Log.e("wxy","表示搜索条件有数据");
+                    Log.e("wxy", "表示搜索条件有数据");
                     //刷新adapter
                     adapter.notifyDataSetChanged();
 
                     break;
                 case 3://表示刷新有数据
-                    List<Activity> activity1=(List<Activity>)msg.obj;
+                    List<Activity> activity1 = (List<Activity>) msg.obj;
                     activities.addAll(activity1);
-                    Log.e("wxy","表示刷新有数据");
+                    Log.e("wxy", "表示刷新有数据");
                     //刷新adapter
                     adapter.notifyDataSetChanged();
 
@@ -144,7 +145,7 @@ public class AllFragment extends Fragment implements View.OnClickListener{
                     break;
                 case 4://搜索条件没有数据
                     activities.clear();
-                    Log.e("wxy","搜索条件没有数据");
+                    Log.e("wxy", "搜索条件没有数据");
                     //刷新adapter
                     adapter.notifyDataSetChanged();
                     break;
@@ -152,10 +153,11 @@ public class AllFragment extends Fragment implements View.OnClickListener{
             }
         }
     };
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        if (view == null){
+        if (view == null) {
             view = inflater.inflate(R.layout.fragment_all,
                     container,
                     false);
@@ -171,53 +173,53 @@ public class AllFragment extends Fragment implements View.OnClickListener{
         return view;
     }
 
-    public void initListOnClickListener(){
+    public void initListOnClickListener() {
         rl_time.setOnClickListener(this);
         rl_price.setOnClickListener(this);
         rl_type.setOnClickListener(this);
     }
 
-    private void initMap(){
-        times.put("近三天",3);
-        times.put("近一个月",30);
-        times.put("近一周",7);
-        times.put("任意",-1);
-        price.put("50以内",50);
-        price.put("100以内",100);
-        price.put("免费",0);
-        price.put("任意",-1);
+    private void initMap() {
+        times.put("近三天", 3);
+        times.put("近一个月", 30);
+        times.put("近一周", 7);
+        times.put("任意", -1);
+        price.put("50以内", 50);
+        price.put("100以内", 100);
+        price.put("免费", 0);
+        price.put("任意", -1);
 
-  }
+    }
 
     private void initViews() {
         //下拉框
         rl_type = view.findViewById(R.id.rl_type);
         rl_price = view.findViewById(R.id.rl_price);
-        rl_time =view.findViewById(R.id.rl_time);
-        image1=view.findViewById(R.id.iv_img1);
-        image2=view.findViewById(R.id.iv_img2);
-        image3=view.findViewById(R.id.iv_img3);
-        tv_price=view.findViewById(R.id.price);
-        tv_time=view.findViewById(R.id.tv_time);
-        tv_type=view.findViewById(R.id.type);
+        rl_time = view.findViewById(R.id.rl_time);
+        image1 = view.findViewById(R.id.iv_img1);
+        image2 = view.findViewById(R.id.iv_img2);
+        image3 = view.findViewById(R.id.iv_img3);
+        tv_price = view.findViewById(R.id.price);
+        tv_time = view.findViewById(R.id.tv_time);
+        tv_type = view.findViewById(R.id.type);
         all = view.findViewById(R.id.tv_all);
         weather = view.findViewById(R.id.iv_weather);
         city = view.findViewById(R.id.tv_city);
         city.setText(cityStr);
         String[] str = cityStr.split(" ");
         sendRequestWithHttpClient(cityStr);
-        selectedType ="empty";
-        selectedTime=-1;
-        selectedPrice=-1;
-        selectedCity=str[0];
-        selectedCountry=str[1];
+        selectedType = "empty";
+        selectedTime = -1;
+        selectedPrice = -1;
+        selectedCity = str[0];
+        selectedCountry = str[1];
 
         Typeface typeface = Typeface.createFromAsset(getContext().getAssets(), "FZGongYHJW.TTF");
         all.setTypeface(typeface);
         city.setTypeface(typeface);
         client = new OkHttpClient();
         getRecyclerView();
-        city.setOnClickListener(v ->{
+        city.setOnClickListener(v -> {
             JDCityPicker cityPicker = new JDCityPicker();
             JDCityConfig jdCityConfig = new JDCityConfig.Builder().build();
             jdCityConfig.setShowType(JDCityConfig.ShowType.PRO_CITY_DIS);
@@ -226,13 +228,14 @@ public class AllFragment extends Fragment implements View.OnClickListener{
             cityPicker.setOnCityItemClickListener(new OnCityItemClickListener() {
                 @Override
                 public void onSelected(ProvinceBean province, CityBean c, DistrictBean district) {
-                    city.setText(c.getName()+" "+district.getName());//修改城市
-                    sendRequestWithHttpClient(c.getName()+" "+district.getName());
-                    selectedCity=c.getName();
-                    selectedCountry=district.getName();
-                    pageNum=1;
-                    requestData(selectedType,0,selectedPrice,selectedTime,selectedCity,selectedCountry,pageNum, pageSize,0);
+                    city.setText(c.getName() + " " + district.getName());//修改城市
+                    sendRequestWithHttpClient(c.getName() + " " + district.getName());
+                    selectedCity = c.getName();
+                    selectedCountry = district.getName();
+                    pageNum = 1;
+                    requestData(selectedType, 0, selectedPrice, selectedTime, selectedCity, selectedCountry, pageNum, pageSize, 0);
                 }
+
                 @Override
                 public void onCancel() {
                 }
@@ -241,44 +244,43 @@ public class AllFragment extends Fragment implements View.OnClickListener{
         });
     }
 
-    public  void getRecyclerView(){
+    public void getRecyclerView() {
         recyclerView = view.findViewById(R.id.recycle_view);
         LinearLayoutManager manager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(manager);
         srl = view.findViewById(R.id.srl);
         srl.setEnableRefresh(false);//禁用下拉刷新
-        adapter = new RecylerAdapter(getContext(), R.layout.item_layout, activities,user.getId());
+        adapter = new RecylerAdapter(getContext(), R.layout.item_layout, activities, user.getId());
         recyclerView.setAdapter(adapter);
         if (pageNum == 1) {
-            requestData(selectedType,0,selectedPrice,selectedTime,selectedCity,selectedCountry,pageNum, pageSize,0);
+            requestData(selectedType, 0, selectedPrice, selectedTime, selectedCity, selectedCountry, pageNum, pageSize, 0);
         }
 
         adapter.setItemClickListener((view, position) -> {
             Intent intent = new Intent();
-            intent.putExtra("collect",true);//收藏是否可修改
+            intent.putExtra("collect", true);//收藏是否可修改
             intent.putExtra("id", user.getId() + "");//用户id
             intent.putExtra("activityId", activities.get(position).getActivityId() + "");//活动id
             intent.setClass(view.getContext(), DetailActivity.class);
             startActivity(intent);
         });
         //处理下拉加载更多
-        srl.setOnLoadMoreListener(refreshLayout -> requestData(selectedType,0,selectedPrice,selectedTime,selectedCity,selectedCountry,pageNum, pageSize,1));
+        srl.setOnLoadMoreListener(refreshLayout -> requestData(selectedType, 0, selectedPrice, selectedTime, selectedCity, selectedCountry, pageNum, pageSize, 1));
     }
 
     //i表示是否刷新，1表示刷新
-    private void requestData(String typeName,int lowCost,int highCost,int days,String city,String county,int pageNum, int pageSize,int i) {
-        if(typeName.equals("任意")){
-            typeName="empty";
+    private void requestData(String typeName, int lowCost, int highCost, int days, String city, String county, int pageNum, int pageSize, int i) {
+        if (typeName.equals("任意")) {
+            typeName = "empty";
         }
-        Log.e("wxy","typeName="+typeName+",city="+city+",county="+county+",pageNum="+pageNum+",i="+i);
-
+        Log.e("wxy", "typeName=" + typeName + ",city=" + city + ",county=" + county + ",pageNum=" + pageNum + ",i=" + i);
         FormBody.Builder builder = new FormBody.Builder();
-        builder.add("typeName",typeName);
-        builder.add("lowCost", 0+"");
-        builder.add("highCost",highCost+"");
-        builder.add("howManyDays",days+"");
-        builder.add("city",city);
-        builder.add("county",county);
+        builder.add("typeName", typeName);
+        builder.add("lowCost", 0 + "");
+        builder.add("highCost", highCost + "");
+        builder.add("howManyDays", days + "");
+        builder.add("city", city);
+        builder.add("county", county);
         builder.add("pageNum", pageNum + "");
         builder.add("pageSize", pageSize + "");
         FormBody body = builder.build();
@@ -297,35 +299,37 @@ public class AllFragment extends Fragment implements View.OnClickListener{
             public void onResponse(Call call, Response response) throws IOException {
                 //获取活动列表数据
                 String actjson = response.body().string();
-                if ("empty".equals(actjson)&&i==1) {//表述刷新没有更多数据
+                if ("empty".equals(actjson) && i == 1) {//表述刷新没有更多数据
                     Looper.prepare();
                     Toast.makeText(AllFragment.this.getContext(), "没有更多内容了！", Toast.LENGTH_SHORT).show();
                     srl.finishLoadMoreWithNoMoreData();
+                    srl.setNoMoreData(false);
                     Looper.loop();
                 }
-                if(!"empty".equals(actjson)&&i==1) {//表示刷新有数据
+                if (!"empty".equals(actjson) && i == 1) {//表示刷新有数据
                     List<Activity> activitiesList = JSON.parseArray(actjson, Activity.class);
                     AllFragment.this.pageNum++;//设置页码＋1
                     Message message = new Message();
                     message.what = 3;
-                    message.obj=activitiesList;
+                    message.obj = activitiesList;
                     handler.sendMessage(message);
                 }
-                if(!"empty".equals(actjson)&&i==0){//表示搜索条件有数据
+                if (!"empty".equals(actjson) && i == 0) {//表示搜索条件有数据
                     List<Activity> activitiesList = JSON.parseArray(actjson, Activity.class);
                     AllFragment.this.pageNum++;//设置页码＋1
                     Message message = new Message();
                     message.what = 2;
-                    message.obj=activitiesList;
+                    message.obj = activitiesList;
                     handler.sendMessage(message);
                 }
-                if("empty".equals(actjson)&&i==0){//表示搜索条件没有数据
+                if ("empty".equals(actjson) && i == 0) {//表示搜索条件没有数据
                     Message message = new Message();
-                    message.what=4;
+                    message.what = 4;
                     handler.sendMessage(message);
                     Looper.prepare();
                     Toast.makeText(AllFragment.this.getContext(), "没有活动！", Toast.LENGTH_SHORT).show();
                     srl.finishLoadMoreWithNoMoreData();
+                    srl.setNoMoreData(false);
                     Looper.loop();
 
                 }
@@ -335,43 +339,40 @@ public class AllFragment extends Fragment implements View.OnClickListener{
 
     private void sendRequestWithHttpClient(final String citystr) {
         new Thread(
-                new Runnable() {
-                    @Override
-                    public void run() {
-                        String[] str = citystr.split(" ");
-                        String city = str[0];//获取城市
-                        HttpURLConnection connection = null;
-                        try {
-                            URL url = new URL("http://gwgp-h4bqkmub7dg.n.bdcloudapi.com/day");
-                            connection = (HttpURLConnection) url.openConnection();
-                            connection.setRequestMethod("GET");
-                            connection.setRequestProperty("city",city);
-                            connection.setRequestProperty("X-Bce-Signature","AppCode/90ab1527c33b4c738449293fc5034f58");
-                            connection.setConnectTimeout(5000);
-                            connection.setReadTimeout(5000);
-                            InputStream in = connection.getInputStream();
-                            BufferedReader reader = new BufferedReader(new InputStreamReader(in));
-                            StringBuilder response = new StringBuilder();
-                            String line;
-                            while ((line = reader.readLine())!=null){
-                                response.append(line);
-                            }
-                            JSONObject jsonObject = new JSONObject(response.toString());
-                            String updateTime = jsonObject.optString("update_time");
-                            String weather = jsonObject.optString("wea");
-                            Message message = new Message();
-                            message.what = 1;
-                            message.obj = updateTime+"~"+weather;
-                            handler.sendMessage(message);
-                        } catch (MalformedURLException e) {
-                            e.printStackTrace();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        } catch (JSONException e) {
-                            e.printStackTrace();
+                () -> {
+                    String[] str = citystr.split(" ");
+                    String city = str[0];//获取城市
+                    HttpURLConnection connection = null;
+                    try {
+                        URL url = new URL("http://gwgp-h4bqkmub7dg.n.bdcloudapi.com/day");
+                        connection = (HttpURLConnection) url.openConnection();
+                        connection.setRequestMethod("GET");
+                        connection.setRequestProperty("city", city);
+                        connection.setRequestProperty("X-Bce-Signature", "AppCode/90ab1527c33b4c738449293fc5034f58");
+                        connection.setConnectTimeout(5000);
+                        connection.setReadTimeout(5000);
+                        InputStream in = connection.getInputStream();
+                        BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+                        StringBuilder response = new StringBuilder();
+                        String line;
+                        while ((line = reader.readLine()) != null) {
+                            response.append(line);
                         }
-
+                        JSONObject jsonObject = new JSONObject(response.toString());
+                        String updateTime = jsonObject.optString("update_time");
+                        String weather = jsonObject.optString("wea");
+                        Message message = new Message();
+                        message.what = 1;
+                        message.obj = updateTime + "~" + weather;
+                        handler.sendMessage(message);
+                    } catch (MalformedURLException e) {
+                        e.printStackTrace();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    } catch (JSONException e) {
+                        e.printStackTrace();
                     }
+
                 }
         ).start();
     }
@@ -383,31 +384,31 @@ public class AllFragment extends Fragment implements View.OnClickListener{
                 image3.setBackgroundResource(R.drawable.up);
                 image1.setBackgroundResource(R.drawable.down);
                 image2.setBackgroundResource(R.drawable.down);
-                String[] left=getResources().getStringArray(R.array.time);
-                View view = initView("time",left,1);
-                popupWindow(view,rl_time);
+                String[] left = getResources().getStringArray(R.array.time);
+                View view = initView("time", left, 1);
+                popupWindow(view, rl_time);
                 break;
             case R.id.rl_type:
                 image1.setBackgroundResource(R.drawable.up);
                 image3.setBackgroundResource(R.drawable.down);
                 image2.setBackgroundResource(R.drawable.down);
-                String[] left1=getResources().getStringArray(R.array.types);
-                View view1 = initView("type",left1,2);
-                popupWindow(view1,rl_type);
+                String[] left1 = getResources().getStringArray(R.array.types);
+                View view1 = initView("type", left1, 2);
+                popupWindow(view1, rl_type);
                 break;
             case R.id.rl_price:
                 image2.setBackgroundResource(R.drawable.up);
                 image1.setBackgroundResource(R.drawable.down);
                 image3.setBackgroundResource(R.drawable.down);
-                String[] left2=getResources().getStringArray(R.array.price);
-                View view2 = initView("price",left2,3);
-                popupWindow(view2,rl_price);
+                String[] left2 = getResources().getStringArray(R.array.price);
+                View view2 = initView("price", left2, 3);
+                popupWindow(view2, rl_price);
                 break;
         }
     }
 
     //创建popupWindow
-    public void popupWindow(View v,View parent) {
+    public void popupWindow(View v, View parent) {
         //创建以及初始化
         popupWindow = new PopupWindow(getContext());
         popupWindow.setWidth(ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -420,7 +421,7 @@ public class AllFragment extends Fragment implements View.OnClickListener{
         popupWindow.setOnDismissListener(new PopupOnDismissListener());
     }
 
-    class PopupOnDismissListener implements PopupWindow.OnDismissListener{
+    class PopupOnDismissListener implements PopupWindow.OnDismissListener {
 
         @Override
         public void onDismiss() {
@@ -430,7 +431,7 @@ public class AllFragment extends Fragment implements View.OnClickListener{
     public View initView(String choice, String[] data, int child) {
         //初始化布局
 //        LayoutInflater layoutInflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        LayoutInflater layoutInflater= getActivity().getLayoutInflater();
+        LayoutInflater layoutInflater = getActivity().getLayoutInflater();
         popView = layoutInflater.inflate(R.layout.pop_view, null);
         final ListView left = popView.findViewById(R.id.lv_left);
         //左边的分类，包括时间：近一周、近三天、近一个月
@@ -439,83 +440,77 @@ public class AllFragment extends Fragment implements View.OnClickListener{
         ArrayAdapter<String> array = new ArrayAdapter<>(getContext(),
                 android.R.layout.simple_list_item_1, data);
         left.setAdapter(array);
-        left.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                for (int i=0;i<parent.getCount();i++){
-                    View v=parent.getChildAt(i);
-                    if (position==i){
-                        v.setBackgroundResource(R.color.white);
-                    }else{
-                        v.setBackgroundResource(R.drawable.left_list_background);
-                    }
+        left.setOnItemClickListener((parent, view, position, id) -> {
+            for (int i = 0; i < parent.getCount(); i++) {
+                View v = parent.getChildAt(i);
+                if (position == i) {
+                    v.setBackgroundResource(R.color.white);
+                } else {
+                    v.setBackgroundResource(R.drawable.left_list_background);
                 }
-                String parentName = (String) parent.getItemAtPosition(position);
-                //如果父标签不为空 初始化子标签
-                if (child==2) {
-                    //设置右边的ListView
-                    initRightView(parentName);
-                }else  if (child==1){
-                    selectedTime=times.get(parentName);
-                    pageNum=1;
-                    tv_time.setText(parentName);
-                    requestData(selectedType,0,selectedPrice,selectedTime,selectedCity,selectedCountry,pageNum, pageSize,0);
-                    popupWindow.dismiss();
-                    image3.setBackgroundResource(R.drawable.down);
-                }else if (child==3){
-                    selectedPrice=price.get(parentName);
-                    tv_price.setText(parentName);
-                    pageNum=1;
-                    requestData(selectedType,0,selectedPrice,selectedTime,selectedCity,selectedCountry,pageNum, pageSize,0);
-                    popupWindow.dismiss();
-                    image2.setBackgroundResource(R.drawable.down);
-                }
+            }
+            String parentName = (String) parent.getItemAtPosition(position);
+            //如果父标签不为空 初始化子标签
+            if (child == 2) {
+                //设置右边的ListView
+                initRightView(parentName);
+            } else if (child == 1) {
+                selectedTime = times.get(parentName);
+                pageNum = 1;
+                tv_time.setText(parentName);
+                requestData(selectedType, 0, selectedPrice, selectedTime, selectedCity, selectedCountry, pageNum, pageSize, 0);
+                popupWindow.dismiss();
+                image3.setBackgroundResource(R.drawable.down);
+            } else if (child == 3) {
+                selectedPrice = price.get(parentName);
+                tv_price.setText(parentName);
+                pageNum = 1;
+                requestData(selectedType, 0, selectedPrice, selectedTime, selectedCity, selectedCountry, pageNum, pageSize, 0);
+                popupWindow.dismiss();
+                image2.setBackgroundResource(R.drawable.down);
             }
         });
         return popView;
     }
 
-    public void initRightView(String parent){
-        ListView right=popView.findViewById(R.id.lv_right);
-        String[] data=null;
-        switch (parent){
+    public void initRightView(String parent) {
+        ListView right = popView.findViewById(R.id.lv_right);
+        String[] data = null;
+        switch (parent) {
             case "骑行运动":
-                data=getResources().getStringArray(R.array.ride);
+                data = getResources().getStringArray(R.array.ride);
                 break;
             case "山地运动":
-                data=getResources().getStringArray(R.array.mountain);
+                data = getResources().getStringArray(R.array.mountain);
                 break;
             case "水面运动":
-                data=getResources().getStringArray(R.array.swim);
+                data = getResources().getStringArray(R.array.swim);
                 break;
-            case  "跑步运动":
-                data=getResources().getStringArray(R.array.run);
+            case "跑步运动":
+                data = getResources().getStringArray(R.array.run);
                 break;
             case "球类运动":
-                data=getResources().getStringArray(R.array.ball);
+                data = getResources().getStringArray(R.array.ball);
                 break;
-            case  "任意":
-                data=getResources().getStringArray(R.array.other);
+            case "任意":
+                data = getResources().getStringArray(R.array.other);
                 break;
         }
         ArrayAdapter<String> array = new ArrayAdapter<>(getContext(),
                 android.R.layout.simple_list_item_1, data);
         right.setAdapter(array);
-        right.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                pageNum=1;
-                selectedType=parent.getItemAtPosition(position).toString();
-                tv_type.setText(selectedType);
-                if (selectedType.equals("任意")){
-                    requestData("empty", 0, selectedPrice, selectedTime, selectedCity, selectedCountry, pageNum, pageSize, 0);
-                }else {
-                    requestData(selectedType, 0, selectedPrice, selectedTime, selectedCity, selectedCountry, pageNum, pageSize, 0);
-                }
-                getRecyclerView();
-                popupWindow.dismiss();
-                image1.setBackgroundResource(R.drawable.down);
+        right.setOnItemClickListener((parent1, view, position, id) -> {
+            pageNum = 1;
+            selectedType = parent1.getItemAtPosition(position).toString();
+            tv_type.setText(selectedType);
+            if (selectedType.equals("任意")) {
+                requestData("empty", 0, selectedPrice, selectedTime, selectedCity, selectedCountry, pageNum, pageSize, 0);
+            } else {
+                requestData(selectedType, 0, selectedPrice, selectedTime, selectedCity, selectedCountry, pageNum, pageSize, 0);
             }
+            getRecyclerView();
+            popupWindow.dismiss();
+            image1.setBackgroundResource(R.drawable.down);
         });
     }
 }
