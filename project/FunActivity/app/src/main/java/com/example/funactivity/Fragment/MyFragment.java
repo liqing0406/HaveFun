@@ -277,7 +277,6 @@ public class MyFragment extends Fragment {
                 dismiss.setOnClickListener(v -> {
                     popupWindow.dismiss();
                 });
-
                 //显示popupWindow
                 View rootView = LayoutInflater.from(getContext()).inflate(R.layout.fragment_my, null);
                 popupWindow.showAtLocation(rootView, Gravity.BOTTOM, 0, 0);
