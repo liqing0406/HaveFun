@@ -21,12 +21,9 @@ import android.widget.Toast;
 
 import com.alibaba.fastjson.JSON;
 import com.example.funactivity.DetailActivity;
-import com.example.funactivity.Fragment.MyFragment;
 import com.example.funactivity.R;
 import com.example.funactivity.adapter.CollectAdapter;
 import com.example.funactivity.entity.User.UserCollectActivity;
-import com.example.funactivity.entity.User.UserPublishActivity;
-import com.example.funactivity.entity.activity.Activity;
 import com.example.funactivity.util.Constant;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
@@ -39,8 +36,6 @@ import org.greenrobot.eventbus.ThreadMode;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import okhttp3.Call;
 import okhttp3.Callback;

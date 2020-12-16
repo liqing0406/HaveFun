@@ -1,6 +1,7 @@
 package com.hyphenate.easeui.utils;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Handler;
 import android.util.Log;
 import android.view.View;
@@ -16,6 +17,7 @@ import com.hyphenate.easeui.EaseUI;
 import com.hyphenate.easeui.EaseUI.EaseUserProfileProvider;
 import com.hyphenate.easeui.User.User;
 import com.hyphenate.easeui.domain.EaseUser;
+import com.hyphenate.easeui.userDetail.HeOrSheActivity;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -45,7 +47,7 @@ public class EaseUserUtils {
      * set user avatar
      * @param username
      */
-    public static void setUserAvatar(Context context, String username, ImageView imageView){
+    public static void setUserAvatar(final Context context, String username, ImageView imageView){
         GetUserInfo getUserInfo = new GetUserInfo();
         getUserInfo.getUser(username);
         User user = null;
@@ -53,10 +55,15 @@ public class EaseUserUtils {
             user = getUserInfo.getUser();
         }
         Glide.with(context).load(Constant.PIC_PATH+user.getHeadPortrait()).into(imageView);
+        final String id = user.getId()+"";
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                Log.e("点击了头像","dsdsd");
+                Intent intent = new Intent();
+                intent.setClass(context, HeOrSheActivity.class);
+                intent.putExtra("id",id);
+                context.startActivity(intent);
             }
         });
     }

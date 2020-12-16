@@ -1,4 +1,6 @@
 package com.example.funactivity.entity.User;
+
+
 import com.example.funactivity.entity.activity.Activity;
 
 import java.io.Serializable;

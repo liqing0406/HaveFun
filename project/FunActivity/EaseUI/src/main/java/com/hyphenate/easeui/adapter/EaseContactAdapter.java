@@ -100,12 +100,7 @@ public class EaseContactAdapter extends ArrayAdapter<EaseUser> implements Sectio
 
         EaseUserUtils.setUserNick(username, holder.nameView);
         EaseUserUtils.setUserAvatar(getContext(), username, holder.avatar);
-//        holder.avatar.setOnClickListener(new View.OnClickListener() {
-////            @Override
-////            public void onClick(View view) {
-////                Log.e("点击了头像","dsdsd");
-////            }
-////        });
+
 
        
         if(primaryColor != 0)
@@ -116,7 +111,12 @@ public class EaseContactAdapter extends ArrayAdapter<EaseUser> implements Sectio
             holder.headerView.setBackground(initialLetterBg);
         if(initialLetterColor != 0)
             holder.headerView.setTextColor(initialLetterColor);
-        
+        holder.avatar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.e("点击了头像","dsdsd");
+            }
+        });
         return convertView;
     }
     

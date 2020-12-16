@@ -1,4 +1,4 @@
-package com.example.funactivity.adapter;
+package com.hyphenate.easeui.adapter;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -11,9 +11,9 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.example.funactivity.R;
-import com.example.funactivity.entity.User.UserPublishActivity;
-import com.example.funactivity.util.Constant;
+import com.hyphenate.easeui.R;
+import com.hyphenate.easeui.User.UserPublishActivity;
+import com.hyphenate.easeui.utils.Constant;
 
 import java.text.SimpleDateFormat;
 import java.util.List;

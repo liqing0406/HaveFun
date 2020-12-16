@@ -53,7 +53,6 @@ import com.example.funactivity.adapter.UpAdapter;
 import com.example.funactivity.entity.User.User;
 import com.example.funactivity.entity.User.UserDetail;
 import com.example.funactivity.entity.User.UserPublishActivity;
-import com.example.funactivity.entity.activity.Activity;
 import com.example.funactivity.entity.activity.ActivityDetail;
 import com.example.funactivity.util.Constant;
 import com.mikhaellopez.circularimageview.CircularImageView;
