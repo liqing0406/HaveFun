@@ -1,20 +1,28 @@
 package com.hyphenate.easeui.utils;
 
 import android.content.Context;
+import android.os.Handler;
+import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
+import com.hyphenate.easeui.GetUserInfo;
 import com.hyphenate.easeui.R;
 import com.hyphenate.easeui.EaseUI;
 import com.hyphenate.easeui.EaseUI.EaseUserProfileProvider;
+import com.hyphenate.easeui.User.User;
 import com.hyphenate.easeui.domain.EaseUser;
+
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class EaseUserUtils {
     
     static EaseUserProfileProvider userProvider;
+    static Timer timer = new Timer();
     
     static {
         userProvider = EaseUI.getInstance().getUserProfileProvider();
@@ -37,23 +45,27 @@ public class EaseUserUtils {
      * @param username
      */
     public static void setUserAvatar(Context context, String username, ImageView imageView){
-    	EaseUser user = getUserInfo(username);
-        if(user != null && user.getAvatar() != null){
-            try {
-//                int avatarResId = Integer.parseInt(user.getAvatar());
-                String url="http://39.105.43.3:8080/localPictures/"+user.getAvatar();
-                Glide.with(context).load(url).into(imageView);
-            } catch (Exception e) {
-                //use default avatar
-                Glide.with(context).load(user.getAvatar())
-                        .apply(RequestOptions.placeholderOf(R.drawable.ease_default_avatar)
-                                .diskCacheStrategy(DiskCacheStrategy.ALL))
-                        .into(imageView);
-            }
-        }else{
-            Glide.with(context).load(R.drawable.ease_default_avatar).into(imageView);
+        GetUserInfo getUserInfo = new GetUserInfo();
+        getUserInfo.getUser(username);
+        User user = null;
+        while (user==null){
+            user = getUserInfo.getUser();
         }
+
+        Log.e("wdsdsd",Constant.PIC_PATH+user.getHeadPortrait());
+        Log.e("wdsdsd",username+"");
+        Glide.with(context).load(Constant.PIC_PATH+user.getHeadPortrait()).into(imageView);
     }
+
+    public static void timeJump() {
+        TimerTask task = new TimerTask() {
+            @Override
+            public void run() {
+
+            }
+        };
+        timer.schedule(task, 5000);
+    };
     
     /**
      * set user's nickname

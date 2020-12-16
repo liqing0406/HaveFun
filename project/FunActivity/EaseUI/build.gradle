@@ -35,6 +35,11 @@ dependencies {
     api 'com.github.bumptech.glide:glide:4.7.1'
 
     api 'com.google.android.gms:play-services-base:11.4.0'
+    implementation 'androidx.appcompat:appcompat:1.2.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
+
+    implementation 'com.squareup.okhttp3:okhttp:3.10.0'
+    implementation 'com.alibaba:fastjson:1.1.54.android'
 
     testImplementation('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
