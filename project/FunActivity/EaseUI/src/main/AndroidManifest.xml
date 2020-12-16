@@ -1,4 +1,9 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="com.hyphenate.easeui">
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.hyphenate.easeui">
 
+    <application>
+        <activity android:name=".GetUserInfo"></activity>
+    </application>
 
 </manifest>
