@@ -6,6 +6,7 @@ import com.baidu.mapapi.SDKInitializer;
 import com.example.funactivity.model.Model;
 import com.hyphenate.chat.EMOptions;
 import com.hyphenate.easeui.EaseUI;
+import com.uuzuche.lib_zxing.activity.ZXingLibrary;
 
 public class Application extends android.app.Application {
     private static Application instance;
@@ -23,6 +24,8 @@ public class Application extends android.app.Application {
         EaseUI.getInstance().init(this, emOptions);
         //初始化数据模型层
         Model.getInstance().init(instance);
+        //初始化相机权限
+        ZXingLibrary.initDisplayOpinion(this);
     }
 
     public static Context getInstance() {
