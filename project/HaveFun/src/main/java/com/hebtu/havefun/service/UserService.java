@@ -34,8 +34,6 @@ public class UserService {
     @Resource
     UserDao userDao;
     @Resource
-    UserDetail userDetail;
-    @Resource
     UserDetailDao userDetailDao;
     @Resource
     ActivityDao activityDao;
@@ -73,6 +71,7 @@ public class UserService {
     @Rollback(value = false)
     public boolean register(String phoneNum, String password) {
         User user = new User();
+        UserDetail userDetail = new UserDetail();
         //用户基本信息的录入，部分为默认数据
         user.setPhoneNum(phoneNum);
         user.setPassword(password);
@@ -86,8 +85,8 @@ public class UserService {
         userDetail.setResidentIdCard("未认证");
         userDetail.setPersonalSignature("我是一条冷酷的签名");
         user.setUserDetail(userDetail);
-        userDetail.setUser(user);
         userDetailDao.save(userDetail);
+        userDetail.setUser(user);
         userDao.save(user);
         //当用户注册后，更新判断用户是否注册的缓存
         Set<String> keys = redisTemplate.keys("user-register::" + phoneNum + "_*");
@@ -462,7 +461,7 @@ public class UserService {
     @CacheEvict(value = "user-login", allEntries = true)
     public String idCardAuthentication(Integer id, String residentIdCard, String realName) {
         User user = userDao.getOne(id);
-        userDetail = userDetailDao.findUserDetailByUser(user);
+        UserDetail userDetail = userDetailDao.findUserDetailByUser(user);
         userDetail.setResidentIdCard(residentIdCard);
         userDetail.setRealName(realName);
         userDetailDao.save(userDetail);
