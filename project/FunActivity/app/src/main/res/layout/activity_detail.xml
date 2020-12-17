@@ -7,7 +7,7 @@
     android:paddingLeft="10dp"
     android:paddingRight="10dp">
 
-    <LinearLayout
+    <RelativeLayout
         android:id="@+id/ll_top"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -21,7 +21,15 @@
             android:layout_margin="10dp"
             android:onClick="buttonClicked"
             android:src="@drawable/back" />
-    </LinearLayout>
+        <ImageView
+            android:id="@+id/iv_code"
+            android:onClick="buttonClicked"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_margin="10dp"
+            android:layout_alignParentRight="true"
+            android:src="@drawable/code"/>
+    </RelativeLayout>
 
     <RelativeLayout
         android:id="@+id/ll"
@@ -50,17 +58,16 @@
                         android:id="@+id/iv_img"
                         android:layout_width="match_parent"
                         android:layout_height="150dp"
-                        android:alpha="0.9"
-                        android:background="@drawable/random" />
+                        android:alpha="0.9" />
                 </LinearLayout>
 
                 <RelativeLayout
                     android:id="@+id/ll_title"
                     android:layout_width="300dp"
-                    android:layout_height="60dp"
+                    android:layout_height="wrap_content"
                     android:layout_below="@+id/ll_head"
                     android:layout_centerHorizontal="true"
-                    android:layout_marginTop="-40dp">
+                    android:layout_marginTop="-30dp">
 
                     <TextView
                         android:id="@+id/tv_title"
@@ -79,14 +86,14 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/ll_title"
                     android:layout_marginTop="10dp"
-                    android:background="@drawable/background_with_shadow"
                     android:orientation="vertical"
                     android:padding="20dp"
                     android:paddingTop="10dp">
 
                     <RelativeLayout
                         android:layout_width="match_parent"
-                        android:layout_height="50dp">
+                        android:layout_height="wrap_content"
+                        android:layout_marginVertical="10dp">
 
                         <ImageView
                             android:id="@+id/iv_theme"
@@ -100,18 +107,19 @@
                         <TextView
                             android:id="@+id/tv_theme"
                             android:layout_width="wrap_content"
-                            android:layout_height="50dp"
+                            android:layout_height="wrap_content"
                             android:layout_gravity="left"
                             android:layout_marginLeft="15dp"
                             android:layout_toRightOf="@id/iv_theme"
-                            android:gravity="center"
+                            android:layout_centerVertical="true"
                             android:text="摩托" />
 
                     </RelativeLayout>
 
                     <RelativeLayout
                         android:layout_width="match_parent"
-                        android:layout_height="50dp">
+                        android:layout_height="wrap_content"
+                        android:layout_marginVertical="10dp">
 
                         <ImageView
                             android:id="@+id/iv_time"
@@ -125,18 +133,19 @@
                         <TextView
                             android:id="@+id/tv_date"
                             android:layout_width="wrap_content"
-                            android:layout_height="50dp"
+                            android:layout_height="wrap_content"
                             android:layout_gravity="left"
                             android:layout_marginLeft="20dp"
                             android:layout_toRightOf="@id/iv_time"
-                            android:gravity="center"
+                            android:layout_centerVertical="true"
                             android:text="2020年12月8日6点10分" />
 
                     </RelativeLayout>
 
                     <RelativeLayout
                         android:layout_width="match_parent"
-                        android:layout_height="50dp">
+                        android:layout_height="wrap_content"
+                        android:layout_marginVertical="10dp">
 
                         <ImageView
                             android:id="@+id/iv_map"
@@ -152,9 +161,9 @@
                         <TextView
                             android:id="@+id/tv_place"
                             android:layout_width="wrap_content"
-                            android:layout_height="50dp"
+                            android:layout_height="wrap_content"
                             android:layout_toRightOf="@+id/iv_map"
-                            android:gravity="center"
+                            android:layout_centerVertical="true"
                             android:text="河北省衡水市故城县郑口镇" />
 
                         <ImageView
@@ -169,7 +178,8 @@
 
                     <RelativeLayout
                         android:layout_width="match_parent"
-                        android:layout_height="50dp">
+                        android:layout_height="wrap_content"
+                        android:layout_marginVertical="10dp">
 
                         <ImageView
                             android:id="@+id/iv_phone"
@@ -187,13 +197,15 @@
                             android:layout_width="wrap_content"
                             android:layout_height="50dp"
                             android:layout_toRightOf="@+id/iv_phone"
+                            android:layout_centerVertical="true"
                             android:gravity="center"
                             android:text="13111509946" />
                     </RelativeLayout>
 
                     <RelativeLayout
                         android:layout_width="match_parent"
-                        android:layout_height="50dp">
+                        android:layout_height="wrap_content"
+                        android:layout_marginVertical="10dp">
 
                         <ImageView
                             android:id="@+id/iv_introduce"
@@ -209,9 +221,9 @@
                         <TextView
                             android:id="@+id/tv_detail"
                             android:layout_width="wrap_content"
-                            android:layout_height="50dp"
+                            android:layout_height="wrap_content"
                             android:layout_toRightOf="@+id/iv_introduce"
-                            android:gravity="center"
+                            android:layout_centerVertical="true"
                             android:maxLines="3"
                             android:minLines="1"
                             android:text="本次活动在河北省举行" />
@@ -219,7 +231,8 @@
 
                     <RelativeLayout
                         android:layout_width="match_parent"
-                        android:layout_height="50dp">
+                        android:layout_height="wrap_content"
+                        android:layout_marginVertical="10dp">
 
                         <ImageView
                             android:id="@+id/iv_other"
@@ -235,10 +248,9 @@
                         <TextView
                             android:id="@+id/tv_other"
                             android:layout_width="wrap_content"
-                            android:layout_height="50dp"
-                            android:layout_gravity="center"
+                            android:layout_height="wrap_content"
                             android:layout_toRightOf="@+id/iv_other"
-                            android:gravity="center"
+                            android:layout_centerVertical="true"
                             android:maxLines="3"
                             android:minLines="1"
                             android:text="本次活动在河北省举行" />
@@ -246,7 +258,7 @@
 
                     <RelativeLayout
                         android:layout_width="match_parent"
-                        android:layout_height="50dp">
+                        android:layout_height="wrap_content">
 
                         <TextView
                             android:id="@+id/tv_money"

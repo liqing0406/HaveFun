@@ -154,18 +154,15 @@
                 android:layout_marginHorizontal="20dp"
                 android:layout_toEndOf="@+id/tv1"
                 android:text="获取时间" />
-
-            <TextView
-                android:id="@+id/tv_time"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/tv1"
-                android:layout_centerVertical="true"
-                android:layout_marginHorizontal="20dp"
-                android:layout_marginTop="5dp" />
-
         </RelativeLayout>
-
+        <TextView
+            android:id="@+id/tv_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginHorizontal="20dp"
+            android:textColor="@color/gray"
+            android:layout_marginTop="5dp" />
         <LinearLayout
             android:id="@+id/ll_endTime"
             style="@style/addStyle"

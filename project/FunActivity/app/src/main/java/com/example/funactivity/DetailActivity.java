@@ -47,6 +47,7 @@ import okhttp3.Response;
 public class DetailActivity extends AppCompatActivity {
     private ImageView back;//返回
     private ImageView img;//图片
+    private ImageView code;//二维码
     private TextView title;//标题
 //    private TextView theme;//主题
     private TextView date;//活动时间
@@ -178,6 +179,7 @@ public class DetailActivity extends AppCompatActivity {
     private void initView() {
         back = findViewById(R.id.iv_back);
         img = findViewById(R.id.iv_img);
+        code = findViewById(R.id.iv_code);
         title = findViewById(R.id.tv_title);
         theme = findViewById(R.id.tv_theme);
         date = findViewById(R.id.tv_date);
@@ -223,6 +225,11 @@ public class DetailActivity extends AppCompatActivity {
         switch (view.getId()) {
             case R.id.iv_back://返回
                 this.finish();
+                break;
+            case R.id.iv_code://二维码
+                Intent intent0 = new Intent(DetailActivity.this,CodeActivity.class);
+                intent0.putExtra("activityId",activityId);
+                startActivity(intent0);
                 break;
             case R.id.iv_chat://私聊
                 int faBuZheID = activityDetail.getActivity().getUser().getId();

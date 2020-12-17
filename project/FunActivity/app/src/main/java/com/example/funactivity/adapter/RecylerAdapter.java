@@ -76,7 +76,7 @@ public class RecylerAdapter extends RecyclerView.Adapter<RecylerAdapter.ViewHold
         holder.time.setText(new SimpleDateFormat("yyyy--MM-dd  HH:mm").format(activities.get(position).getActivityTime()));
         holder.address.setText(activities.get(position).getActivityLocation().toString());
         holder.money.setText(activities.get(position).getActivityCost() + "");
-        holder.apply.setText(activities.get(position).getActivityContact() + "");
+        holder.apply.setText(activities.get(position).getSignUpNum() + "");
         holder.collect.setText(activities.get(position).getCollectNum() + "");
         ifHanUp(position, holder.handler);
         //通过为条目设置点击事件触发回调
