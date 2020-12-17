@@ -198,6 +198,8 @@ public class ActivityService {
         if (county != null && !"".equals(county)) {
             activityLocation.setCounty(county);
         }
+        String detailedAddress = activityDetail.getActivity().getActivityLocation().getDetailedAddress();
+        activityLocation.setDetailedAddress(detailedAddress);
         //执行保存操作
         activityLocation.setActivity(activity);
         typeOfKind.setActivityKind(activityKind);
