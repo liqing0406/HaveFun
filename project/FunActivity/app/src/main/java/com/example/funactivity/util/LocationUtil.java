@@ -21,8 +21,8 @@ import java.util.Locale;
 //获取位置信息
 public class LocationUtil {
     private Context context;
-    private String locality;//市
-    private String subLocality;//区
+    private String locality="石家庄";//市
+    private String subLocality = "裕华区";//区
 
     public LocationUtil(Context context) {
         this.context = context;
