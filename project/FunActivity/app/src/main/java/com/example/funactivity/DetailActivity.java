@@ -271,7 +271,7 @@ public class DetailActivity extends AppCompatActivity {
 
     private void toShare() {
         //生成活动二维码
-        Bitmap bitmap = CodeUtils.createImage(activityId+"",400,400, BitmapFactory.decodeResource(this.getResources(),R.drawable.sport));
+        Bitmap bitmap = CodeUtils.createImage(activityId+"",400,400, BitmapFactory.decodeResource(this.getResources(),R.drawable.have_fun_icon));
         //获取时间戳
         long time = System.currentTimeMillis();
         String uri = null;

@@ -24,7 +24,7 @@ public class CodeActivity extends AppCompatActivity {
         String activityId = intent.getStringExtra("activityId");
         Log.e("活动id",activityId);
         //生成活动二维码
-        Bitmap bitmap = CodeUtils.createImage(activityId+"",500,500, BitmapFactory.decodeResource(this.getResources(),R.drawable.sport));
+        Bitmap bitmap = CodeUtils.createImage(activityId+"",500,500, BitmapFactory.decodeResource(this.getResources(),R.drawable.have_fun_icon));
         code.setImageBitmap(bitmap);
     }
 }

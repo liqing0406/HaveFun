@@ -79,17 +79,6 @@ public class UpAdapter extends BaseAdapter {
         time.setText(new SimpleDateFormat("yyyy-MM-dd HH:mm").format(activities.get(position).getActivity().getActivityTime()));
         handup.setText(activities.get(position).getActivity().getSignUpNum() + "");
         like.setText(activities.get(position).getActivity().getCollectNum() + "");
-        linearLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent();
-                intent.putExtra("id", myID + "");//用户id
-                intent.putExtra("activityId", activities.get(position).getActivity().getActivityId() + "");//活动id
-                Log.e("id", activities.get(position).getId() + "");
-                intent.setClass(view.getContext(), DetailActivity.class);
-                mContext.startActivity(intent);
-            }
-        });
         return convertView;
     }
 }
