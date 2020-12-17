@@ -64,6 +64,9 @@ public class ActivityLocation {
 
     @Override
     public String toString() {
-        return getProvince() != null ? province + "  " + city + "  " + county + " " : city + " " + county;
+        return province + ' ' +
+                city + ' ' +
+                 county + ' ' +
+                detailedAddress ;
     }
 }

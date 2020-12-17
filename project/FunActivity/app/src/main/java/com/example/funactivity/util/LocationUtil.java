@@ -21,6 +21,7 @@ import java.util.Locale;
 //获取位置信息
 public class LocationUtil {
     private Context context;
+    private String province;//省
     private String locality="石家庄";//市
     private String subLocality = "裕华区";//区
 
@@ -90,6 +91,8 @@ public class LocationUtil {
             List<Address> locationList = gc.getFromLocation(latitude, longitude, 1);
             if (locationList != null) {
                 Address address = locationList.get(0);
+                province = address.getAdminArea();
+                Log.e("province",province);
                 locality = address.getLocality();//市
                 subLocality = address.getSubLocality();//区
             }

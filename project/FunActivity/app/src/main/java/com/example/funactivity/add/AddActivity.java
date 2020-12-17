@@ -39,6 +39,7 @@ import com.example.funactivity.entity.activity.ActivityLocation;
 import com.example.funactivity.entity.activity.TypeOfKind;
 import com.example.funactivity.util.Constant;
 import com.example.funactivity.util.FinalNumInter;
+import com.example.funactivity.util.LocationUtil;
 import com.kunzisoft.switchdatetime.SwitchDateTimeDialogFragment;
 import com.lljjcoder.Interface.OnCityItemClickListener;
 import com.lljjcoder.bean.CityBean;
@@ -330,9 +331,15 @@ public class AddActivity extends AppCompatActivity implements FinalNumInter, Vie
     }
 
     private void getCity() {
+        String cityStr = new LocationUtil(AddActivity.this).getLocality();
         //添加默认的配置
-        CityConfig cityConfig = new CityConfig.Builder().build();
+        CityConfig cityConfig = new CityConfig.Builder()
+                .province("河北省")
+                .city("石家庄市")
+                .district("裕华区")
+                .build();
         mPicker.setConfig(cityConfig);
+
 
         //监听选择点击事件及返回结果
         mPicker.setOnCityItemClickListener(new OnCityItemClickListener() {
