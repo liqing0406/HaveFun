@@ -104,7 +104,7 @@ public class ActivityService {
                 break;
             case 2://近期活动
                 //根据活动的时间排序
-                sort = Sort.by(Sort.Direction.DESC, "activityTime");
+                sort = Sort.by(Sort.Direction.ASC, "activityTime");
                 //分页显示
                 pageable = PageRequest.of(pageNum - 1, pageSize, sort);
                 page = activityDao.findAll(specification, pageable);
