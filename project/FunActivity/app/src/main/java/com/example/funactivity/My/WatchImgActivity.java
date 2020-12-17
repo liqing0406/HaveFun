@@ -17,8 +17,9 @@ public class WatchImgActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_watch_img);
-
+        ImageView back = findViewById(R.id.iv_back);
         img = findViewById(R.id.iv_img);
+        back.setOnClickListener(v->finish());
         //展示大图
         showImg();
     }
@@ -28,7 +29,7 @@ public class WatchImgActivity extends AppCompatActivity {
         String path = i.getStringExtra("path");
         //加载图片
         Glide.with(this)
-                .load(Constant.BASE_URL + path)
+                .load(Constant.PIC_PATH + path)
                 .into(img);
     }
 }
