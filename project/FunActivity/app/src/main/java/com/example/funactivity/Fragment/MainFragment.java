@@ -41,6 +41,7 @@ import com.example.funactivity.entity.activity.Activity;
 import com.example.funactivity.util.Constant;
 import com.example.funactivity.view.CaptureActivity;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
+import com.uuzuche.lib_zxing.activity.CodeUtils;
 import com.youth.banner.Banner;
 import com.youth.banner.indicator.CircleIndicator;
 
@@ -204,13 +205,15 @@ public class MainFragment extends Fragment {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == 100) {
             initActivity();
+        }else {
+            Toast.makeText(getContext(),"请打开相机权限",Toast.LENGTH_SHORT).show();
         }
     }
 
     private void initActivity() {
         Intent intent = new Intent(view.getContext(), CaptureActivity.class);
         intent.putExtra("id", user.getId() + "");
-        startActivity(intent);
+        startActivityForResult(intent,100);
     }
 
 
@@ -220,6 +223,25 @@ public class MainFragment extends Fragment {
         if (requestCode == 1000) {
             adapter.notifyDataSetChanged();
 
+        }else if(requestCode == 100){
+            //处理扫描结果（跳转相应的详情页）
+            if (null != data) {
+                Bundle bundle = data.getExtras();
+                if (bundle == null) {
+                    return;
+                }
+                if (bundle.getInt(CodeUtils.RESULT_TYPE) == CodeUtils.RESULT_SUCCESS) {
+                    String result = bundle.getString(CodeUtils.RESULT_STRING);
+                    Intent intent = new Intent();
+                    intent.putExtra("collect", true);//收藏是否可修改
+                    intent.putExtra("id", user.getId()+"");
+                    intent.putExtra("activityId", result);//活动id
+                    intent.setClass(getContext(), DetailActivity.class);
+                    startActivity(intent);
+                } else if (bundle.getInt(CodeUtils.RESULT_TYPE) == CodeUtils.RESULT_FAILED) {
+                    Toast.makeText(getContext(), "解析二维码失败", Toast.LENGTH_LONG).show();
+                }
+            }
         }
     }
 
@@ -329,7 +351,7 @@ public class MainFragment extends Fragment {
                         Intent intent = new Intent();
                         intent.putExtra("collect", true);//收藏是否可修改
                         intent.putExtra("id", user.getId() + "");
-                        intent.putExtra("activityId", activities1.get(position).getActivityId() + "");//活动id
+                        intent.putExtra("activityId", activities1.get(position));//活动id
                         intent.setClass(view.getContext(), DetailActivity.class);
                         startActivity(intent);
                     });

@@ -48,7 +48,7 @@ public class CaptureActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 1) {
+        if (requestCode == 1) {//解析相册返回数据
             if (data != null) {
                 Uri uri = data.getData();
                 ContentResolver cr = getContentResolver();
@@ -63,7 +63,6 @@ public class CaptureActivity extends AppCompatActivity {
                             intent.putExtra("activityId", result);//活动id
                             intent.setClass(CaptureActivity.this, DetailActivity.class);
                             startActivity(intent);
-                            Toast.makeText(CaptureActivity.this, "解析结果:" + result, Toast.LENGTH_LONG).show();
                         }
 
                         @Override
