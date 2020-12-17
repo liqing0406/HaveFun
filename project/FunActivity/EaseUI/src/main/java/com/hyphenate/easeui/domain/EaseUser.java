@@ -27,7 +27,8 @@ public class EaseUser extends EMContact {
 	 */
 	protected String avatar;
 	
-	public EaseUser(String username){
+	public EaseUser(String username)
+	{
 	    this.username = username;
 	}
 

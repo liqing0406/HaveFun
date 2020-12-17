@@ -81,7 +81,6 @@ public class EaseContactList extends RelativeLayout {
         initialLetterColor = ta.getColor(R.styleable.EaseContactList_ctsListInitialLetterColor, 0);
         ta.recycle();
         
-        
         LayoutInflater.from(context).inflate(R.layout.ease_widget_contact_list, this);
         listView = (ListView)findViewById(R.id.list);
         sidebar = (EaseSidebar) findViewById(R.id.sidebar);
@@ -98,7 +97,6 @@ public class EaseContactList extends RelativeLayout {
         adapter.setPrimaryColor(primaryColor).setPrimarySize(primarySize).setInitialLetterBg(initialLetterBg)
             .setInitialLetterColor(initialLetterColor);
         listView.setAdapter(adapter);
-        
         if(showSiderBar){
             sidebar.setListView(listView);
         }
@@ -125,6 +123,5 @@ public class EaseContactList extends RelativeLayout {
             sidebar.setVisibility(View.GONE);
         }
     }
-
 
 }

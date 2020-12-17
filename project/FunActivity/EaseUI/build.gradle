@@ -51,4 +51,8 @@ dependencies {
     //noinspection GradleCompatible
     api 'com.android.support:appcompat-v7:28.0.0-alpha1'
     testImplementation 'junit:junit:4.12'
+    //EventBus
+    implementation 'org.greenrobot:eventbus:3.1.1'
+    implementation 'com.squareup.okhttp3:okhttp:3.10.0'
+    implementation 'com.alibaba:fastjson:1.1.54.android'
 }

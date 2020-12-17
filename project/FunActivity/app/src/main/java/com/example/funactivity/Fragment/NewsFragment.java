@@ -1,10 +1,16 @@
 package com.example.funactivity.Fragment;
 
 import android.content.Intent;
+import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
 
 import com.alibaba.fastjson.JSON;
+import com.example.funactivity.Main2Activity;
+import com.example.funactivity.R;
 import com.example.funactivity.entity.User.User;
 import com.example.funactivity.news.ChatActivity;
 
@@ -16,6 +22,8 @@ import com.hyphenate.chat.EMMessage;
 import com.hyphenate.easeui.EaseConstant;
 import com.hyphenate.easeui.EaseUI;
 import com.hyphenate.easeui.ui.EaseConversationListFragment;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.io.IOException;
 import java.util.List;
@@ -31,6 +39,8 @@ public class NewsFragment extends EaseConversationListFragment {
     private String phone;
     private String nickname;
     private String head;
+
+
     @Override
     protected void initView() {
         super.initView();
