@@ -2,6 +2,7 @@ package com.hyphenate.easeui.ui;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
@@ -21,7 +22,6 @@ public abstract class EaseBaseFragment extends Fragment {
         inputMethodManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
         //noinspection ConstantConditions
         titleBar = (EaseTitleBar) getView().findViewById(R.id.title_bar);
-        
         initView();
         setUpView();
     }

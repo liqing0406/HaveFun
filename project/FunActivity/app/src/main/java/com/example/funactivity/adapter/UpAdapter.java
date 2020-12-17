@@ -2,6 +2,8 @@ package com.example.funactivity.adapter;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +13,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.example.funactivity.DetailActivity;
 import com.example.funactivity.R;
 import com.example.funactivity.entity.User.UserPublishActivity;
 import com.example.funactivity.util.Constant;
@@ -68,13 +71,25 @@ public class UpAdapter extends BaseAdapter {
         TextView like = convertView.findViewById(R.id.tv_like);
         LinearLayout linearLayout = convertView.findViewById(R.id.linearlayout);
 
+        Log.e("图片路径",activities.get(position).toString());
         Glide.with(mContext)
                 .load(Constant.PIC_PATH + activities.get(position).getActivity().getFrontPicture().getPictureName())
                 .into(img);
         title.setText(activities.get(position).getActivity().getActivityTile());
-        time.setText(new SimpleDateFormat("yyyy-MM-dd HH:mm").format(activities.get(position).getPublishTime()));
+        time.setText(new SimpleDateFormat("yyyy-MM-dd HH:mm").format(activities.get(position).getActivity().getActivityTime()));
         handup.setText(activities.get(position).getActivity().getSignUpNum() + "");
         like.setText(activities.get(position).getActivity().getCollectNum() + "");
+        linearLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent();
+                intent.putExtra("id", myID + "");//用户id
+                intent.putExtra("activityId", activities.get(position).getActivity().getActivityId() + "");//活动id
+                Log.e("id", activities.get(position).getId() + "");
+                intent.setClass(view.getContext(), DetailActivity.class);
+                mContext.startActivity(intent);
+            }
+        });
         return convertView;
     }
 }

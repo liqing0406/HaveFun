@@ -94,97 +94,97 @@
             android:textColor="@android:color/white"
             android:textSize="15dp" />
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:background="@color/zong"
-            android:orientation="horizontal">
+<!--        <RelativeLayout-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginTop="20dp"-->
+<!--            android:background="@color/zong"-->
+<!--            android:orientation="horizontal">-->
 
-            <LinearLayout
-                android:id="@+id/lv_guanzhu"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="20dp"
-                android:background="@color/zong"
-                android:orientation="vertical">
+<!--            <LinearLayout-->
+<!--                android:id="@+id/lv_guanzhu"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_marginLeft="20dp"-->
+<!--                android:background="@color/zong"-->
+<!--                android:orientation="vertical">-->
 
-                <TextView
-                    android:id="@+id/tv_guanzhu"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:background="@color/zong"
-                    android:text="9"
-                    android:textColor="@android:color/white"
-                    android:textSize="15dp" />
+<!--                <TextView-->
+<!--                    android:id="@+id/tv_guanzhu"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_gravity="center"-->
+<!--                    android:background="@color/zong"-->
+<!--                    android:text="9"-->
+<!--                    android:textColor="@android:color/white"-->
+<!--                    android:textSize="15dp" />-->
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@color/zong"
-                    android:text="关注"
-                    android:textColor="@android:color/white"
-                    android:textSize="15dp" />
-            </LinearLayout>
+<!--                <TextView-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:background="@color/zong"-->
+<!--                    android:text="关注"-->
+<!--                    android:textColor="@android:color/white"-->
+<!--                    android:textSize="15dp" />-->
+<!--            </LinearLayout>-->
 
-            <LinearLayout
-                android:id="@+id/lv_fensi"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="20dp"
-                android:layout_toRightOf="@id/lv_guanzhu"
-                android:background="@color/zong"
-                android:orientation="vertical">
+<!--            <LinearLayout-->
+<!--                android:id="@+id/lv_fensi"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_marginLeft="20dp"-->
+<!--                android:layout_toRightOf="@id/lv_guanzhu"-->
+<!--                android:background="@color/zong"-->
+<!--                android:orientation="vertical">-->
 
-                <TextView
-                    android:id="@+id/tv_fensi"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:background="@color/zong"
-                    android:text="9"
-                    android:textColor="@android:color/white"
-                    android:textSize="15dp" />
+<!--                <TextView-->
+<!--                    android:id="@+id/tv_fensi"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_gravity="center"-->
+<!--                    android:background="@color/zong"-->
+<!--                    android:text="9"-->
+<!--                    android:textColor="@android:color/white"-->
+<!--                    android:textSize="15dp" />-->
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@color/zong"
-                    android:text="粉丝"
-                    android:textColor="@android:color/white"
-                    android:textSize="15dp" />
-            </LinearLayout>
+<!--                <TextView-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:background="@color/zong"-->
+<!--                    android:text="粉丝"-->
+<!--                    android:textColor="@android:color/white"-->
+<!--                    android:textSize="15dp" />-->
+<!--            </LinearLayout>-->
 
-            <Button
-                android:id="@+id/btn_guanzhu"
-                android:layout_width="70dp"
-                android:layout_height="35dp"
-                android:layout_centerVertical="true"
-                android:layout_gravity="center"
-                android:layout_toLeftOf="@id/lv_chat"
-                android:background="@drawable/guanzhu"
-                android:text="关注" />
+<!--            <Button-->
+<!--                android:id="@+id/btn_guanzhu"-->
+<!--                android:layout_width="70dp"-->
+<!--                android:layout_height="35dp"-->
+<!--                android:layout_centerVertical="true"-->
+<!--                android:layout_gravity="center"-->
+<!--                android:layout_toLeftOf="@id/lv_chat"-->
+<!--                android:background="@drawable/guanzhu"-->
+<!--                android:text="关注" />-->
 
-            <RelativeLayout
+<!--            <RelativeLayout-->
 
-                android:id="@+id/lv_chat"
-                android:layout_width="50dp"
-                android:layout_height="35dp"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
-                android:layout_gravity="center"
-                android:layout_marginLeft="10dp"
-                android:background="@color/zong">
+<!--                android:id="@+id/lv_chat"-->
+<!--                android:layout_width="50dp"-->
+<!--                android:layout_height="35dp"-->
+<!--                android:layout_alignParentRight="true"-->
+<!--                android:layout_centerVertical="true"-->
+<!--                android:layout_gravity="center"-->
+<!--                android:layout_marginLeft="10dp"-->
+<!--                android:background="@color/zong">-->
 
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerInParent="true"
-                    android:background="@null"
-                    android:src="@drawable/chat" />
-            </RelativeLayout>
-        </RelativeLayout>
+<!--                <ImageView-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_centerInParent="true"-->
+<!--                    android:background="@null"-->
+<!--                    android:src="@drawable/chat" />-->
+<!--            </RelativeLayout>-->
+<!--        </RelativeLayout>-->
     </LinearLayout>
 
     <RelativeLayout

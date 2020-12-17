@@ -44,12 +44,11 @@ public class HeOrSheActivity extends AppCompatActivity {
     private Gson gson;
     private OkHttpClient client;
     private String id;//她的id
-    private TextView tvId,tvQianMing,tvGuanzhu,tvFenSi;
+    private TextView tvId,tvQianMing;
     private ImageView ivSex,touxiang;
     private User user;
     private PagerManager manager = new PagerManager();
     private ModelPagerAdapter adapter;
-    private RelativeLayout chat;
     private ImageView ivBack;
 
     private Handler handler = new Handler(){
@@ -67,15 +66,9 @@ public class HeOrSheActivity extends AppCompatActivity {
                     RequestOptions requestOptions=new RequestOptions()
                             .circleCrop();
                     Glide.with(getApplicationContext())
-                            .load(Constant.BASE_URL+user.getHeadPortrait())
+                            .load(Constant.PIC_PATH+user.getHeadPortrait())
                             .apply(requestOptions)
                             .into(touxiang);
-                    break;
-                case 2:
-                    tvFenSi.setText(msg.obj+"");
-                    break;
-                case 3:
-                    tvGuanzhu.setText(msg.obj+"");
                     break;
             }
         }
@@ -105,14 +98,8 @@ public class HeOrSheActivity extends AppCompatActivity {
 
         getUserInfo();
         setIndicator();
-        getGuanZhuAndFenSi();
+        //getGuanZhuAndFenSi();
 
-        chat.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //todo:跳转到聊天的页面，传过去我的id和他的id
-            }
-        });
 
     }
 
@@ -218,12 +205,9 @@ public class HeOrSheActivity extends AppCompatActivity {
         gson = new Gson();
         tvId = findViewById(R.id.tv_id);
         tvQianMing = findViewById(R.id.tv_qianming);
-        tvGuanzhu = findViewById(R.id.tv_guanzhu);
-        tvFenSi = findViewById(R.id.tv_fensi);
         ivSex = findViewById(R.id.iv_sex);
         viewPager = findViewById(R.id.view_pager);
         springIndicator = findViewById(R.id.indicator);
-        chat = findViewById(R.id.lv_chat);
         ivBack = findViewById(R.id.iv_back);
     }
 

@@ -100,6 +100,7 @@ public class ChatActivity extends AppCompatActivity {
         }
 
     };
+
     //相机,位置,相册
     List<String> notpermissed = new ArrayList<>();
     String[] permissions = {Manifest.permission.CAMERA,
