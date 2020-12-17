@@ -109,7 +109,7 @@
         <activity android:name=".add.SelectPictureActivity" />
         <activity android:name=".My.WatchImgActivity" />
         <activity android:name=".news.ChatActivity" />
-        <activity android:name="com.hyphenate.easeui.userDetail.HeOrSheActivity"/>
+        <activity android:name=".HeOrSheActivity"/>
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

@@ -1,5 +1,6 @@
-package com.hyphenate.easeui.userDetail;
+package com.example.funactivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -15,13 +16,14 @@ import androidx.viewpager.widget.ViewPager;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.example.funactivity.entity.User.User;
+import com.example.funactivity.news.ChatActivity;
+import com.example.funactivity.userFragment.CollectFragment;
+import com.example.funactivity.userFragment.FaBuFragment;
+import com.example.funactivity.userFragment.HandUpFragment;
+import com.example.funactivity.util.Constant;
 import com.google.gson.Gson;
-import com.hyphenate.easeui.R;
-import com.hyphenate.easeui.User.User;
-import com.hyphenate.easeui.userDetail.userFragment.CollectFragment;
-import com.hyphenate.easeui.userDetail.userFragment.FaBuFragment;
-import com.hyphenate.easeui.userDetail.userFragment.HandUpFragment;
-import com.hyphenate.easeui.utils.Constant;
+import com.hyphenate.easeui.EaseConstant;
 
 import java.io.IOException;
 
@@ -48,14 +50,13 @@ public class HeOrSheActivity extends AppCompatActivity {
     private PagerManager manager = new PagerManager();
     private ModelPagerAdapter adapter;
     private RelativeLayout chat;
+    private ImageView ivBack;
 
     private Handler handler = new Handler(){
         @Override
         public void handleMessage(@NonNull Message msg) {
             switch (msg.what) {
                 case 1://获取User
-                    User user1 = (User)msg.obj;
-                    user = user1;
                     tvId.setText(user.getUserId()+"");
                     tvQianMing.setText(user.getUserDetail().getPersonalSignature());
                     if(user.getUserDetail().getSex().equals("1")){
@@ -87,6 +88,17 @@ public class HeOrSheActivity extends AppCompatActivity {
         setContentView(R.layout.activity_he_or_she);
 
         findViews();
+
+        ivBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(HeOrSheActivity.this, ChatActivity.class);
+                intent.putExtra(EaseConstant.EXTRA_USER_ID, user.getPhoneNum()+"");
+                intent.putExtra(EaseConstant.EXTRA_CHAT_NAME,user.getUserName());
+                intent.putExtra(EaseConstant.EXTRA_USER_HEAD,user.getHeadPortrait());
+                startActivity(intent);
+            }
+        });
 
         //获取进入页面的用户的id
         id = getIntent().getStringExtra("id");
@@ -186,16 +198,15 @@ public class HeOrSheActivity extends AppCompatActivity {
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
                 e.printStackTrace();
-                Log.e("用户信息","出错了");
             }
 
             @Override
             public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
                 String result = response.body().string();
-                User user = gson.fromJson(result, User.class);
+                Log.e("微信第三代",result+"微信第三代");
+                user = gson.fromJson(result, User.class);
                 Message m = new Message();
                 m.what = 1;
-                m.obj = user;
                 handler.sendMessage(m);
             }
         });
@@ -213,6 +224,7 @@ public class HeOrSheActivity extends AppCompatActivity {
         viewPager = findViewById(R.id.view_pager);
         springIndicator = findViewById(R.id.indicator);
         chat = findViewById(R.id.lv_chat);
+        ivBack = findViewById(R.id.iv_back);
     }
 
     public String getId(){

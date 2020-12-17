@@ -74,7 +74,7 @@ import java.util.concurrent.Executors;
  * you can see ChatActivity in demo for your reference
  *
  */
-public class EaseChatFragment extends EaseBaseFragment implements EMMessageListener {
+public class EaseChatFragment extends EaseBaseFragment implements EMMessageListener{
     protected static final String TAG = "EaseChatFragment";
     protected static final int REQUEST_CODE_MAP = 1;
     protected static final int REQUEST_CODE_CAMERA = 2;
@@ -424,61 +424,6 @@ public class EaseChatFragment extends EaseBaseFragment implements EMMessageListe
         isMessageListInited = true;
     }
 
-    protected void setListItemClickListener() {
-        messageList.setItemClickListener(new EaseChatMessageList.MessageListItemClickListener() {
-            @Override
-            public void onUserAvatarClick(String username) {
-                if(chatFragmentHelper != null){
-                    //点击头像
-                    chatFragmentHelper.onAvatarClick(username);
-                }
-            }
-
-            @Override
-            public boolean onResendClick(final EMMessage message) {
-                EMLog.i(TAG, "onResendClick");
-                new EaseAlertDialog(getContext(), R.string.resend, R.string.confirm_resend, null, new AlertDialogUser() {
-                    @Override
-                    public void onResult(boolean confirmed, Bundle bundle) {
-                        if (!confirmed) {
-                            return;
-                        }
-                        message.setStatus(EMMessage.Status.CREATE);
-                        sendMessage(message);
-                    }
-                }, true).show();
-                return true;
-            }
-
-            @Override
-            public void onUserAvatarLongClick(String username) {
-                if(chatFragmentHelper != null){
-                    chatFragmentHelper.onAvatarLongClick(username);
-                }
-            }
-
-            @Override
-            public void onBubbleLongClick(EMMessage message) {
-                contextMenuMessage = message;
-                if(chatFragmentHelper != null){
-                    chatFragmentHelper.onMessageBubbleLongClick(message);
-                }
-            }
-
-            @Override
-            public boolean onBubbleClick(EMMessage message) {
-                if(chatFragmentHelper == null){
-                    return false;
-                }
-                return chatFragmentHelper.onMessageBubbleClick(message);
-            }
-
-            @Override
-            public void onMessageInProgress(EMMessage message) {
-                message.setMessageStatusCallback(messageStatusCallback);
-            }
-        });
-    }
 
     protected void setRefreshLayoutListener() {
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -598,7 +543,6 @@ public class EaseChatFragment extends EaseBaseFragment implements EMMessageListe
             }
         }
     }
-
 
     @Override
     public void onResume() {
@@ -949,7 +893,9 @@ public class EaseChatFragment extends EaseBaseFragment implements EMMessageListe
         @Override
         public void onSuccess() {
             if(isMessageListInited) {
+                Log.e("点击了返回呀","ddsd");
                 messageList.refresh();
+
             }
         }
 
@@ -1267,6 +1213,65 @@ public class EaseChatFragment extends EaseBaseFragment implements EMMessageListe
             }
         }
     }
+
+
+    protected void setListItemClickListener() {
+        messageList.setItemClickListener(new EaseChatMessageList.MessageListItemClickListener() {
+            @Override
+            public void onUserAvatarClick(String username) {
+                if(chatFragmentHelper != null){
+                    //点击头像
+                    chatFragmentHelper.onAvatarClick(username);
+                }
+            }
+
+
+            @Override
+            public boolean onResendClick(final EMMessage message) {
+                EMLog.i(TAG, "onResendClick");
+                new EaseAlertDialog(getContext(), R.string.resend, R.string.confirm_resend, null, new AlertDialogUser() {
+                    @Override
+                    public void onResult(boolean confirmed, Bundle bundle) {
+                        if (!confirmed) {
+                            return;
+                        }
+                        message.setStatus(EMMessage.Status.CREATE);
+                        sendMessage(message);
+                    }
+                }, true).show();
+                return true;
+            }
+
+            @Override
+            public void onUserAvatarLongClick(String username) {
+                if(chatFragmentHelper != null){
+                    chatFragmentHelper.onAvatarLongClick(username);
+                }
+            }
+
+            @Override
+            public void onBubbleLongClick(EMMessage message) {
+                contextMenuMessage = message;
+                if(chatFragmentHelper != null){
+                    chatFragmentHelper.onMessageBubbleLongClick(message);
+                }
+            }
+
+            @Override
+            public boolean onBubbleClick(EMMessage message) {
+                if(chatFragmentHelper == null){
+                    return false;
+                }
+                return chatFragmentHelper.onMessageBubbleClick(message);
+            }
+
+            @Override
+            public void onMessageInProgress(EMMessage message) {
+                message.setMessageStatusCallback(messageStatusCallback);
+            }
+        });
+    }
+
 
     protected EaseChatFragmentHelper chatFragmentHelper;
     public void setChatFragmentHelper(EaseChatFragmentHelper chatFragmentHelper){
