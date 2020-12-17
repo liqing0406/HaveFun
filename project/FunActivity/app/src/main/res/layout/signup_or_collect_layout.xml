@@ -2,20 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_marginBottom="10dp"
     android:orientation="vertical">
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <TextView
-            android:id="@+id/tv_timeup"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:background="@color/zong"
-            android:textColor="@color/white" />
-    </RelativeLayout>
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -59,7 +47,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/tv_name"
-            android:layout_marginLeft="30dp"
+            android:layout_marginLeft="20dp"
             android:layout_toRightOf="@id/iv_picture"
             android:orientation="horizontal">
 
@@ -91,7 +79,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginLeft="30dp"
+                android:layout_marginLeft="20dp"
                 android:layout_toRightOf="@id/iv_picture"
                 android:background="@color/zong"
                 android:src="@drawable/zuobiao" />
@@ -117,7 +105,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginLeft="30dp"
+                android:layout_marginLeft="20dp"
                 android:background="@color/zong"
                 android:src="@drawable/money" />
 
@@ -145,10 +133,10 @@
 
                 <ImageView
                     android:id="@+id/baoming"
-                    android:layout_width="25dp"
-                    android:layout_height="25dp"
+                    android:layout_width="13dp"
+                    android:layout_height="16dp"
                     android:layout_gravity="center"
-                    android:layout_marginLeft="30dp"
+                    android:layout_marginLeft="20dp"
                     android:background="@color/zong"
                     android:src="@drawable/handup" />
 
@@ -191,7 +179,12 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-
+        <TextView
+            android:id="@+id/tv_timeup"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@color/zong"
+            android:textColor="@color/white" />
         <Button
             android:id="@+id/btn_cancel"
             android:layout_width="wrap_content"

@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -214,6 +215,10 @@ public class MyFragment extends Fragment {
         RelativeLayout like = view.findViewById(R.id.btn_like);
         //设置
         RelativeLayout settings = view.findViewById(R.id.btn_settings);
+        TextView tvrelease = view.findViewById(R.id.tv_release);
+        Typeface typeface = Typeface.createFromAsset(getActivity().getAssets(), "FZGongYHJW.TTF");
+        tvrelease.setTypeface(typeface);
+        name.setTypeface(typeface);
         //我的发布
         GridView release = view.findViewById(R.id.gv_release);
         name.setText(user.getUserName());
