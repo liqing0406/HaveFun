@@ -1,4 +1,4 @@
-package com.hyphenate.easeui.userDetail.userFragment;
+package com.example.funactivity.userFragment;
 
 import android.os.Bundle;
 import android.os.Handler;
@@ -12,14 +12,13 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import com.hyphenate.easeui.R;
-import com.hyphenate.easeui.User.UserPublishActivity;
-import com.hyphenate.easeui.adapter.UpAdapter;
-import com.hyphenate.easeui.userDetail.HeOrSheActivity;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.hyphenate.easeui.utils.Constant;
-
+import com.example.funactivity.HeOrSheActivity;
+import com.example.funactivity.R;
+import com.example.funactivity.adapter.UpAdapter;
+import com.example.funactivity.entity.User.UserPublishActivity;
+import com.example.funactivity.util.Constant;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.List;
