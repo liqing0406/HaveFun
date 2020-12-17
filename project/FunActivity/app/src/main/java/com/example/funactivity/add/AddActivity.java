@@ -431,6 +431,9 @@ public class AddActivity extends AppCompatActivity implements FinalNumInter, Vie
             activity.setActivityTile(activityTheme);//类型
             activity.setActivityTime(datestr);//集合日期
             TypeOfKind typeOfKind = new TypeOfKind();
+            if(spinnerValue == null){
+                spinnerValue = "其他";
+            }
             typeOfKind.setTypeName(spinnerValue);
             ActivityKind activityKind = new ActivityKind();
             activityKind.setKindName(lastType);

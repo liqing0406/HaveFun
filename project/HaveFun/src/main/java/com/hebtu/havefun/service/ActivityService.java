@@ -251,8 +251,10 @@ public class ActivityService {
         //用户发布了报名的活动信息，随之将和该用户下的关于报名活动的部分和总的活动列表缓存删除
         Set<String> userPublishActivity = redisTemplate.keys("activity-enter::" + activity.getUser().getId() + "_*");
         Set<String> activityList = redisTemplate.keys("activities*");
-        if (!CollectionUtils.isEmpty(userPublishActivity) && !CollectionUtils.isEmpty(activityList)) {
+        if (!CollectionUtils.isEmpty(userPublishActivity)) {
             redisTemplate.delete(userPublishActivity);
+        }
+        if (!CollectionUtils.isEmpty(activityList)) {
             redisTemplate.delete(activityList);
         }
         return true;
