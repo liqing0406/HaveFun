@@ -68,7 +68,7 @@
                         android:layout_height="match_parent"
                         android:gravity="center"
                         android:text="活动主题"
-                        android:textColor="@color/noaction"
+                        android:textColor="@color/gray"
                         android:textSize="40dp"
                         android:textStyle="bold" />
                 </RelativeLayout>

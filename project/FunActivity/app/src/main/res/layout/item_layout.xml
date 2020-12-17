@@ -42,7 +42,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/tv_name"
-        android:layout_marginLeft="30dp"
+        android:layout_marginLeft="20dp"
         android:layout_toRightOf="@id/iv_picture"
         android:orientation="horizontal">
 
@@ -74,7 +74,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginLeft="30dp"
+            android:layout_marginLeft="20dp"
             android:layout_toRightOf="@id/iv_picture"
             android:background="@color/zong"
             android:src="@drawable/zuobiao" />
@@ -100,7 +100,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginLeft="30dp"
+            android:layout_marginLeft="20dp"
             android:background="@color/zong"
             android:src="@drawable/money" />
 
@@ -132,7 +132,7 @@
                 android:layout_width="25dp"
                 android:layout_height="25dp"
                 android:layout_gravity="center"
-                android:layout_marginLeft="30dp"
+                android:layout_marginLeft="20dp"
                 android:background="@color/zong"
                 android:src="@drawable/handup" />
 
