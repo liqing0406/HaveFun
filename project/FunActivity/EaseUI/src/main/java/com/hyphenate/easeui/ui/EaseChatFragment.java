@@ -893,7 +893,6 @@ public class EaseChatFragment extends EaseBaseFragment implements EMMessageListe
         @Override
         public void onSuccess() {
             if(isMessageListInited) {
-                Log.e("点击了返回呀","ddsd");
                 messageList.refresh();
 
             }

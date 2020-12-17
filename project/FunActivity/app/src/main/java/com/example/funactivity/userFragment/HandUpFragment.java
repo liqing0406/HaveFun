@@ -12,6 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.alibaba.fastjson.JSON;
 import com.example.funactivity.entity.activity.Activity;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -36,7 +37,6 @@ public class HandUpFragment extends Fragment {
     private List<UserPublishActivity> myHanUpActivity;
     private UpAdapter upAdapter;
     private OkHttpClient client;
-    private Gson gson;
     private GridView gridView;
     private View view;
     private Handler handler = new Handler() {
@@ -69,8 +69,8 @@ public class HandUpFragment extends Fragment {
     private void getMyHanUpActivity() {
         FormBody.Builder builder = new FormBody.Builder();
         builder.add("id", id + "");
-        builder.add("pageNum", 10 + "");
-        builder.add("pageSize", 1 + "");
+        builder.add("pageNum", 1 + "");
+        builder.add("pageSize", 10 + "");
         FormBody body = builder.build();
         final Request request = new Request.Builder()
                 .post(body)
@@ -87,9 +87,7 @@ public class HandUpFragment extends Fragment {
             public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
                 String result = response.body().string();
                 if (!result.equals("empty")) {
-                    Type type = new TypeToken<List<Activity>>() {
-                    }.getType();
-                    List<Activity> hanUpActivity = gson.fromJson(result, type);
+                    List<UserPublishActivity> hanUpActivity = JSON.parseArray(result,UserPublishActivity.class);
                     Message message = new Message();
                     message.what = 1;
                     message.obj = hanUpActivity;
@@ -104,7 +102,6 @@ public class HandUpFragment extends Fragment {
         id = heOrSheActivity.getId();
         gridView = view.findViewById(R.id.grid_view);
         client = new OkHttpClient();
-        gson = new Gson();
 
     }
 }

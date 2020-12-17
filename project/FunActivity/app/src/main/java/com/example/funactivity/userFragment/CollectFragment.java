@@ -13,6 +13,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.alibaba.fastjson.JSON;
 import com.example.funactivity.HeOrSheActivity;
 import com.example.funactivity.R;
 import com.example.funactivity.adapter.UpAdapter;
@@ -45,7 +46,6 @@ public class CollectFragment extends Fragment {
         public void handleMessage(@NonNull Message msg) {
             switch (msg.what) {
                 case 1:
-                    myCollectionActivity = (List<UserPublishActivity>) msg.obj;
                     upAdapter = new UpAdapter(getContext(), myCollectionActivity, R.layout.up_list_item,id);
                     gridView.setAdapter(upAdapter);
                     upAdapter.notifyDataSetChanged();
@@ -70,8 +70,9 @@ public class CollectFragment extends Fragment {
     private void getMyCollectionActivity() {
         FormBody.Builder builder = new FormBody.Builder();
         builder.add("id", id + "");
-        builder.add("pageNum", 10 + "");
-        builder.add("pageSize", 1 + "");
+        Log.e("我的id",id+"");
+        builder.add("pageNum", 1 + "");
+        builder.add("pageSize", 10 + "");
         FormBody body = builder.build();
         final Request request = new Request.Builder()
                 .post(body)
@@ -87,19 +88,13 @@ public class CollectFragment extends Fragment {
             @Override
             public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
                 String result = response.body().string();
+                Log.e("collection是是是", "" + result);
                 if (!result.equals("empty")) {
-                    Log.e("collection", "" + result);
-                    Type type = new TypeToken<List<UserPublishActivity>>() {
-                    }.getType();
-                    List<UserPublishActivity> collectionActivity = gson.fromJson(result, type);
+                    myCollectionActivity = JSON.parseArray(result,UserPublishActivity.class);
                     Message message = new Message();
                     message.what = 1;
-                    message.obj = collectionActivity;
                     handler.sendMessage(message);
                 }
-                Message message = new Message();
-                message.what = 1;
-                handler.sendMessage(message);
             }
         });
     }

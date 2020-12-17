@@ -12,6 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.alibaba.fastjson.JSON;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.example.funactivity.HeOrSheActivity;
@@ -69,8 +70,8 @@ public class FaBuFragment extends Fragment {
     private void getMyFaBuActivity() {
         FormBody.Builder builder = new FormBody.Builder();
         builder.add("id",id+"");
-        builder.add("pageNum",10+"");
-        builder.add("pageSize",1+"");
+        builder.add("pageNum",1+"");
+        builder.add("pageSize",10+"");
         FormBody body = builder.build();
         final Request request = new Request.Builder()
                 .post(body)
@@ -86,8 +87,7 @@ public class FaBuFragment extends Fragment {
             public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
                 String result = response.body().string();
                 if(!result.equals("empty")){
-                    Type type = new TypeToken<List<UserPublishActivity>>(){}.getType();
-                    List<UserPublishActivity> faBuActivity = gson.fromJson(result,type);
+                    List<UserPublishActivity> faBuActivity = JSON.parseArray(result,UserPublishActivity.class);
                     Message message = new Message();
                     message.what = 1;
                     message.obj = faBuActivity;
