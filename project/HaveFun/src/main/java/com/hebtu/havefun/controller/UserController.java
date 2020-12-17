@@ -215,8 +215,7 @@ public class UserController {
             System.out.println("getFollowedCount Error");
             return "ErrorParameter";
         }
-        Long count = userService.getFollowedCount(id);
-        return count + "";
+        return userService.getFollowedCount(id) + "";
     }
 
     /**
@@ -230,8 +229,7 @@ public class UserController {
             System.out.println("getFollowCount Error");
             return "ErrorParameter";
         }
-        Long count = userService.getFollowCount(id);
-        return count + "";
+        return userService.getFollowCount(id) + "";
     }
 
     /**

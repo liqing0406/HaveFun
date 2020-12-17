@@ -176,7 +176,6 @@ public class MainFragment extends Fragment {
         all.setOnCheckedChangeListener(new rgTypeListener());
         //获取默认单选按钮
         int checkid = all.getCheckedRadioButtonId();
-        RadioButton checkbtn = (RadioButton) view.findViewById(checkid);
         //设置字体变化
         hot.setTextSize(25);
         hot.setTextColor(ContextCompat.getColor(getContext(), R.color.pink));
@@ -205,15 +204,15 @@ public class MainFragment extends Fragment {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == 100) {
             initActivity();
-        }else {
-            Toast.makeText(getContext(),"请打开相机权限",Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(getContext(), "请打开相机权限", Toast.LENGTH_SHORT).show();
         }
     }
 
     private void initActivity() {
         Intent intent = new Intent(view.getContext(), CaptureActivity.class);
         intent.putExtra("id", user.getId() + "");
-        startActivityForResult(intent,100);
+        startActivityForResult(intent, 100);
     }
 
 
@@ -223,7 +222,7 @@ public class MainFragment extends Fragment {
         if (requestCode == 1000) {
             adapter.notifyDataSetChanged();
 
-        }else if(requestCode == 100){
+        } else if (requestCode == 100) {
             //处理扫描结果（跳转相应的详情页）
             if (null != data) {
                 Bundle bundle = data.getExtras();
@@ -234,7 +233,7 @@ public class MainFragment extends Fragment {
                     String result = bundle.getString(CodeUtils.RESULT_STRING);
                     Intent intent = new Intent();
                     intent.putExtra("collect", true);//收藏是否可修改
-                    intent.putExtra("id", user.getId()+"");
+                    intent.putExtra("id", user.getId() + "");
                     intent.putExtra("activityId", result);//活动id
                     intent.setClass(getContext(), DetailActivity.class);
                     startActivity(intent);
@@ -278,7 +277,7 @@ public class MainFragment extends Fragment {
         builder.add("pageNum", pageNum + "");
         builder.add("pageSize", pageSize + "");
         builder.add("city", citystr);
-        Log.e("pageNum"+pageNum,"acttype"+acttype);
+        Log.e("pageNum" + pageNum, "acttype" + acttype);
         FormBody body = builder.build();
         Request request = new Request.Builder()
                 .post(body)
@@ -304,7 +303,9 @@ public class MainFragment extends Fragment {
                     } else if (acttype == 2) {
                         statusRecent = false;
                     }
-                    srl.finishLoadMoreWithNoMoreData();
+                    if (!statusHot && !statusRecent) {
+                        srl.finishLoadMoreWithNoMoreData();
+                    }
                     Looper.loop();
                 } else {
                     List<Activity> activitiesList = JSON.parseArray(actjson, Activity.class);

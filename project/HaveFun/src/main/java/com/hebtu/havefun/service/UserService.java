@@ -313,7 +313,7 @@ public class UserService {
      */
     //将用户的粉丝人数存入内存
     @Cacheable(value = "user-follow", key = "#id+'_getFollowedCount'")
-    public Long getFollowedCount(Integer id) {
+    public long getFollowedCount(Integer id) {
         Specification<UserRelationship> specification = (Specification<UserRelationship>) (root, criteriaQuery, criteriaBuilder) -> criteriaBuilder.equal(root.get("followUserId"), id);
         return userRelationshipDao.count(specification);
     }
@@ -325,7 +325,7 @@ public class UserService {
      */
     //将用户的关注人数存入内存
     @Cacheable(value = "user-follow", key = "#id+'_getFollowCount'")
-    public Long getFollowCount(Integer id) {
+    public long getFollowCount(Integer id) {
         Specification<UserRelationship> specification = (Specification<UserRelationship>) (root, criteriaQuery, criteriaBuilder) -> criteriaBuilder.equal(root.get("followedUserId"), id);
         return userRelationshipDao.count(specification);
     }
