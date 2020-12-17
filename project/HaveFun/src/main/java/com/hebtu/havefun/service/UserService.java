@@ -337,8 +337,9 @@ public class UserService {
      */
     //将用户基本信息存入缓存
     @Cacheable(value = "user", key = "#id+'_getUser'")
-    public User getUser(Integer id) {
-        return userDao.getOne(id);
+    public String getUser(Integer id) {
+        User user = userDao.getOne(id);
+        return JSON.toJSONString(user);
     }
 
     /**
@@ -468,7 +469,7 @@ public class UserService {
         return "true";
     }
 
-    @Cacheable(value = "user-login",key = "#phoneNum+'_getUserInfo'")
+    @Cacheable(value = "user-login", key = "#phoneNum+'_getUserInfo'")
     public String getUserInfo(String phoneNum) {
         return JSON.toJSONString(userDao.findUserByPhoneNum(phoneNum));
     }

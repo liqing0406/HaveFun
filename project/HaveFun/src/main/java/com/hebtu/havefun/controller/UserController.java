@@ -245,8 +245,8 @@ public class UserController {
             System.out.println("getUser Error");
             return "ErrorParameter";
         }
-        User user = userService.getUser(id);
-        return user != null ? JSON.toJSONString(user) : "false";
+        String user = userService.getUser(id);
+        return user != null ? user : "false";
     }
 
     /**
@@ -341,12 +341,12 @@ public class UserController {
     }
 
     /**
-     * @description 根据电话号码获取用户信息用于聊天页显示
      * @param phoneNum 电话号码
      * @return 返回user的json串
+     * @description 根据电话号码获取用户信息用于聊天页显示
      */
     @RequestMapping("/getUserInfo")
-    public String getUserInfo(String phoneNum){
+    public String getUserInfo(String phoneNum) {
         if (phoneNum == null) {
             System.out.println("getUserInfo Error");
             return "ErrorParameter";
