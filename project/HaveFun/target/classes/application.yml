@@ -59,7 +59,7 @@ constant:
   user_id:
     10000000
   download_path:
-    "/home/HaveFunResources/HaveFun.apk"
+    "/home/HaveFunResources/趣玩儿.apk"
 ---
 spring:
   datasource:
@@ -123,4 +123,4 @@ constant:
   user_id:
     10000000
   download_path:
-    "D:/HaveFunResources/HaveFun.apk"
+    "D:/HaveFunResources/趣玩儿.apk"

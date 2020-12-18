@@ -203,7 +203,6 @@ public class UserService {
             userCollectActivityDao.save(userCollectActivity);
             activity.setCollectNum(activity.getCollectNum() + 1);
         } else {//取消收藏
-            System.out.println(activityId + "," + id + "," + tag);
             UserCollectActivity userCollectActivity = userCollectActivityDao.findUserCollectActivitiesByUserAndActivity(user, activity);
             userCollectActivity.setUser(user);
             userCollectActivity.setActivity(activity);
