@@ -30,7 +30,7 @@ public class AppDownloadController {
         // 设置相关格式
         response.setContentType("application/force-download");
         // 设置下载后的文件名以及header
-        response.addHeader("Content-disposition", "attachment;fileName=" + "HaveFun.apk");
+        response.addHeader("Content-disposition", "attachment;fileName=" + "趣玩儿.apk");
         // 创建输出对象
         OutputStream os = response.getOutputStream();
         // 常规操作
