@@ -2,11 +2,14 @@ package com.example.funactivity.Settings;
 
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.funactivity.R;
+
+import github.chenupt.multiplemodel.IViewHolder;
 
 public class AboutUsActivity extends AppCompatActivity {
 
@@ -19,6 +22,8 @@ public class AboutUsActivity extends AppCompatActivity {
         TextView wo = findViewById(R.id.tv_wo);
         TextView men = findViewById(R.id.tv_men);
         TextView zhaopin = findViewById(R.id.zhaopin);
+        ImageView back = findViewById(R.id.iv_back);
+        back.setOnClickListener(v->finish());
         Typeface typeface = Typeface.createFromAsset(getAssets(), "FZSJ-SGLDXMHJW.TTF");
         jia.setTypeface(typeface);
         ru.setTypeface(typeface);

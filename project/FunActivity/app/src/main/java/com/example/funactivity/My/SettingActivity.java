@@ -31,11 +31,11 @@ public class SettingActivity extends AppCompatActivity {
         Typeface typeface = Typeface.createFromAsset(getAssets(), "FZGongYHJW.TTF");
         setting.setTypeface(typeface);
 
-        //头像圆形处理
-        ImageView touxiang = findViewById(R.id.touxaing);
-        RequestOptions requestOptions = new RequestOptions()
-                .circleCrop();
-        Glide.with(this).load(R.drawable.laozhou).apply(requestOptions).into(touxiang);
+//        //头像圆形处理
+//        ImageView touxiang = findViewById(R.id.touxaing);
+//        RequestOptions requestOptions = new RequestOptions()
+//                .circleCrop();
+//        Glide.with(this).load(R.drawable.laozhou).apply(requestOptions).into(touxiang);
 
         //点击按钮退出登录
         Button out = findViewById(R.id.btn_out);
@@ -63,12 +63,12 @@ public class SettingActivity extends AppCompatActivity {
         builder.setNegativeButton("取消", (dialog, which) -> dialog.dismiss());
         builder.create().show();
     }
-
-    //跳转账户管理
-    public void onClick(View view) {
-        Intent i = new Intent(this, AccountManagerActivity.class);
-        startActivity(i);
-    }
+//
+//    //跳转账户管理
+//    public void onClick(View view) {
+//        Intent i = new Intent(this, AccountManagerActivity.class);
+//        startActivity(i);
+//    }
 
     //跳转账户与安全
     public void onClickTwo(View view) {
@@ -76,11 +76,11 @@ public class SettingActivity extends AppCompatActivity {
         startActivity(i);
     }
 
-    //跳转通知设置
-    public void onClickThree(View view) {
-        Intent i = new Intent(this, NotificationSetActivity.class);
-        startActivity(i);
-    }
+//    //跳转通知设置
+//    public void onClickThree(View view) {
+//        Intent i = new Intent(this, NotificationSetActivity.class);
+//        startActivity(i);
+//    }
 
     //跳转关于我们
     public void onClickSix(View view) {

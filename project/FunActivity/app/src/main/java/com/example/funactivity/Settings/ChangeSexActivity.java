@@ -40,6 +40,7 @@ public class ChangeSexActivity extends AppCompatActivity {
     private String newsex;
     private OkHttpClient client;
     private User user = new User();
+    private Boolean isChange = false;//性别是否更改
 
     @SuppressLint("HandlerLeak")
     private Handler handler = new Handler() {
@@ -50,7 +51,11 @@ public class ChangeSexActivity extends AppCompatActivity {
                 case 1:
                     UserDetail userDetail;
                     userDetail = user.getUserDetail();
-                    userDetail.setSex(Integer.parseInt(newsex));
+                    if (isChange){
+                        userDetail.setSex(Integer.parseInt(newsex));
+                    }else {
+                        userDetail.setSex(Integer.parseInt(oldsex));
+                    }
                     user.setUserDetail(userDetail);
                     EventBus.getDefault().post(user);
                     finish();
@@ -104,6 +109,7 @@ public class ChangeSexActivity extends AppCompatActivity {
 
         @Override
         public void onCheckedChanged(RadioGroup group, int checkedId) {
+            isChange = true;
             switch (checkedId) {
                 case R.id.rb_man:
                     man.setTextColor(getResources().getColor(R.color.pink));
@@ -126,7 +132,11 @@ public class ChangeSexActivity extends AppCompatActivity {
     public void changeSex() {
         FormBody.Builder builder = new FormBody.Builder();
         builder.add("id", user.getId() + "");
-        builder.add("sex", newsex);
+        if (isChange){
+            builder.add("sex", newsex);
+        }else{
+            builder.add("sex",oldsex);
+        }
         FormBody body = builder.build();
         Request request = new Request.Builder()
                 .post(body)
