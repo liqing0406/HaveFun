@@ -3,8 +3,8 @@ package com.hyphenate.easeui.utils;
 import android.content.Context;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.signature.ObjectKey;
 import com.hyphenate.easeui.GetUserInfo;
 import com.hyphenate.easeui.EaseUI;
 import com.hyphenate.easeui.EaseUI.EaseUserProfileProvider;
@@ -13,6 +13,7 @@ import com.hyphenate.easeui.domain.EaseUser;
 
 
 import java.util.Timer;
+import java.util.UUID;
 
 public class EaseUserUtils {
     
@@ -46,7 +47,10 @@ public class EaseUserUtils {
         while (user==null){
             user = getUserInfo.getUser();
         }
-        Glide.with(context).load(Constant.PIC_PATH+user.getHeadPortrait()).into(imageView);
+        Glide.with(context).
+                load(Constant.PIC_PATH+user.getHeadPortrait())
+                .signature(new ObjectKey(UUID.randomUUID().toString()))
+                .into(imageView);
     }
 
     /**
