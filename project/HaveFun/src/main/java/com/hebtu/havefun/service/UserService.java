@@ -117,7 +117,7 @@ public class UserService {
      */
     @Transactional
     @Rollback(value = false)
-    //修改了密码不会更新用户的基本信息，所以这个地方不删除缓存
+    @CacheEvict(value = "user-login", allEntries = true)
     public boolean modifyPassword(String phoneNum, String password) {
         User user = userDao.findUserByPhoneNum(phoneNum);
         user.setPassword(password);
